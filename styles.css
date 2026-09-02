@@ -603,12 +603,37 @@ header {
 .hero {
   padding-top: clamp(130px, 19vw, 185px);
   padding-bottom: clamp(65px, 11vw, 120px);
+  position: relative;
+  z-index: 1;
 }
 .hero-grid {
   display: grid; gap: clamp(36px, 5.5vw, 52px); align-items: center;
   grid-template-columns: 1fr;
+  width: 100%;
 }
 @media (min-width: 1024px) { .hero-grid { grid-template-columns: 1.08fr 0.92fr; } }
+
+.hero-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.hero-visual {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 
 .hero-live-badge {
   position: relative; overflow: visible;
