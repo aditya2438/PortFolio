@@ -667,9 +667,10 @@
   if (bgCanvas && !prefersReducedMotion) {
     var ctx = bgCanvas.getContext('2d');
     var particles = [];
-    var particleCount = window.innerWidth < 768 ? 26 : 48;
-    var mouse = { x: -9999, y: -9999, radius: 140 };
+    var particleCount = window.innerWidth < 768 ? 38 : 72;
+    var mouse = { x: -9999, y: -9999, radius: 160 };
     var animationFrameId = null;
+    var time = 0;
 
     function resizeCanvas() {
       bgCanvas.width = window.innerWidth;
@@ -689,23 +690,25 @@
     }, { passive: true });
 
     var colors = [
-      'rgba(129, 140, 248, ', // indigo/violet
-      'rgba(56, 189, 248, ',  // sky cyan
+      'rgba(56, 189, 248, ',   // sky cyan
+      'rgba(168, 85, 247, ',  // neon violet
       'rgba(52, 211, 153, ',  // mint emerald
-      'rgba(192, 132, 252, '  // purple
+      'rgba(251, 191, 36, ',  // radiant amber
+      'rgba(244, 114, 182, '  // neon rose
     ];
 
     function createParticle() {
       return {
         x: Math.random() * bgCanvas.width,
         y: Math.random() * bgCanvas.height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        size: Math.random() * 1.8 + 1.2,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: (Math.random() - 0.5) * 0.7,
+        size: Math.random() * 2.2 + 1.6,
         color: colors[Math.floor(Math.random() * colors.length)],
-        baseAlpha: Math.random() * 0.4 + 0.25,
+        baseAlpha: Math.random() * 0.4 + 0.35,
         pulse: Math.random() * Math.PI,
-        pulseSpeed: Math.random() * 0.02 + 0.01
+        pulseSpeed: Math.random() * 0.025 + 0.015,
+        driftPhase: Math.random() * Math.PI * 2
       };
     }
 
@@ -717,41 +720,46 @@
       ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
       var w = bgCanvas.width;
       var h = bgCanvas.height;
+      time += 0.015;
 
       // Update and draw particles
       for (var i = 0; i < particles.length; i++) {
         var pt = particles[i];
 
-        pt.x += pt.vx;
-        pt.y += pt.vy;
+        // Fluid organic floating motion
+        pt.x += pt.vx + Math.sin(time + pt.driftPhase) * 0.25;
+        pt.y += pt.vy + Math.cos(time + pt.driftPhase) * 0.25;
         pt.pulse += pt.pulseSpeed;
 
-        if (pt.x < 0) pt.x = w;
-        if (pt.x > w) pt.x = 0;
-        if (pt.y < 0) pt.y = h;
-        if (pt.y > h) pt.y = 0;
+        if (pt.x < -20) pt.x = w + 20;
+        if (pt.x > w + 20) pt.x = -20;
+        if (pt.y < -20) pt.y = h + 20;
+        if (pt.y > h + 20) pt.y = -20;
 
+        // Interactive mouse physics
         var dx = pt.x - mouse.x;
         var dy = pt.y - mouse.y;
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < mouse.radius && dist > 0) {
           var force = (mouse.radius - dist) / mouse.radius;
-          pt.x += (dx / dist) * force * 1.5;
-          pt.y += (dy / dist) * force * 1.5;
+          pt.x += (dx / dist) * force * 2.2;
+          pt.y += (dy / dist) * force * 2.2;
         }
 
-        var currentAlpha = pt.baseAlpha + Math.sin(pt.pulse) * 0.15;
+        var currentAlpha = pt.baseAlpha + Math.sin(pt.pulse) * 0.2;
+        var alphaSafe = Math.max(0.15, Math.min(0.9, currentAlpha));
+
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-        ctx.fillStyle = pt.color + Math.max(0.1, currentAlpha) + ')';
-        ctx.shadowColor = pt.color + '0.6)';
-        ctx.shadowBlur = 8;
+        ctx.fillStyle = pt.color + alphaSafe + ')';
+        ctx.shadowColor = pt.color + '0.8)';
+        ctx.shadowBlur = 12;
         ctx.fill();
         ctx.shadowBlur = 0;
       }
 
       // Draw constellation connections
-      var maxConnectDist = w < 768 ? 85 : 115;
+      var maxConnectDist = w < 768 ? 95 : 130;
       for (var i = 0; i < particles.length; i++) {
         for (var j = i + 1; j < particles.length; j++) {
           var p1 = particles[i];
@@ -761,12 +769,12 @@
           var cDist = Math.sqrt(cdx * cdx + cdy * cdy);
 
           if (cDist < maxConnectDist) {
-            var lineAlpha = (1 - cDist / maxConnectDist) * 0.18;
+            var lineAlpha = (1 - cDist / maxConnectDist) * 0.28;
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = 'rgba(147, 197, 253, ' + lineAlpha + ')';
-            ctx.lineWidth = 0.75;
+            ctx.lineWidth = 0.9;
             ctx.stroke();
           }
         }
