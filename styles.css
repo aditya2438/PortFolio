@@ -1039,6 +1039,127 @@ header {
 }
 .footer-inner p { font-size: 0.84rem; color: var(--steel-dim); text-align: center; flex: 1; min-width: 240px; }
 
+/* -------------------------------- Scroll Progress Indicator ---------------------------------- */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--indigo), var(--violet), var(--blue), var(--mint));
+  z-index: 999; pointer-events: none;
+  box-shadow: 0 0 12px var(--blue-glow);
+  transition: width 0.1s linear;
+}
+
+/* -------------------------------- Command Palette Button & Modal ---------------------------------- */
+.cmd-pill-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 12px; border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 700;
+  color: var(--steel);
+  transition: color 0.25s, background 0.25s, border-color 0.25s, transform 0.25s var(--ease-out);
+  cursor: pointer;
+}
+.cmd-pill-btn:hover {
+  color: #ffffff; background: var(--glass-fill-strong);
+  border-color: var(--glass-border-strong);
+  transform: translateY(-1px);
+}
+.cmd-icon { font-size: 0.82rem; }
+
+.cmd-backdrop {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(2, 2, 4, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: grid; place-items: center; padding: 20px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.3s var(--ease-out), visibility 0.3s;
+}
+.cmd-backdrop.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.cmd-dialog {
+  width: 100%; max-width: 580px;
+  background: rgba(13, 13, 22, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--r-lg);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  transform: scale(0.96) translateY(10px);
+  transition: transform 0.3s var(--ease-spring);
+}
+.cmd-backdrop.open .cmd-dialog { transform: scale(1) translateY(0); }
+
+.cmd-search-wrap {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 18, 30, 0.7);
+}
+.cmd-search-wrap svg { width: 18px; height: 18px; color: var(--steel); flex-shrink: 0; }
+.cmd-input {
+  width: 100%; background: none; border: none; outline: none;
+  color: #ffffff; font-size: 0.98rem; font-family: inherit;
+}
+.cmd-input::placeholder { color: var(--steel-dim); }
+.cmd-kbd-esc {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  padding: 3px 7px; border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08); color: var(--steel);
+}
+
+.cmd-list {
+  max-height: 340px; overflow-y: auto; padding: 10px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.cmd-group-title {
+  font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--steel-dim);
+  padding: 8px 12px 4px;
+}
+.cmd-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: var(--r-sm);
+  color: #cbd5e1; font-size: 0.88rem; font-weight: 500;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+  cursor: pointer; text-decoration: none;
+}
+.cmd-item-left { display: flex; align-items: center; gap: 11px; }
+.cmd-item-left svg { width: 16px; height: 16px; color: var(--blue); flex-shrink: 0; }
+.cmd-item:hover, .cmd-item.selected {
+  background: rgba(99, 102, 241, 0.22);
+  color: #ffffff;
+}
+.cmd-item-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  color: var(--steel-dim);
+}
+
+/* -------------------------------- Project Architecture Flow ---------------------------------- */
+.arch-flow-wrap {
+  margin-top: 20px; padding: 14px 18px;
+  background: rgba(16, 16, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-md);
+}
+.arch-label {
+  display: block; font-size: 0.74rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--violet); margin-bottom: 8px;
+}
+.arch-flow {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.arch-step {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 600;
+  padding: 4px 10px; border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #cbd5e1;
+}
+.arch-step.highlight {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: var(--blue);
+}
+.arch-sep { font-size: 0.75rem; color: var(--steel-dim); }
+
 /* ------------------------------ Reveal Motion States ------------------------------ */
 .js [data-reveal] {
   opacity: 0; transform: translateY(28px);

@@ -401,6 +401,101 @@
     });
   });
 
+  /* ============================ Scroll Progress Bar ============================ */
+  var scrollProgressEl = document.getElementById('scrollProgress');
+  function updateScrollProgress() {
+    if (!scrollProgressEl) return;
+    var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    scrollProgressEl.style.width = scrolled + '%';
+  }
+  window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+  /* ============================ Command Palette (⌘K) ============================ */
+  var cmdModal = document.getElementById('cmdModal');
+  var cmdBtn = document.getElementById('cmdPaletteBtn');
+  var cmdInput = document.getElementById('cmdInput');
+  var cmdList = document.getElementById('cmdList');
+  var cmdCopyEmail = document.getElementById('cmdCopyEmail');
+
+  function openCmdPalette() {
+    if (!cmdModal) return;
+    cmdModal.classList.add('open');
+    cmdModal.setAttribute('aria-hidden', 'false');
+    if (cmdInput) {
+      cmdInput.value = '';
+      filterCmdItems('');
+      setTimeout(function () { cmdInput.focus(); }, 50);
+    }
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCmdPalette() {
+    if (!cmdModal || !cmdModal.classList.contains('open')) return;
+    cmdModal.classList.remove('open');
+    cmdModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function filterCmdItems(query) {
+    if (!cmdList) return;
+    var q = (query || '').toLowerCase().trim();
+    var items = cmdList.querySelectorAll('.cmd-item');
+    items.forEach(function (item) {
+      var text = item.textContent.toLowerCase();
+      var match = !q || text.indexOf(q) !== -1;
+      item.style.display = match ? 'flex' : 'none';
+    });
+  }
+
+  if (cmdBtn) cmdBtn.addEventListener('click', openCmdPalette);
+  if (cmdInput) {
+    cmdInput.addEventListener('input', function (e) {
+      filterCmdItems(e.target.value);
+    });
+  }
+
+  if (cmdModal) {
+    cmdModal.addEventListener('click', function (e) {
+      if (e.target === cmdModal) closeCmdPalette();
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (cmdModal && cmdModal.classList.contains('open')) {
+        closeCmdPalette();
+      } else {
+        openCmdPalette();
+      }
+    } else if (e.key === 'Escape') {
+      closeCmdPalette();
+    }
+  });
+
+  if (cmdList) {
+    cmdList.addEventListener('click', function (e) {
+      var link = e.target.closest('.cmd-item');
+      if (!link) return;
+      if (link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
+        closeCmdPalette();
+      }
+    });
+  }
+
+  if (cmdCopyEmail) {
+    cmdCopyEmail.addEventListener('click', function () {
+      var email = 'adityachouhan2446@gmail.com';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email);
+      }
+      if (liveRegion) liveRegion.textContent = 'Email address copied to clipboard';
+      closeCmdPalette();
+    });
+  }
+
   /* ============================ Dynamic Tab Title on Blur ============================== */
   var originalTitle = document.title;
   document.addEventListener('visibilitychange', function () {
@@ -420,3 +515,4 @@
   }
 
 })();
+

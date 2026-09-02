@@ -65,6 +65,9 @@
 </head>
 <body class="bg-obsidian text-titanium font-display antialiased selection:bg-brandViolet selection:text-white">
 
+<!-- Top Reading Progress Indicator -->
+<div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
+
 <a href="#main" class="skip-link">Skip to main content</a>
 
 <!-- Ambient background: multi-layer gradient orbs + noise grain overlay -->
@@ -99,6 +102,12 @@
     </ul>
 
     <div class="nav-actions">
+      <!-- Command Palette Trigger Button -->
+      <button class="cmd-pill-btn magnetic" id="cmdPaletteBtn" type="button" aria-label="Open Command Menu (Ctrl+K or Cmd+K)" title="Quick Actions &amp; Search (Ctrl+K)">
+        <span class="cmd-icon">⌘</span>
+        <span>K</span>
+      </button>
+      
       <!-- GitHub Icon Button -->
       <a class="icon-btn magnetic" href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" aria-label="Aditya's GitHub profile" title="GitHub Profile">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -558,6 +567,22 @@
             <span>JWT &amp; OAuth2</span>
           </div>
 
+          <!-- Interactive Architecture Pipeline Flow -->
+          <div class="arch-flow-wrap">
+            <span class="arch-label">System Architecture Pipeline:</span>
+            <div class="arch-flow">
+              <span class="arch-step">Next.js Client</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step">Spring API Gateway</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step highlight">Kafka Event Streams (DLQ)</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step highlight">Redis Cache (&lt;25ms)</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step">PostgreSQL (3NF/ACID)</span>
+            </div>
+          </div>
+
           <!-- Architecture & Highlights -->
           <ul class="project-bullets">
             <li>
@@ -630,6 +655,22 @@
             <span>Tailwind CSS</span>
             <span>Docker</span>
             <span>Render Cloud</span>
+          </div>
+
+          <!-- Interactive Architecture Pipeline Flow -->
+          <div class="arch-flow-wrap">
+            <span class="arch-label">System Architecture Pipeline:</span>
+            <div class="arch-flow">
+              <span class="arch-step">Customer / Provider UI</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step highlight">Haversine Geo-Router</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step highlight">Pessimistic Slot Lock</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step">5-Stage State Engine</span>
+              <span class="arch-sep">➔</span>
+              <span class="arch-step">MySQL 8.0 (3NF)</span>
+            </div>
           </div>
 
           <!-- Architecture & Highlights -->
@@ -819,6 +860,85 @@
 
 </main>
 
+<!-- ============ COMMAND PALETTE MODAL (macOS Spotlight Inspired) ============ -->
+<div class="cmd-backdrop" id="cmdModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Command Menu">
+  <div class="cmd-dialog">
+    <div class="cmd-search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+      <input type="text" id="cmdInput" class="cmd-input" placeholder="Type a command or jump to section..." autocomplete="off" spellcheck="false">
+      <span class="cmd-kbd-esc">ESC</span>
+    </div>
+    <div class="cmd-list" id="cmdList">
+      <div class="cmd-group-title">Quick Actions</div>
+      <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="cmd-item" data-cmd="resume">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+          <span>Download Resume (PDF)</span>
+        </div>
+        <span class="cmd-item-badge">Action</span>
+      </a>
+      <a href="https://faircart-ten.vercel.app/" target="_blank" rel="noopener noreferrer" class="cmd-item" data-cmd="faircart">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>Launch FairCart Live Demo</span>
+        </div>
+        <span class="cmd-item-badge">Project</span>
+      </a>
+      <a href="https://fixora-xn4k.onrender.com" target="_blank" rel="noopener noreferrer" class="cmd-item" data-cmd="fixora">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>Launch Fixora Live Demo</span>
+        </div>
+        <span class="cmd-item-badge">Project</span>
+      </a>
+      <button type="button" class="cmd-item" id="cmdCopyEmail" data-cmd="email">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+          <span>Copy Email Address</span>
+        </div>
+        <span class="cmd-item-badge">adityachouhan2446@gmail.com</span>
+      </button>
+
+      <div class="cmd-group-title">Navigation</div>
+      <a href="#about" class="cmd-item" data-cmd="about">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>About Aditya &amp; Core Principles</span>
+        </div>
+        <span class="cmd-item-badge">#about</span>
+      </a>
+      <a href="#skills" class="cmd-item" data-cmd="skills">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
+          <span>Technical Skills &amp; Stack Matrix</span>
+        </div>
+        <span class="cmd-item-badge">#skills</span>
+      </a>
+      <a href="#projects" class="cmd-item" data-cmd="projects">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <span>Featured Projects (FairCart &amp; Fixora)</span>
+        </div>
+        <span class="cmd-item-badge">#projects</span>
+      </a>
+      <a href="#education" class="cmd-item" data-cmd="education">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+          <span>Education &amp; Qualifications</span>
+        </div>
+        <span class="cmd-item-badge">#education</span>
+      </a>
+      <a href="#contact" class="cmd-item" data-cmd="contact">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+          <span>Contact Hub &amp; Live Station</span>
+        </div>
+        <span class="cmd-item-badge">#contact</span>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="container footer-inner">
@@ -830,7 +950,7 @@
   </div>
 </footer>
 
-<!-- Accessibility Live Region for Copy-to-Clipboard Announcement -->
+<!-- Accessibility Live Region for Announcements -->
 <div id="liveRegion" class="sr-only" role="status" aria-live="polite"></div>
 
 <!-- ============ CDN SCRIPTS ============ -->
