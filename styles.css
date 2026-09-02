@@ -1255,6 +1255,86 @@ header {
 }
 .arch-sep { font-size: 0.75rem; color: var(--steel-dim); }
 
+/* -------------------------------- Live REST API Sandbox ---------------------------------- */
+.api-sandbox {
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 10px;
+}
+.api-sandbox-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
+}
+.api-sandbox-title {
+  font-size: clamp(1.4rem, 2.8vw, 1.8rem); font-weight: 800;
+  letter-spacing: -0.02em; color: var(--titanium);
+}
+.api-sandbox-sub {
+  color: #cbd5e1; font-size: clamp(0.86rem, 1.7vw, 0.95rem); margin-top: 6px;
+}
+.api-latency-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 14px; border-radius: var(--r-pill);
+  background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.3);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700;
+  color: var(--mint);
+}
+.latency-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--emerald); box-shadow: 0 0 8px var(--mint);
+  animation: pulseDot 2s infinite;
+}
+
+.api-endpoint-tabs {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.api-tab {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(0.74rem, 1.6vw, 0.82rem);
+  font-weight: 600; color: var(--steel);
+  transition: all 0.25s var(--ease-out); cursor: pointer;
+}
+.api-tab:hover {
+  background: rgba(255, 255, 255, 0.08); color: var(--titanium);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.api-tab.active {
+  background: rgba(99, 102, 241, 0.18); border-color: rgba(99, 102, 241, 0.45);
+  color: #ffffff; box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.http-method {
+  font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+}
+.http-method.post { background: rgba(56, 189, 248, 0.2); color: var(--blue); }
+.http-method.get  { background: rgba(52, 211, 153, 0.2); color: var(--mint); }
+
+.api-console-view {
+  background: rgba(8, 8, 14, 0.85); border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.api-view-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; background: rgba(16, 16, 28, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.http-status-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; font-weight: 800;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.35);
+  color: var(--mint);
+}
+.api-content-type {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: var(--steel-dim);
+}
+.api-response-body {
+  margin: 0; padding: 18px; font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.76rem, 1.7vw, 0.84rem); line-height: 1.7;
+  color: #e2e8f0; overflow-x: auto;
+}
+
 /* -------------------------- Floating Terminal Button & Modal -------------------------- */
 .floating-term-btn {
   position: fixed;

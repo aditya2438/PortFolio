@@ -367,6 +367,74 @@
     chip.setAttribute('tabindex', '0');
   });
 
+  /* ======================== Interactive REST API Playground ======================== */
+  var apiTabs = document.querySelectorAll('.api-tab');
+  var apiResponseBody = document.getElementById('apiResponseBody');
+  var apiLatencyVal = document.getElementById('apiLatencyVal');
+  var copyApiJsonBtn = document.getElementById('copyApiJsonBtn');
+
+  var apiData = {
+    'faircart-checkout': {
+      latency: '18ms Latency',
+      json: '{\n  "status": "SUCCESS",\n  "httpCode": 200,\n  "transactionId": "tx_kafka_fc8912e7",\n  "order": {\n    "orderId": 1042,\n    "userId": 8419,\n    "status": "DISPATCHED_TO_KAFKA",\n    "topic": "order-dispatch-events",\n    "partition": 2,\n    "offset": 48102,\n    "cachedInRedis": true,\n    "totalAmount": 2499.00,\n    "currency": "INR",\n    "pessimisticLockAcquired": true,\n    "lockHoldDurationMs": 4.2\n  },\n  "timestamp": "2026-09-02T16:45:12.802Z"\n}'
+    },
+    'fixora-nearby': {
+      latency: '14ms Latency',
+      json: '{\n  "status": "SUCCESS",\n  "httpCode": 200,\n  "queryCoordinates": {\n    "latitude": 23.1793,\n    "longitude": 75.7849,\n    "searchRadiusKm": 15.0,\n    "cityCluster": "Ujjain"\n  },\n  "totalProvidersFound": 2,\n  "providers": [\n    {\n      "providerId": "PRO_772",\n      "name": "Mahakal Electricals & AC Solutions",\n      "distanceKm": 1.42,\n      "rating": 4.9,\n      "slotAvailability": "AVAILABLE_IMMEDIATE"\n    },\n    {\n      "providerId": "PRO_804",\n      "name": "Indore Plumbing Express Hub",\n      "distanceKm": 4.85,\n      "rating": 4.8,\n      "slotAvailability": "SLOT_RESERVED"\n    }\n  ]\n}'
+    },
+    'auth-jwt': {
+      latency: '22ms Latency',
+      json: '{\n  "status": "AUTHENTICATED",\n  "httpCode": 200,\n  "tokenType": "Bearer",\n  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZGl0eWEiLCJyb2xlcyI6WyJST0xFX0JBQ0tFTkQiXX0...",\n  "expiresInSeconds": 86400,\n  "principal": {\n    "username": "aditya.dev",\n    "roles": ["ROLE_BACKEND_ENGINEER"],\n    "permissions": ["READ_CATALOG", "PROCESS_ORDER", "EXECUTE_TRANSACTIONS"]\n  },\n  "securityEngine": "Spring Security 6.3 + JJWT"\n}'
+    }
+  };
+
+  function renderApiResponse(endpointKey) {
+    if (!apiResponseBody) return;
+    var data = apiData[endpointKey] || apiData['faircart-checkout'];
+    if (apiLatencyVal) apiLatencyVal.textContent = data.latency;
+    
+    var formatted = data.json
+      .replace(/"(.*?)":/g, '<span class="c-type">"$1"</span>:')
+      .replace(/: ("[^"]*")/g, ': <span class="c-str">$1</span>')
+      .replace(/: (true|false)/g, ': <span class="c-kw">$1</span>')
+      .replace(/: (\d+(\.\d+)?)/g, ': <span class="c-mint">$1</span>');
+    apiResponseBody.innerHTML = '<code>' + formatted + '</code>';
+  }
+
+  if (apiTabs.length > 0) {
+    renderApiResponse('faircart-checkout');
+    apiTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var key = tab.getAttribute('data-endpoint');
+        apiTabs.forEach(function (t) {
+          var isTarget = t === tab;
+          t.classList.toggle('active', isTarget);
+          t.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+        });
+        renderApiResponse(key);
+      });
+    });
+  }
+
+  if (copyApiJsonBtn) {
+    copyApiJsonBtn.addEventListener('click', function () {
+      var activeTab = document.querySelector('.api-tab.active');
+      var key = activeTab ? activeTab.getAttribute('data-endpoint') : 'faircart-checkout';
+      var text = (apiData[key] || {}).json || '';
+      
+      var onCopied = function () {
+        copyApiJsonBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7ee3c0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        setTimeout(function () {
+          copyApiJsonBtn.innerHTML = '<svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>';
+        }, 1500);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onCopied).catch(onCopied);
+      }
+    });
+  }
+
   /* ================================ Copy Email to Clipboard ================================ */
   var copyEmailBtn = document.getElementById('copyEmailBtn');
   var liveRegion = document.getElementById('liveRegion');

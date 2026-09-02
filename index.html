@@ -649,6 +649,54 @@
           </div>
         </article>
 
+        <!-- Interactive Live REST API Playground -->
+        <div class="glass-card spotlight api-sandbox" data-reveal="section">
+          <div class="api-sandbox-head">
+            <div>
+              <div class="project-tag-wrap">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span class="project-eyebrow">Backend Request Simulator · Live API Console</span>
+              </div>
+              <h3 class="api-sandbox-title">Interactive REST API Playground</h3>
+              <p class="api-sandbox-sub">Execute simulated Spring Boot microservice endpoints in real time to inspect live payloads, headers, and latency metrics.</p>
+            </div>
+            <div class="api-latency-badge" id="apiLatencyBadge">
+              <span class="latency-dot"></span>
+              <span id="apiLatencyVal">18ms Latency</span>
+            </div>
+          </div>
+
+          <!-- Endpoint Selectors -->
+          <div class="api-endpoint-tabs" role="tablist" aria-label="API Endpoints">
+            <button class="api-tab active" role="tab" aria-selected="true" data-endpoint="faircart-checkout">
+              <span class="http-method post">POST</span>
+              <span>/api/v1/cart/1042/checkout</span>
+            </button>
+            <button class="api-tab" role="tab" aria-selected="false" data-endpoint="fixora-nearby">
+              <span class="http-method get">GET</span>
+              <span>/api/v1/providers/nearby?lat=23.17&amp;lon=75.78</span>
+            </button>
+            <button class="api-tab" role="tab" aria-selected="false" data-endpoint="auth-jwt">
+              <span class="http-method post">POST</span>
+              <span>/api/v1/auth/authenticate</span>
+            </button>
+          </div>
+
+          <!-- API Console Body -->
+          <div class="api-console-view">
+            <div class="api-view-bar">
+              <div class="flex items-center gap-2">
+                <span class="http-status-pill" id="apiStatusPill">200 OK</span>
+                <span class="api-content-type">application/json</span>
+              </div>
+              <button class="terminal-copy-btn" id="copyApiJsonBtn" aria-label="Copy JSON Response" title="Copy Response JSON">
+                <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+              </button>
+            </div>
+            <pre class="api-response-body" id="apiResponseBody"><code></code></pre>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
