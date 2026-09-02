@@ -77,8 +77,7 @@ Engineered to fit fluidly from ultra-compact foldables to 4K ultra-wide monitors
 ├── index.html                          # Semantic HTML5 luxury portfolio application
 ├── styles.css                          # Liquid glassmorphism, responsive rules & motion styling
 ├── app.js                              # Interactive terminal tabs, Lenis, filters, IST clock, confetti
-├── Aditya_Singh_Chouhan_Resume.pdf     # Primary resume served by download buttons
-├── Aditya_Chouhan_Resume.pdf           # Alternate resume reference
+├── Aditya_Singh_Chouhan_Resume.pdf     # Resume served by download buttons
 ├── LICENSE                             # MIT License
 ├── .gitignore                          # Standard git ignore configuration
 └── README.md                           # Documentation & deployment guide
