@@ -238,10 +238,51 @@
     });
   }
 
-  /* ======================== Interactive Code Terminal Studio ======================== */
+  /* ======================== Interactive Floating Code Terminal ======================== */
+  var termModal = document.getElementById('termModal');
+  var floatingTermBtn = document.getElementById('floatingTermBtn');
+  var heroOpenTerminalBtn = document.getElementById('heroOpenTerminalBtn');
+  var termCloseDot = document.getElementById('termCloseDot');
   var terminalTabs = document.querySelectorAll('.terminal-tab');
   var terminalBodies = document.querySelectorAll('.terminal-body');
   var copyCodeBtn = document.getElementById('copyCodeBtn');
+
+  function openTermModal() {
+    if (!termModal) return;
+    termModal.classList.add('open');
+    termModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeTermModal() {
+    if (!termModal || !termModal.classList.contains('open')) return;
+    termModal.classList.remove('open');
+    termModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (floatingTermBtn) floatingTermBtn.addEventListener('click', openTermModal);
+  if (heroOpenTerminalBtn) heroOpenTerminalBtn.addEventListener('click', openTermModal);
+  if (termCloseDot) termCloseDot.addEventListener('click', closeTermModal);
+
+  if (termModal) {
+    termModal.addEventListener('click', function (e) {
+      if (e.target === termModal) closeTermModal();
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && termModal && termModal.classList.contains('open')) {
+      closeTermModal();
+    } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 't') {
+      e.preventDefault();
+      if (termModal && termModal.classList.contains('open')) {
+        closeTermModal();
+      } else {
+        openTermModal();
+      }
+    }
+  });
 
   terminalTabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
@@ -482,6 +523,14 @@
       if (link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
         closeCmdPalette();
       }
+    });
+  }
+
+  var cmdLaunchTerminal = document.getElementById('cmdLaunchTerminal');
+  if (cmdLaunchTerminal) {
+    cmdLaunchTerminal.addEventListener('click', function () {
+      closeCmdPalette();
+      setTimeout(openTermModal, 150);
     });
   }
 

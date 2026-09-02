@@ -1224,6 +1224,104 @@ header {
 }
 .arch-sep { font-size: 0.75rem; color: var(--steel-dim); }
 
+/* -------------------------- Floating Terminal Button & Modal -------------------------- */
+.floating-term-btn {
+  position: fixed;
+  bottom: 84px; right: 24px;
+  z-index: 120;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 18px;
+  border-radius: var(--r-pill);
+  background: rgba(14, 14, 24, 0.88);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  color: var(--titanium);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 24px rgba(99, 102, 241, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+.floating-term-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  border-color: rgba(99, 102, 241, 0.7);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 36px rgba(99, 102, 241, 0.5);
+}
+.floating-term-btn svg { width: 16px; height: 16px; color: var(--blue); }
+.term-pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--emerald); box-shadow: 0 0 8px var(--mint);
+  animation: pulseDot 2s infinite;
+}
+
+@media (max-width: 600px) {
+  .floating-term-btn { bottom: 76px; right: 16px; padding: 9px 14px; font-size: 0.78rem; }
+}
+
+/* Terminal Modal Backdrop */
+.term-backdrop {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(2, 2, 4, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: grid; place-items: center; padding: clamp(14px, 4vw, 28px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.35s var(--ease-out), visibility 0.35s;
+}
+.term-backdrop.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.term-dialog {
+  width: 100%; max-width: 820px;
+  background: rgba(11, 11, 18, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--r-lg);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9), 0 0 40px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  transform: scale(0.95) translateY(16px);
+  transition: transform 0.35s var(--ease-spring);
+}
+.term-backdrop.open .term-dialog { transform: scale(1) translateY(0); }
+
+/* Hero Terminal Launcher Card */
+.hero-launcher-card {
+  padding: clamp(22px, 3.8vw, 32px);
+  display: flex; flex-direction: column; gap: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 14, 24, 0.65);
+}
+.launcher-top {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.launcher-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.76rem;
+  color: var(--blue); font-weight: 600;
+}
+.launcher-code-preview {
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(0.78rem, 1.8vw, 0.85rem);
+  line-height: 1.7; color: #cbd5e1;
+  background: rgba(8, 8, 14, 0.6);
+  padding: 14px 18px; border-radius: var(--r-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.btn-launch-terminal {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 12px 22px; border-radius: var(--r-pill);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.25));
+  border: 1px solid rgba(99, 102, 241, 0.45);
+  color: #ffffff; font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 0.88rem;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+  transition: transform 0.25s var(--ease-out), background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  cursor: pointer; width: 100%;
+}
+.btn-launch-terminal:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.4));
+  border-color: rgba(99, 102, 241, 0.8);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+}
+
 /* ------------------------------ Reveal Motion States ------------------------------ */
 .js [data-reveal] {
   opacity: 0; transform: translateY(28px);

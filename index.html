@@ -229,95 +229,34 @@
         </div>
       </div>
 
-      <!-- Right Column: Interactive Code Studio & Live Performance Stats -->
+      <!-- Right Column: Interactive Code Studio Launcher & Live Performance Stats -->
       <div class="hero-visual" data-reveal="hero-visual">
         
-        <!-- Interactive Code Terminal Window -->
-        <div class="glass-card spotlight terminal" tabindex="0" aria-label="Interactive Code Studio">
-          <div class="terminal-bar">
+        <!-- Hero Interactive Code Studio Launcher Card -->
+        <div class="glass-card spotlight hero-launcher-card" tabindex="0">
+          <div class="launcher-top">
             <div class="terminal-dots">
               <span class="dot dot-red"></span>
               <span class="dot dot-yellow"></span>
               <span class="dot dot-green"></span>
             </div>
-            <!-- Code Tab Switcher -->
-            <div class="terminal-tabs" role="tablist" aria-label="Code Snippets">
-              <button class="terminal-tab active" role="tab" aria-selected="true" data-tab="tab-faircart">
-                <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 12.5 8 15l2 2.5"></path><path d="m14 12.5 2 2.5-2 2.5"></path><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path></svg>
-                <span>CartController.java</span>
-              </button>
-              <button class="terminal-tab" role="tab" aria-selected="false" data-tab="tab-fixora">
-                <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                <span>HaversineService.java</span>
-              </button>
-              <button class="terminal-tab" role="tab" aria-selected="false" data-tab="tab-specs">
-                <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"></rect><rect width="6" height="6" x="9" y="9" rx="1"></rect><path d="M15 2v2"></path><path d="M15 20v2"></path><path d="M2 15h2"></path><path d="M2 9h2"></path><path d="M20 15h2"></path><path d="M20 9h2"></path><path d="M9 2v2"></path><path d="M9 20v2"></path></svg>
-                <span>SystemSpecs.sh</span>
-              </button>
-            </div>
-            <button class="terminal-copy-btn" id="copyCodeBtn" aria-label="Copy code snippet" title="Copy snippet">
-              <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
-            </button>
+            <span class="launcher-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+              <span>Java 21 Core Runtime</span>
+            </span>
           </div>
 
-          <!-- Snippet 1: FairCart Controller -->
-          <pre class="terminal-body active" id="tab-faircart"><code><span class="c-ann">@RestController</span>
-<span class="c-ann">@RequestMapping</span>(<span class="c-str">"/api/v1/cart"</span>)
-<span class="c-kw">public class</span> <span class="c-type">CartController</span> {
+          <div class="launcher-code-preview">
+            <span class="c-kw">aditya@workstation</span>:~$ java -jar portfolio.jar<br>
+            <span class="c-str">&gt; Initializing Spring Boot 3.3 Application Context...</span><br>
+            <span class="c-mint">&gt; REST Controllers, JPA Repositories &amp; Schemas loaded [OK]</span><br>
+            <span class="c-out">&gt; Status: Open for Software Engineering Opportunities</span><span class="cursor-blink">▍</span>
+          </div>
 
-    <span class="c-kw">private final</span> <span class="c-type">CartService</span> cartService;
-    <span class="c-kw">private final</span> <span class="c-type">KafkaTemplate</span>&lt;<span class="c-type">String</span>, <span class="c-type">OrderEvent</span>&gt; kafkaTemplate;
-    <span class="c-kw">private final</span> <span class="c-type">RedisTemplate</span>&lt;<span class="c-type">String</span>, <span class="c-type">CartSession</span>&gt; redisTemplate;
-
-    <span class="c-ann">@PostMapping</span>(<span class="c-str">"/{userId}/checkout"</span>)
-    <span class="c-kw">public</span> <span class="c-type">ResponseEntity</span>&lt;<span class="c-type">OrderResponse</span>&gt; checkout(
-            <span class="c-ann">@PathVariable</span> <span class="c-type">Long</span> userId,
-            <span class="c-ann">@RequestBody</span> <span class="c-type">CheckoutRequest</span> req) {
-        
-        <span class="c-com">// Distributed Redis lock + 3NF pessimistic inventory check</span>
-        <span class="c-type">Order</span> order = cartService.processWithLock(userId, req);
-        
-        <span class="c-com">// Asynchronous Kafka dispatch to Dead-Letter Queue (DLQ) topology</span>
-        kafkaTemplate.send(<span class="c-str">"order-dispatch-events"</span>, order.getId(), <span class="c-kw">new</span> <span class="c-type">OrderEvent</span>(order));
-        
-        <span class="c-kw">return</span> ResponseEntity.ok(<span class="c-type">OrderResponse</span>.from(order));
-    }
-}</code></pre>
-
-          <!-- Snippet 2: Fixora Geo-Spatial Haversine Service -->
-          <pre class="terminal-body" id="tab-fixora"><code><span class="c-ann">@Service</span>
-<span class="c-kw">public class</span> <span class="c-type">HaversineService</span> {
-
-    <span class="c-kw">private static final double</span> <span class="c-type">EARTH_RADIUS_KM</span> = <span class="c-mint">6371.0</span>;
-
-    <span class="c-com">/**
-     * Location-aware provider discovery for target city clusters:
-     * Ujjain (23.17°N, 75.78°E), Indore (22.71°N), Bhopal (23.25°N)
-     */</span>
-    <span class="c-kw">public double</span> calculateDistance(<span class="c-kw">double</span> lat1, <span class="c-kw">double</span> lon1, 
-                                     <span class="c-kw">double</span> lat2, <span class="c-kw">double</span> lon2) {
-        <span class="c-kw">double</span> dLat = Math.toRadians(lat2 - lat1);
-        <span class="c-kw">double</span> dLon = Math.toRadians(lon2 - lon1);
-        
-        <span class="c-kw">double</span> a = Math.sin(dLat / <span class="c-mint">2</span>) * Math.sin(dLat / <span class="c-mint">2</span>) +
-                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                   Math.sin(dLon / <span class="c-mint">2</span>) * Math.sin(dLon / <span class="c-mint">2</span>);
-                   
-        <span class="c-kw">double</span> c = <span class="c-mint">2</span> * Math.atan2(Math.sqrt(a), Math.sqrt(<span class="c-mint">1</span> - a));
-        <span class="c-kw">return</span> <span class="c-type">EARTH_RADIUS_KM</span> * c;
-    }
-}</code></pre>
-
-          <!-- Snippet 3: System Specs Script -->
-          <pre class="terminal-body specs-body" id="tab-specs"><code><span class="c-com"># Profile Specifications &amp; Core Runtime</span>
-<span class="c-kw">aditya@workstation</span>:~$ ./profile --verbose
-<span class="c-out">&gt; NAME: Aditya Chouhan</span>
-<span class="c-out">&gt; ROLE: Java Developer (Fresher) | Software Engineer</span>
-<span class="c-out">&gt; RUNTIME: Java 21 LTS | Spring Boot 3.3 | REST APIs</span>
-<span class="c-out">&gt; DATABASE: MySQL 8.0 &amp; PostgreSQL (3NF / ACID)</span>
-<span class="c-out">&gt; TOOLS: Docker | Git &amp; GitHub | Maven | Postman</span>
-<span class="c-out">&gt; LOCATION: Ujjain | Indore | Bhopal, MP, India</span>
-<span class="c-out">&gt; STATUS: OPEN_FOR_WORK (Entry-Level / Fresher)</span><span class="cursor-blink">▍</span></code></pre>
+          <button class="btn-launch-terminal magnetic" id="heroOpenTerminalBtn" type="button" aria-label="Open Interactive Java Terminal Studio">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+            <span>Open Interactive Code Terminal</span>
+          </button>
         </div>
 
         <!-- Metric Counter Tiles -->
@@ -951,6 +890,13 @@
         </div>
         <span class="cmd-item-badge">Project</span>
       </a>
+      <button type="button" class="cmd-item" id="cmdLaunchTerminal" data-cmd="terminal code studio console">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+          <span>Open Interactive Java Terminal</span>
+        </div>
+        <span class="cmd-item-badge">⌘T / Modal</span>
+      </button>
       <button type="button" class="cmd-item" id="cmdCopyEmail" data-cmd="email">
         <div class="cmd-item-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
@@ -1003,6 +949,103 @@
         <span class="cmd-item-badge">#contact</span>
       </a>
     </div>
+  </div>
+</div>
+
+<!-- ============ FLOATING TERMINAL TRIGGER BUTTON ============ -->
+<button class="floating-term-btn magnetic" id="floatingTermBtn" type="button" aria-label="Open Interactive Terminal (⌘T or Click)" title="Interactive Code Terminal (⌘T)">
+  <span class="term-pulse-dot" aria-hidden="true"></span>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+  <span>Terminal</span>
+</button>
+
+<!-- ============ FLOATING INTERACTIVE TERMINAL WINDOW MODAL ============ -->
+<div class="term-backdrop" id="termModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Interactive Java Code Terminal">
+  <div class="term-dialog">
+    <div class="terminal-bar">
+      <div class="terminal-dots">
+        <button class="dot dot-red" id="termCloseDot" aria-label="Close terminal" title="Close (ESC)"></button>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <!-- Code Tab Switcher -->
+      <div class="terminal-tabs" role="tablist" aria-label="Code Snippets">
+        <button class="terminal-tab active" role="tab" aria-selected="true" data-tab="tab-faircart">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 12.5 8 15l2 2.5"></path><path d="m14 12.5 2 2.5-2 2.5"></path><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path></svg>
+          <span>CartController.java</span>
+        </button>
+        <button class="terminal-tab" role="tab" aria-selected="false" data-tab="tab-fixora">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>HaversineService.java</span>
+        </button>
+        <button class="terminal-tab" role="tab" aria-selected="false" data-tab="tab-specs">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"></rect><rect width="6" height="6" x="9" y="9" rx="1"></rect><path d="M15 2v2"></path><path d="M15 20v2"></path><path d="M2 15h2"></path><path d="M2 9h2"></path><path d="M20 15h2"></path><path d="M20 9h2"></path><path d="M9 2v2"></path><path d="M9 20v2"></path></svg>
+          <span>profile.sh</span>
+        </button>
+      </div>
+      <button class="terminal-copy-btn" id="copyCodeBtn" aria-label="Copy code snippet" title="Copy snippet">
+        <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+      </button>
+    </div>
+
+    <!-- Snippet 1: FairCart Controller -->
+    <pre class="terminal-body active" id="tab-faircart"><code><span class="c-ann">@RestController</span>
+<span class="c-ann">@RequestMapping</span>(<span class="c-str">"/api/v1/cart"</span>)
+<span class="c-kw">public class</span> <span class="c-type">CartController</span> {
+
+    <span class="c-kw">private final</span> <span class="c-type">CartService</span> cartService;
+    <span class="c-kw">private final</span> <span class="c-type">KafkaTemplate</span>&lt;<span class="c-type">String</span>, <span class="c-type">OrderEvent</span>&gt; kafkaTemplate;
+    <span class="c-kw">private final</span> <span class="c-type">RedisTemplate</span>&lt;<span class="c-type">String</span>, <span class="c-type">CartSession</span>&gt; redisTemplate;
+
+    <span class="c-ann">@PostMapping</span>(<span class="c-str">"/{userId}/checkout"</span>)
+    <span class="c-kw">public</span> <span class="c-type">ResponseEntity</span>&lt;<span class="c-type">OrderResponse</span>&gt; checkout(
+            <span class="c-ann">@PathVariable</span> <span class="c-type">Long</span> userId,
+            <span class="c-ann">@RequestBody</span> <span class="c-type">CheckoutRequest</span> req) {
+        
+        <span class="c-com">// Distributed Redis lock + 3NF pessimistic inventory check</span>
+        <span class="c-type">Order</span> order = cartService.processWithLock(userId, req);
+        
+        <span class="c-com">// Asynchronous Kafka dispatch to Dead-Letter Queue (DLQ) topology</span>
+        kafkaTemplate.send(<span class="c-str">"order-dispatch-events"</span>, order.getId(), <span class="c-kw">new</span> <span class="c-type">OrderEvent</span>(order));
+        
+        <span class="c-kw">return</span> ResponseEntity.ok(<span class="c-type">OrderResponse</span>.from(order));
+    }
+}</code></pre>
+
+    <!-- Snippet 2: Fixora Geo-Spatial Haversine Service -->
+    <pre class="terminal-body" id="tab-fixora"><code><span class="c-ann">@Service</span>
+<span class="c-kw">public class</span> <span class="c-type">HaversineService</span> {
+
+    <span class="c-kw">private static final double</span> <span class="c-type">EARTH_RADIUS_KM</span> = <span class="c-mint">6371.0</span>;
+
+    <span class="c-com">/**
+     * Location-aware provider discovery for target city clusters:
+     * Ujjain (23.17°N, 75.78°E), Indore (22.71°N), Bhopal (23.25°N)
+     */</span>
+    <span class="c-kw">public double</span> calculateDistance(<span class="c-kw">double</span> lat1, <span class="c-kw">double</span> lon1, 
+                                     <span class="c-kw">double</span> lat2, <span class="c-kw">double</span> lon2) {
+        <span class="c-kw">double</span> dLat = Math.toRadians(lat2 - lat1);
+        <span class="c-kw">double</span> dLon = Math.toRadians(lon2 - lon1);
+        
+        <span class="c-kw">double</span> a = Math.sin(dLat / <span class="c-mint">2</span>) * Math.sin(dLat / <span class="c-mint">2</span>) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(dLon / <span class="c-mint">2</span>) * Math.sin(dLon / <span class="c-mint">2</span>);
+                   
+        <span class="c-kw">double</span> c = <span class="c-mint">2</span> * Math.atan2(Math.sqrt(a), Math.sqrt(<span class="c-mint">1</span> - a));
+        <span class="c-kw">return</span> <span class="c-type">EARTH_RADIUS_KM</span> * c;
+    }
+}</code></pre>
+
+    <!-- Snippet 3: System Specs Script -->
+    <pre class="terminal-body specs-body" id="tab-specs"><code><span class="c-com"># Profile Specifications &amp; Core Runtime</span>
+<span class="c-kw">aditya@workstation</span>:~$ ./profile --verbose
+<span class="c-out">&gt; NAME: Aditya Chouhan</span>
+<span class="c-out">&gt; ROLE: Java Developer (Fresher) | Software Engineer</span>
+<span class="c-out">&gt; RUNTIME: Java 21 LTS | Spring Boot 3.3 | REST APIs</span>
+<span class="c-out">&gt; DATABASE: MySQL 8.0 &amp; PostgreSQL (3NF / ACID)</span>
+<span class="c-out">&gt; TOOLS: Docker | Git &amp; GitHub | Maven | Postman</span>
+<span class="c-out">&gt; LOCATION: Ujjain | Indore | Bhopal, MP, India</span>
+<span class="c-out">&gt; STATUS: OPEN_FOR_WORK (Entry-Level / Fresher)</span><span class="cursor-blink">▍</span></code></pre>
   </div>
 </div>
 
