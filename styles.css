@@ -696,49 +696,83 @@ header {
 
 /* --------------------------------- About Section --------------------------------- */
 .bento-about { display: grid; gap: 22px; grid-template-columns: 1fr; }
-@media (min-width: 960px) { .bento-about { grid-template-columns: 1.35fr 1fr; align-items: stretch; } }
+@media (min-width: 960px) { .bento-about { grid-template-columns: 1.25fr 1fr; align-items: stretch; } }
 
-.bento-main { padding: clamp(24px, 4.5vw, 48px); display: flex; flex-direction: column; gap: 18px; }
+.bento-main {
+  padding: clamp(24px, 4.5vw, 42px);
+  display: flex; flex-direction: column; gap: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
 .bento-badge {
   display: inline-flex; align-items: center; gap: 9px;
   font-size: 0.84rem; font-weight: 700; color: var(--blue);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
-.bento-badge svg, .bento-badge i { width: 17px; height: 17px; flex-shrink: 0; }
-.bento-main p { color: #cbd5e1; line-height: 1.8; font-size: clamp(0.95rem, 1.8vw, 1.06rem); }
+.bento-badge svg { width: 17px; height: 17px; flex-shrink: 0; }
+.bento-main p { color: #cbd5e1; line-height: 1.8; font-size: clamp(0.94rem, 1.8vw, 1.04rem); }
 .bento-main strong { color: var(--titanium); font-weight: 700; }
 
-.bento-side.terminal { display: flex; flex-direction: column; min-width: 0; }
-.bento-side .terminal-body {
-  display: block !important;
-  flex: 1;
-  background: rgba(8, 8, 14, 0.65);
+.about-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.about-pill-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 18px; border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: clamp(0.82rem, 1.7vw, 0.88rem); font-weight: 600; color: var(--titanium);
+  transition: transform 0.25s var(--ease-out), background 0.25s, border-color 0.25s, box-shadow 0.25s;
 }
-.terminal-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--steel);
+.about-pill-btn:hover {
+  background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.45);
+  color: #ffffff; transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+}
+.about-pill-btn svg { width: 16px; height: 16px; color: var(--blue); }
+.pill-arrow { width: 12px; height: 12px; color: var(--steel-dim); transition: transform 0.2s; }
+.about-pill-btn:hover .pill-arrow { transform: translate(2px, -2px); color: #ffffff; }
+
+/* Right Bento Card: Pillars */
+.bento-pillars {
+  padding: clamp(24px, 4vw, 36px);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(14, 14, 24, 0.6);
+}
+.pillars-list { display: flex; flex-direction: column; gap: 14px; }
+.pillar-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 12px 14px; border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.25s, border-color 0.25s, background 0.25s;
+}
+.pillar-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateX(4px);
+}
+.pillar-icon {
+  display: inline-grid; place-items: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(99, 102, 241, 0.14); border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--blue); flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+.pillar-content h4 {
+  font-size: 0.94rem; font-weight: 700; color: var(--titanium);
+  letter-spacing: -0.01em; margin-bottom: 3px;
+}
+.pillar-content p {
+  font-size: 0.82rem; color: #cbd5e1; line-height: 1.55;
 }
 
-.about-links { display: flex; flex-wrap: wrap; gap: clamp(12px, 2.5vw, 22px); margin-top: 10px; }
-.tooltip-link {
-  position: relative; display: inline-flex; align-items: center; gap: 8px;
-  font-size: clamp(0.86rem, 1.8vw, 0.94rem); font-weight: 600; color: var(--titanium-dim);
-  transition: color 0.2s, transform 0.2s;
+.pillars-footer {
+  display: flex; flex-wrap: wrap; gap: 7px; padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
-.tooltip-link:hover { color: #ffffff; transform: translateY(-1px); }
-.tooltip-link svg, .tooltip-link i { width: 16px; height: 16px; flex-shrink: 0; }
-.tooltip {
-  position: absolute; bottom: calc(100% + 10px); left: 0;
-  background: var(--panel-2); border: 1px solid var(--glass-border-strong);
-  padding: 7px 13px; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 500; color: var(--titanium-dim);
-  white-space: nowrap; opacity: 0; transform: translateY(4px);
-  transition: opacity 0.25s, transform 0.25s; pointer-events: none;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  z-index: 20;
+.pill-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600;
+  padding: 4px 10px; border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--steel);
 }
-.tooltip-link:hover .tooltip, .tooltip-link:focus-visible .tooltip { opacity: 1; transform: translateY(0); }
 
 /* -------------------------------- Skills Matrix --------------------------------- */
 .skills-filter-bar {
