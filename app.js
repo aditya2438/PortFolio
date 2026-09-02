@@ -188,18 +188,31 @@
   }
 
   /* ===================== Hero Load-in Orchestration ===================== */
-  var heroCopyItems = document.querySelectorAll(
-    '.hero-copy .badge, .hero-title, .hero-role, .hero-lede, .hero-ctas, .hero-links'
-  );
-  var heroVisual = document.querySelector('[data-reveal="hero-visual"]');
+  var heroCopy = document.querySelector('.hero-copy');
+  var heroVisual = document.querySelector('.hero-visual');
 
   if (window.gsap && !prefersReducedMotion) {
-    gsap.set(heroCopyItems, { opacity: 0, y: 28 });
-    if (heroVisual) gsap.set(heroVisual, { opacity: 0, y: 36, scale: 0.98 });
-
-    var heroTl = gsap.timeline({ delay: 0.15, defaults: { ease: 'power3.out' } });
-    heroTl.to(heroCopyItems, { opacity: 1, y: 0, duration: 0.85, stagger: 0.09 });
-    if (heroVisual) heroTl.to(heroVisual, { opacity: 1, y: 0, scale: 1, duration: 0.95 }, '-=0.55');
+    if (heroCopy && heroCopy.children.length) {
+      gsap.from(heroCopy.children, {
+        opacity: 0,
+        y: 24,
+        duration: 0.85,
+        stagger: 0.08,
+        ease: 'power3.out',
+        clearProps: 'opacity,transform'
+      });
+    }
+    if (heroVisual) {
+      gsap.from(heroVisual, {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.95,
+        delay: 0.2,
+        ease: 'power3.out',
+        clearProps: 'opacity,transform'
+      });
+    }
 
     /* Subtle ambient scroll-linked parallax on the gradient background orbs */
     if (window.ScrollTrigger) {
@@ -208,8 +221,6 @@
       gsap.to('.orb-mint', { y: 120, x: 50, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
       gsap.to('.orb-silver', { y: 80, x: -70, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
     }
-  } else {
-    document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('is-visible'); });
   }
 
   /* =============================== Interactive Ambient Cursor Glow ========================= */

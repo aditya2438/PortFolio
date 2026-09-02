@@ -1798,11 +1798,16 @@ header {
 }
 
 /* ------------------------------ Reveal Motion States ------------------------------ */
-.js [data-reveal] {
+.hero-copy, .hero-visual {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.js [data-reveal="section"] {
   opacity: 0; transform: translateY(28px);
   transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
 }
-.js [data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+.js [data-reveal="section"].is-visible { opacity: 1; transform: translateY(0); }
 
 /* -------------------------- Reduced Motion Overrides ------------------------ */
 @media (prefers-reduced-motion: reduce) {
