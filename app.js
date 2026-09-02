@@ -169,6 +169,36 @@
     document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('is-visible'); });
   }
 
+  /* =============================== Interactive Ambient Cursor Glow ========================= */
+  if (!isTouch && !prefersReducedMotion) {
+    var cursorGlow = document.createElement('div');
+    cursorGlow.className = 'cursor-glow';
+    document.body.appendChild(cursorGlow);
+
+    var curX = window.innerWidth / 2;
+    var curY = window.innerHeight / 2;
+    var targetX = curX;
+    var targetY = curY;
+
+    window.addEventListener('mousemove', function (e) {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      cursorGlow.style.opacity = '1';
+    });
+
+    document.addEventListener('mouseleave', function () {
+      cursorGlow.style.opacity = '0';
+    });
+
+    function renderCursor() {
+      curX += (targetX - curX) * 0.14;
+      curY += (targetY - curY) * 0.14;
+      cursorGlow.style.transform = 'translate3d(' + (curX - 240) + 'px, ' + (curY - 240) + 'px, 0)';
+      requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
+  }
+
   /* =============================== Magnetic Button Physics ========================= */
   if (!isTouch && !prefersReducedMotion) {
     document.querySelectorAll('.magnetic').forEach(function (el) {
