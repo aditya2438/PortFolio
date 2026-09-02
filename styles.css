@@ -635,12 +635,50 @@ header {
   visibility: visible !important;
 }
 
-.hero-live-badge {
-  position: relative; overflow: visible;
+/* Aditya Chouhan (AC) Signature Brand Badge */
+.hero-brand-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 4px 14px 4px 5px;
+  background: rgba(14, 16, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-pill);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  width: fit-content;
   margin-bottom: 14px;
+  transition: transform 0.25s var(--ease-spring), border-color 0.25s, box-shadow 0.25s;
+}
+.hero-brand-badge:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.brand-badge-logo {
+  position: relative;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #38bdf8 100%);
+  display: grid; place-items: center;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
+  flex-shrink: 0;
+}
+.badge-orbit-ring {
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(56, 189, 248, 0.6);
+  animation: rotateClockwise 10s linear infinite;
+  pointer-events: none;
+}
+.badge-ac-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 900;
+  color: #ffffff; letter-spacing: -0.04em;
+  line-height: 1;
+}
+.badge-status-wrap {
+  display: inline-flex; align-items: center; gap: 8px;
+  position: relative;
 }
 .pulse-ring {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
   width: 14px; height: 14px; border-radius: 50%;
   border: 1.5px solid var(--mint);
   animation: pulseRing 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
@@ -651,153 +689,13 @@ header {
   70% { transform: translateY(-50%) scale(2.2); opacity: 0; }
   100% { transform: translateY(-50%) scale(2.2); opacity: 0; }
 }
-
-/* -------------------------- Aditya Chouhan (AC) Signature Brand Logo -------------------------- */
-.hero-logo-banner {
-  display: flex; align-items: center; gap: clamp(16px, 3vw, 24px);
-  padding: clamp(14px, 2.2vw, 20px) clamp(16px, 2.5vw, 24px);
-  background: rgba(13, 15, 28, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--r-lg);
-  box-shadow: 
-    0 18px 48px -10px rgba(0, 0, 0, 0.75),
-    0 0 35px -8px rgba(99, 102, 241, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  margin-bottom: 22px;
-  max-width: 100%;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.35s var(--ease-out), border-color 0.35s, box-shadow 0.35s;
+.badge-status-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 600;
+  color: var(--titanium);
 }
-.hero-logo-banner:hover {
-  border-color: rgba(99, 102, 241, 0.45);
-  box-shadow: 
-    0 24px 56px -10px rgba(0, 0, 0, 0.85),
-    0 0 45px -5px rgba(99, 102, 241, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-.ac-logo-stage {
-  position: relative;
-  width: 76px; height: 76px;
-  display: grid; place-items: center;
-  flex-shrink: 0;
-}
-
-/* Orbit Halo with Satellites */
-.ac-orbit-halo {
-  position: absolute; inset: -10px;
-  pointer-events: none;
-  display: grid; place-items: center;
-  animation: rotateClockwise 22s linear infinite;
-}
-.hero-logo-banner:hover .ac-orbit-halo {
-  animation-duration: 9s;
-}
-
-.orbit-particle-ring {
-  position: absolute; border-radius: 50%;
-}
-.orbit-particle-ring.ring-1 {
-  width: 86px; height: 86px;
-  border: 1.5px dashed rgba(99, 102, 241, 0.4);
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
-}
-.orbit-particle-ring.ring-2 {
-  width: 68px; height: 68px;
-  border: 1px dotted rgba(56, 189, 248, 0.45);
-}
-
-.orbit-satellite {
-  position: absolute;
-  font-size: 0.82rem;
-  line-height: 1;
-  display: inline-grid; place-items: center;
-  width: 22px; height: 22px; border-radius: 50%;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  user-select: none;
-  transition: transform 0.25s ease;
-}
-.sat-1 { top: -4px; left: 50%; transform: translateX(-50%); }
-.sat-2 { bottom: 2px; right: -4px; }
-.sat-3 { bottom: 2px; left: -4px; }
-
-/* AC Brand Emblem Core */
-.ac-brand-emblem {
-  position: relative; z-index: 2;
-  width: 64px; height: 64px;
-  display: grid; place-items: center;
-  cursor: pointer;
-  filter: drop-shadow(0 6px 20px rgba(99, 102, 241, 0.4));
-  transition: transform 0.3s var(--ease-spring);
-}
-.ac-brand-emblem:hover {
-  transform: scale(1.08) rotate(3deg);
-}
-
-.ac-svg-emblem {
-  width: 100%; height: 100%;
-  display: block;
-}
-.ac-hex-frame {
-  animation: hexDash 16s linear infinite;
-}
-@keyframes hexDash {
-  to { stroke-dashoffset: 200; }
-}
-
-.ac-emblem-shine {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 60%);
-  pointer-events: none;
-  opacity: 0.5;
-  animation: shinePulse 4s ease-in-out infinite alternate;
-}
-@keyframes shinePulse {
-  0% { opacity: 0.2; transform: scale(0.95); }
-  100% { opacity: 0.6; transform: scale(1.05); }
-}
-
-/* Metadata & Identity Details */
-.ac-meta-details {
-  display: flex; flex-direction: column; gap: 5px;
-  flex: 1; min-width: 0;
-}
-.ac-meta-status {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-}
-.ac-title {
-  font-family: 'JetBrains Mono', monospace; font-size: clamp(0.8rem, 1.6vw, 0.92rem);
-  font-weight: 800; letter-spacing: 0.05em; color: var(--titanium);
-}
-.ac-badge {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700;
-  padding: 2px 8px; border-radius: var(--r-pill);
-  background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.45);
-  color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.04em;
-}
-.ac-tagline {
-  font-size: clamp(0.78rem, 1.4vw, 0.85rem); color: var(--steel); margin: 0;
-  line-height: 1.4;
-}
-.ac-quick-tags {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 2px;
-}
-.ac-tag {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 8px; border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600;
-  color: #cbd5e1;
-}
-.text-mint { color: var(--mint) !important; }
 
 .hero-title {
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: clamp(2.6rem, 7.5vw, 4.8rem);
   font-weight: 900; letter-spacing: -0.045em; line-height: 1.02;
   filter: drop-shadow(0 2px 24px rgba(255,255,255,0.08));
@@ -887,57 +785,6 @@ header {
 .chip-kafka .orbit-dot { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
 .chip-redis .orbit-dot { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
 .chip-sql .orbit-dot { background: #34d399; box-shadow: 0 0 6px #34d399; }
-
-/* Live Architecture Flow Micro-Card (Left Hero Motion Element) */
-.hero-arch-card {
-  margin-top: 20px;
-  padding: 12px 16px;
-  background: rgba(14, 14, 24, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--r-md);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-}
-.arch-card-top {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
-}
-.live-pulse-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--mint); box-shadow: 0 0 10px var(--mint);
-  animation: pulseDot 1.8s infinite;
-  display: inline-block;
-}
-.arch-card-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--blue);
-}
-.arch-card-metric {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 600;
-  color: var(--mint);
-}
-.arch-stream-track {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-}
-.stream-node {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.74rem; font-weight: 600; color: #e2e8f0;
-}
-.stream-pulse-arrow {
-  color: var(--violet);
-  font-size: 0.76rem;
-  animation: arrowPulse 1.8s infinite;
-}
-@keyframes arrowPulse {
-  0%, 100% { transform: translateX(0); opacity: 0.5; }
-  50% { transform: translateX(3px); opacity: 1; color: var(--blue); }
-}
 
 .glow-beam {
   position: relative; overflow: hidden;
