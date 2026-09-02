@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<script>document.documentElement.classList.add('js');</script>
+<title>Aditya Chouhan — Java Backend Developer & Software Engineer</title>
+<meta name="title" content="Aditya Chouhan — Java Backend Developer & Software Engineer" />
+<meta name="description" content="Portfolio of Aditya Chouhan — Java Backend Developer specializing in Spring Boot 3.3, Apache Kafka event streams, Redis caching, and high-throughput distributed systems. Explore FairCart and Fixora." />
+<meta name="author" content="Aditya Chouhan" />
+<meta name="keywords" content="Aditya Chouhan, Java Developer, Spring Boot, Microservices, Apache Kafka, Redis, PostgreSQL, Fixora, FairCart, Backend Engineer, Ujjain, Indore" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Aditya Chouhan — Java Backend Developer & Software Engineer" />
+<meta property="og:description" content="Java backend developer building distributed, high-throughput systems with Spring Boot, Kafka, Redis, and PostgreSQL. Explore flagship projects FairCart & Fixora." />
+<meta property="og:image" content="https://raw.githubusercontent.com/aditya2438/aditya2438/main/og-preview.png" />
+<meta property="og:url" content="https://aditya2438.github.io/PortFolio/" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Aditya Chouhan — Java Backend Developer & Software Engineer" />
+<meta name="twitter:description" content="Java backend developer building distributed, high-throughput systems with Spring Boot, Kafka, Redis, and PostgreSQL." />
+<meta name="twitter:image" content="https://raw.githubusercontent.com/aditya2438/aditya2438/main/og-preview.png" />
+
+<!-- Inline Minimalist SVG Favicon (AC Monogram) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%238b7cf6'/%3E%3Cstop offset='100%25' stop-color='%235b8cff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%2307070a' stroke='rgba(255,255,255,0.15)' stroke-width='2'/%3E%3Ctext x='32' y='42' font-family='-apple-system,BlinkMacSystemFont,Inter,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='url(%23g)'%3EAC%3C/text%3E%3C/svg%3E" />
+
+<!-- Apple Web Fonts & CDN Preconnects for High Performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="dns-prefetch" href="https://cdn.tailwindcss.com" />
+<link rel="dns-prefetch" href="https://unpkg.com" />
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Tailwind CSS (Utility classes) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        },
+        colors: {
+          obsidian: '#07070a',
+          panel: '#0e0e14',
+          titanium: '#e7e9ee',
+          steel: '#94a3b8',
+          steeldim: '#5b6577',
+          brandBlue: '#5b8cff',
+          brandViolet: '#8b7cf6',
+          brandMint: '#7ee3c0',
+        },
+      },
+    },
+  };
+</script>
+
+<!-- Lenis CSS -->
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.26/dist/lenis.css" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-obsidian text-titanium font-display antialiased selection:bg-brandViolet selection:text-white">
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- Ambient background: multi-layer gradient orbs + noise grain overlay -->
+<div class="bg-layer" aria-hidden="true">
+  <div class="orb orb-violet"></div>
+  <div class="orb orb-blue"></div>
+  <div class="orb orb-mint"></div>
+  <div class="orb orb-silver"></div>
+  <svg class="grain" xmlns="http://www.w3.org/2000/svg">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-filter)"></rect>
+  </svg>
+</div>
+
+<!-- ============ FLOATING GLASS NAVIGATION (macOS Dynamic Island Inspired) ============ -->
+<header>
+  <nav class="nav-pill" aria-label="Primary Navigation">
+    <a href="#home" class="nav-logo group" aria-label="Aditya Chouhan — Back to Top">
+      <span class="nav-logo-mark">AC</span>
+      <span class="nav-logo-text">Aditya Chouhan</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="#about" data-nav-link>About</a></li>
+      <li><a href="#skills" data-nav-link>Skills</a></li>
+      <li><a href="#projects" data-nav-link>Projects</a></li>
+      <li><a href="#experience" data-nav-link>Experience</a></li>
+      <li><a href="#contact" data-nav-link>Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a class="icon-btn magnetic" href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" aria-label="Aditya's GitHub profile" title="GitHub profile">
+        <i data-lucide="github" aria-hidden="true"></i>
+      </a>
+      <a class="icon-btn magnetic" href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" aria-label="Aditya's LinkedIn profile" title="LinkedIn profile">
+        <i data-lucide="linkedin" aria-hidden="true"></i>
+      </a>
+      <a class="btn-resume magnetic" href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" id="resumeBtnNav" title="Download Resume PDF">
+        <i data-lucide="download" aria-hidden="true"></i>
+        <span>Resume</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileDrawer">
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer / Sheet Navigation -->
+  <div class="drawer" id="mobileDrawer" aria-hidden="true">
+    <div class="drawer-sheet" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <div class="flex items-center gap-2">
+          <span class="nav-logo-mark">AC</span>
+          <span class="font-bold text-titanium text-sm">Aditya Chouhan</span>
+        </div>
+        <button class="menu-toggle" id="menuClose" aria-label="Close navigation menu">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <ul class="drawer-links" role="list">
+        <li><a href="#home" data-nav-link>Home</a></li>
+        <li><a href="#about" data-nav-link>About &amp; Philosophy</a></li>
+        <li><a href="#skills" data-nav-link>Technical Skills</a></li>
+        <li><a href="#projects" data-nav-link>Featured Projects</a></li>
+        <li><a href="#experience" data-nav-link>Experience &amp; Milestones</a></li>
+        <li><a href="#contact" data-nav-link>Contact Hub</a></li>
+      </ul>
+
+      <div class="drawer-foot">
+        <a class="btn-resume w-full justify-center" href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" id="resumeBtnDrawer">
+          <i data-lucide="download" aria-hidden="true"></i>
+          <span>Download Resume PDF</span>
+        </a>
+        <div class="drawer-social">
+          <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="icon-btn"><i data-lucide="github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="icon-btn"><i data-lucide="linkedin" aria-hidden="true"></i></a>
+          <a href="mailto:adityachouhan2446@gmail.com" aria-label="Email" class="icon-btn"><i data-lucide="mail" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO SECTION ============ -->
+  <section id="home" class="section hero" aria-label="Hero Introduction">
+    <div class="container hero-grid">
+
+      <!-- Left Column: Copy & Actions -->
+      <div class="hero-copy" data-reveal="hero">
+        <div class="badge">
+          <span class="badge-dot" aria-hidden="true"></span>
+          <span>Available for Summer 2026 / New Grad Roles</span>
+        </div>
+
+        <h1 class="hero-title">
+          Aditya Chouhan
+        </h1>
+        
+        <p class="hero-role">
+          Java Backend Developer <span class="text-steeldim">|</span> Software Engineer
+        </p>
+
+        <p class="hero-lede">
+          Engineering scalable backend architectures, distributed microservices, and high-throughput RESTful APIs. 
+          Specialized in <strong>Java 21</strong>, <strong>Spring Boot 3.3</strong>, <strong>Apache Kafka</strong> event streams, and <strong>Redis</strong> distributed caching that stays sub-25ms fast under high concurrency.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="#projects" class="btn-primary magnetic">
+            <span>Explore Selected Works</span>
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="btn-secondary magnetic" id="resumeBtnHero">
+            <i data-lucide="file-down" aria-hidden="true"></i>
+            <span>Download CV / Resume</span>
+          </a>
+        </div>
+
+        <div class="hero-links">
+          <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="group">
+            <i data-lucide="github" aria-hidden="true"></i>
+            <span>github.com/aditya2438</span>
+            <i data-lucide="external-link" class="link-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="group">
+            <i data-lucide="linkedin" aria-hidden="true"></i>
+            <span>linkedin.com/in/adityachouhan24</span>
+            <i data-lucide="external-link" class="link-arrow" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Code Studio & Live Performance Stats -->
+      <div class="hero-visual" data-reveal="hero-visual">
+        
+        <!-- Interactive Code Terminal Window -->
+        <div class="glass-card spotlight terminal" tabindex="0" aria-label="Interactive Code Studio">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <!-- Code Tab Switcher -->
+            <div class="terminal-tabs" role="tablist" aria-label="Code Snippets">
+              <button class="terminal-tab active" role="tab" aria-selected="true" data-tab="tab-faircart">
+                <i data-lucide="file-code" class="tab-icon" aria-hidden="true"></i>
+                <span>CartController.java</span>
+              </button>
+              <button class="terminal-tab" role="tab" aria-selected="false" data-tab="tab-fixora">
+                <i data-lucide="map-pin" class="tab-icon" aria-hidden="true"></i>
+                <span>HaversineService.java</span>
+              </button>
+              <button class="terminal-tab" role="tab" aria-selected="false" data-tab="tab-specs">
+                <i data-lucide="cpu" class="tab-icon" aria-hidden="true"></i>
+                <span>SystemSpecs.sh</span>
+              </button>
+            </div>
+            <button class="terminal-copy-btn" id="copyCodeBtn" aria-label="Copy code snippet" title="Copy snippet">
+              <i data-lucide="copy" class="copy-icon" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <!-- Snippet 1: FairCart Controller -->
+          <pre class="terminal-body active" id="tab-faircart"><code><span class="c-ann">@RestController</span>
+<span class="c-ann">@RequestMapping</span>(<span class="c-str">"/api/v1/cart"</span>)
+<span class="c-kw">public class</span> <span class="c-type">CartController</span> {
+
+    <span class="c-kw">private final</span> <span class="c-type">CartService</span> cartService;
+    <span class="c-kw">private final</span> <span class="c-type">KafkaTemplate</span>&lt;<span class="c-type">String</span>, <span class="c-type">OrderEvent</span>&gt; kafkaTemplate;
+    <span class="c-kw">private final</span> <span class="c-type">RedisTemplate</span>&lt;<span class="c-type">String</span>, <span class="c-type">CartSession</span>&gt; redisTemplate;
+
+    <span class="c-ann">@PostMapping</span>(<span class="c-str">"/{userId}/checkout"</span>)
+    <span class="c-kw">public</span> <span class="c-type">ResponseEntity</span>&lt;<span class="c-type">OrderResponse</span>&gt; checkout(
+            <span class="c-ann">@PathVariable</span> <span class="c-type">Long</span> userId,
+            <span class="c-ann">@RequestBody</span> <span class="c-type">CheckoutRequest</span> req) {
+        
+        <span class="c-com">// Distributed Redis lock + 3NF pessimistic inventory check</span>
+        <span class="c-type">Order</span> order = cartService.processWithLock(userId, req);
+        
+        <span class="c-com">// Asynchronous Kafka dispatch to Dead-Letter Queue (DLQ) topology</span>
+        kafkaTemplate.send(<span class="c-str">"order-dispatch-events"</span>, order.getId(), <span class="c-kw">new</span> <span class="c-type">OrderEvent</span>(order));
+        
+        <span class="c-kw">return</span> ResponseEntity.ok(<span class="c-type">OrderResponse</span>.from(order));
+    }
+}</code></pre>
+
+          <!-- Snippet 2: Fixora Geo-Spatial Haversine Service -->
+          <pre class="terminal-body" id="tab-fixora"><code><span class="c-ann">@Service</span>
+<span class="c-kw">public class</span> <span class="c-type">HaversineService</span> {
+
+    <span class="c-kw">private static final double</span> <span class="c-type">EARTH_RADIUS_KM</span> = <span class="c-mint">6371.0</span>;
+
+    <span class="c-com">/**
+     * Location-aware provider discovery for target city clusters:
+     * Ujjain (23.17°N, 75.78°E), Indore (22.71°N), Bhopal (23.25°N)
+     */</span>
+    <span class="c-kw">public double</span> calculateDistance(<span class="c-kw">double</span> lat1, <span class="c-kw">double</span> lon1, 
+                                     <span class="c-kw">double</span> lat2, <span class="c-kw">double</span> lon2) {
+        <span class="c-kw">double</span> dLat = Math.toRadians(lat2 - lat1);
+        <span class="c-kw">double</span> dLon = Math.toRadians(lon2 - lon1);
+        
+        <span class="c-kw">double</span> a = Math.sin(dLat / <span class="c-mint">2</span>) * Math.sin(dLat / <span class="c-mint">2</span>) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(dLon / <span class="c-mint">2</span>) * Math.sin(dLon / <span class="c-mint">2</span>);
+                   
+        <span class="c-kw">double</span> c = <span class="c-mint">2</span> * Math.atan2(Math.sqrt(a), Math.sqrt(<span class="c-mint">1</span> - a));
+        <span class="c-kw">return</span> <span class="c-type">EARTH_RADIUS_KM</span> * c;
+    }
+}</code></pre>
+
+          <!-- Snippet 3: System Specs Script -->
+          <pre class="terminal-body specs-body" id="tab-specs"><code><span class="c-com"># System Specifications &amp; Core Runtime</span>
+<span class="c-kw">aditya@workstation</span>:~$ ./profile --verbose
+<span class="c-out">&gt; NAME: Aditya Chouhan</span>
+<span class="c-out">&gt; ROLE: Java Backend Developer | Distributed Systems</span>
+<span class="c-out">&gt; RUNTIME: Java 21 LTS | Spring Boot 3.3 | Docker</span>
+<span class="c-out">&gt; EVENT_STREAM: Apache Kafka (DLQ, Topic Partitions)</span>
+<span class="c-out">&gt; CACHE_ENGINE: Redis Cluster (Sub-25ms Latency)</span>
+<span class="c-out">&gt; PERSISTENCE: PostgreSQL &amp; MySQL 8.0 (3NF / ACID)</span>
+<span class="c-out">&gt; TARGET_CITIES: Ujjain | Indore | Bhopal</span>
+<span class="c-out">&gt; STATUS: OPEN_FOR_HIRE (Summer 2026 / New Grad)</span><span class="cursor-blink">▍</span></code></pre>
+        </div>
+
+        <!-- Metric Counter Tiles -->
+        <div class="stat-row">
+          <div class="glass-card stat-tile spotlight">
+            <span class="stat-num">55%</span>
+            <span class="stat-label">Lower DB read load via Redis caching</span>
+          </div>
+          <div class="glass-card stat-tile spotlight">
+            <span class="stat-num">&lt;25ms</span>
+            <span class="stat-label">Cache response latency under load</span>
+          </div>
+          <div class="glass-card stat-tile spotlight">
+            <span class="stat-num">17</span>
+            <span class="stat-label">Normalized 3NF relational tables</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ ABOUT & ENGINEERING PHILOSOPHY ============ -->
+  <section id="about" class="section" aria-labelledby="about-heading">
+    <div class="container">
+      <div class="section-head" data-reveal="section">
+        <p class="section-eyebrow">Engineering Mindset</p>
+        <h2 id="about-heading">Architecture, data integrity, and resilience under load</h2>
+        <p>Designing backend systems where correctness, low latency, and fault containment are first-class citizens.</p>
+      </div>
+
+      <div class="bento-about">
+        <!-- Main Bento Glass Card -->
+        <div class="glass-card spotlight bento-main" data-reveal="section">
+          <div class="bento-badge">
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            <span>Core Engineering Principles</span>
+          </div>
+
+          <p>
+            My passion for backend engineering began with <strong>Data Structures &amp; Algorithms (DSA)</strong> and <strong>Object-Oriented Design (OOPs)</strong> — domains where mathematical rigor and algorithmic efficiency dictate real-world software performance.
+          </p>
+          <p>
+            I architect systems using <strong>Java 21</strong> and <strong>Spring Boot 3.3</strong>, decoupling heavy business logic into event-driven microservices via <strong>Apache Kafka</strong>. By establishing Dead-Letter Queues (DLQ) and distributed session caching in <strong>Redis</strong>, failures remain isolated, and database bottlenecks are mitigated before they reach production storage layers.
+          </p>
+          <p>
+            Whether implementing <strong>pessimistic locking</strong> to prevent race conditions during high-concurrency e-commerce checkouts, or structuring <strong>17 normalized (3NF) relational tables</strong> with composite B-Tree indexing, I design systems that remain ACID-safe and predictable under flash-sale traffic.
+          </p>
+
+          <div class="about-links">
+            <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="tooltip-link">
+              <i data-lucide="github" aria-hidden="true"></i>
+              <span>github.com/aditya2438</span>
+              <span class="tooltip">Explore full commit history &amp; repositories</span>
+            </a>
+            <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="tooltip-link">
+              <i data-lucide="linkedin" aria-hidden="true"></i>
+              <span>linkedin.com/in/adityachouhan24</span>
+              <span class="tooltip">Let's discuss backend opportunities</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal Specs Side Card -->
+        <div class="glass-card spotlight bento-side terminal" data-reveal="section">
+          <div class="terminal-bar">
+            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+            <span class="terminal-title">computer-science.spec</span>
+          </div>
+          <pre class="terminal-body specs-body"><code><span class="c-com"># CS Foundations &amp; Architecture</span>
+<span class="c-kw">guest@aditya</span>:~$ cat foundations.json
+{
+  <span class="c-str">"core_competencies"</span>: [
+    <span class="c-mint">"Data Structures &amp; Algorithms"</span>,
+    <span class="c-mint">"Object-Oriented Design (OOPs)"</span>,
+    <span class="c-mint">"System Design &amp; Microservices"</span>,
+    <span class="c-mint">"Database Indexing (B-Tree/ACID)"</span>,
+    <span class="c-mint">"Concurrency &amp; Pessimistic Locking"</span>
+  ],
+  <span class="c-str">"education"</span>: {
+    <span class="c-str">"degree"</span>: <span class="c-mint">"B.Tech in Computer Science &amp; Engg"</span>,
+    <span class="c-str">"university"</span>: <span class="c-mint">"SVVV, Indore, MP"</span>,
+    <span class="c-str">"period"</span>: <span class="c-mint">"2022 – 2026"</span>,
+    <span class="c-str">"cgpa"</span>: <span class="c-mint">"6.98 / 10.0"</span>
+  },
+  <span class="c-str">"certifications"</span>: [
+    <span class="c-mint">"Java Specialization"</span>,
+    <span class="c-mint">"Cloud Computing — IIT Kharagpur"</span>,
+    <span class="c-mint">"Relational Databases &amp; MySQL"</span>
+  ]
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTERACTIVE SKILLS MATRIX ============ -->
+  <section id="skills" class="section" aria-labelledby="skills-heading">
+    <div class="container">
+      <div class="section-head" data-reveal="section">
+        <p class="section-eyebrow">Technical Arsenal</p>
+        <h2 id="skills-heading">A battle-tested backend &amp; full-stack stack</h2>
+        <p>Hover over any technology chip to highlight interconnected ecosystem dependencies.</p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="skills-filter-bar" data-reveal="section" role="tablist" aria-label="Skill Categories">
+        <button class="filter-pill active" data-filter="all">All Technologies</button>
+        <button class="filter-pill" data-filter="backend">Backend &amp; Microservices</button>
+        <button class="filter-pill" data-filter="database">Databases &amp; Caching</button>
+        <button class="filter-pill" data-filter="cloud">DevOps &amp; Cloud Tools</button>
+        <button class="filter-pill" data-filter="languages">Languages</button>
+      </div>
+
+      <div class="skills-grid" data-reveal="section">
+        
+        <!-- Tile 1: Languages -->
+        <div class="glass-card spotlight skill-tile" data-category="languages">
+          <div class="skill-tile-head">
+            <div class="skill-icon-wrap"><i data-lucide="code-2" aria-hidden="true"></i></div>
+            <h3>Languages</h3>
+          </div>
+          <div class="chip-row">
+            <span class="chip" data-tags="java core backend">Java 21 / 17</span>
+            <span class="chip" data-tags="core algorithms">C++</span>
+            <span class="chip" data-tags="core scripting ai">Python</span>
+            <span class="chip" data-tags="web frontend fullstack">JavaScript (ES6+)</span>
+            <span class="chip" data-tags="database sql backend">SQL</span>
+            <span class="chip" data-tags="web frontend">HTML5 &amp; CSS3</span>
+          </div>
+        </div>
+
+        <!-- Tile 2: Backend & Frameworks -->
+        <div class="glass-card spotlight skill-tile" data-category="backend">
+          <div class="skill-tile-head">
+            <div class="skill-icon-wrap"><i data-lucide="server" aria-hidden="true"></i></div>
+            <h3>Backend &amp; Frameworks</h3>
+          </div>
+          <div class="chip-row">
+            <span class="chip" data-tags="java backend core microservices">Spring Boot 3.3</span>
+            <span class="chip" data-tags="backend security auth">Spring Security</span>
+            <span class="chip" data-tags="backend ai llm">Spring AI</span>
+            <span class="chip" data-tags="backend database orm">Hibernate / JPA</span>
+            <span class="chip" data-tags="backend architecture api">RESTful APIs</span>
+            <span class="chip" data-tags="backend microservices architecture">Microservices</span>
+            <span class="chip" data-tags="backend java database">JDBC</span>
+            <span class="chip" data-tags="backend security auth">JJWT &amp; OAuth2</span>
+            <span class="chip" data-tags="backend java core">Java Collections API</span>
+          </div>
+        </div>
+
+        <!-- Tile 3: Databases & Caching -->
+        <div class="glass-card spotlight skill-tile" data-category="database">
+          <div class="skill-tile-head">
+            <div class="skill-icon-wrap"><i data-lucide="database" aria-hidden="true"></i></div>
+            <h3>Databases &amp; Caching</h3>
+          </div>
+          <div class="chip-row">
+            <span class="chip" data-tags="database sql backend acid">PostgreSQL</span>
+            <span class="chip" data-tags="database sql backend acid">MySQL 8.0 (3NF/ACID)</span>
+            <span class="chip" data-tags="database performance cache backend">Redis (In-Memory/Queue)</span>
+            <span class="chip" data-tags="database nosql">MongoDB</span>
+            <span class="chip" data-tags="database cloud sql">Supabase</span>
+          </div>
+        </div>
+
+        <!-- Tile 4: DevOps, Cloud & Ecosystem -->
+        <div class="glass-card spotlight skill-tile" data-category="cloud">
+          <div class="skill-tile-head">
+            <div class="skill-icon-wrap"><i data-lucide="layers" aria-hidden="true"></i></div>
+            <h3>DevOps, Cloud &amp; Tools</h3>
+          </div>
+          <div class="chip-row">
+            <span class="chip" data-tags="devops backend event microservices">Apache Kafka</span>
+            <span class="chip" data-tags="devops cloud container">Docker</span>
+            <span class="chip" data-tags="devops version-control">Git &amp; GitHub</span>
+            <span class="chip" data-tags="devops cloud hosting">Render</span>
+            <span class="chip" data-tags="devops cloud hosting">Vercel</span>
+            <span class="chip" data-tags="backend testing devops">JUnit 5 &amp; Mockito</span>
+            <span class="chip" data-tags="tools api testing">Postman</span>
+            <span class="chip" data-tags="tools build">Maven &amp; Gradle</span>
+            <span class="chip" data-tags="tools os">Linux / Shell</span>
+            <span class="chip" data-tags="tools ide">IntelliJ IDEA &amp; VS Code</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED PROJECTS SHOWCASE ============ -->
+  <section id="projects" class="section" aria-labelledby="projects-heading">
+    <div class="container">
+      <div class="section-head" data-reveal="section">
+        <p class="section-eyebrow">Featured Engineering Works</p>
+        <h2 id="projects-heading">Production-grade systems built for scale</h2>
+        <p>Architected end-to-end with high-concurrency guarantees, clean code, and zero-compromise data integrity.</p>
+      </div>
+
+      <div class="projects-stack">
+
+        <!-- PROJECT 1: FairCart -->
+        <article class="glass-card spotlight project-card tilt" data-reveal="section">
+          <div class="project-head">
+            <div>
+              <div class="project-tag-wrap">
+                <span class="project-status-dot"></span>
+                <span class="project-eyebrow">AI E-Commerce Aggregator · Distributed Microservices</span>
+              </div>
+              <h3 class="project-title">FairCart</h3>
+              <p class="project-sub">AI-Powered Distributed E-Commerce &amp; Smart Stretch Decision Engine</p>
+            </div>
+            
+            <div class="project-actions">
+              <a href="https://github.com/aditya2438/FairCart" target="_blank" rel="noopener noreferrer" class="project-btn-icon magnetic" aria-label="FairCart Source Code on GitHub" title="View GitHub Repository">
+                <i data-lucide="github" aria-hidden="true"></i>
+                <span class="btn-text">Source Code</span>
+              </a>
+              <a href="https://faircart-ten.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-btn-live magnetic" aria-label="FairCart Live Web App" title="Launch Live Web Application">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>Live Demo</span>
+                <i data-lucide="external-link" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Stack Badges -->
+          <div class="badge-row">
+            <span>Java 21</span>
+            <span>Spring Boot 3.3</span>
+            <span>Spring AI</span>
+            <span>Microservices</span>
+            <span>Apache Kafka</span>
+            <span>Redis Cache</span>
+            <span>PostgreSQL (3NF)</span>
+            <span>Hibernate / JPA</span>
+            <span>Docker</span>
+            <span>JWT &amp; OAuth2</span>
+          </div>
+
+          <!-- Architecture & Highlights -->
+          <ul class="project-bullets">
+            <li>
+              <strong>Distributed Microservices &amp; Messaging:</strong> Architected decoupled microservices (Auth, Catalog, Cart, Order, Inventory) communicating asynchronously via <strong>Apache Kafka</strong> event streams with Dead-Letter Queues (DLQ) for fault-tolerant order dispatching.
+            </li>
+            <li>
+              <strong>Spring AI &amp; Dynamic Deals:</strong> Integrated <strong>Spring AI</strong> with LLM models for real-time dynamic deal negotiation, smart product recommendations, and automated cart abandonment anomaly detection.
+            </li>
+            <li>
+              <strong>High-Throughput Caching Layer:</strong> Built a distributed session and cart caching mechanism using <strong>Redis</strong>, cutting primary database read load by <strong>55%</strong> and achieving <strong>sub-25ms response latency</strong> under concurrent flash-sale traffic.
+            </li>
+            <li>
+              <strong>ACID Transactions &amp; Data Integrity:</strong> Designed normalized (3NF) relational schemas in <strong>PostgreSQL</strong> using Hibernate/JPA, implementing pessimistic locking to eliminate race conditions during high-concurrency inventory checkouts.
+            </li>
+            <li>
+              <strong>Stateless Security &amp; Containerization:</strong> Enforced stateless JWT &amp; OAuth2 authentication with granular Role-Based Access Control (RBAC); automated unit testing with JUnit 5 &amp; Mockito and containerized services using Docker.
+            </li>
+          </ul>
+
+          <!-- Key Metrics Row -->
+          <div class="metric-row">
+            <div class="metric-col">
+              <span class="metric-val">55%</span>
+              <span class="metric-desc">Lower DB read load via Redis</span>
+            </div>
+            <div class="metric-col">
+              <span class="metric-val">&lt;25ms</span>
+              <span class="metric-desc">Cache response latency</span>
+            </div>
+            <div class="metric-col">
+              <span class="metric-val">5</span>
+              <span class="metric-desc">Decoupled microservices</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJECT 2: Fixora -->
+        <article class="glass-card spotlight project-card tilt" data-reveal="section">
+          <div class="project-head">
+            <div>
+              <div class="project-tag-wrap">
+                <span class="project-status-dot"></span>
+                <span class="project-eyebrow">Local Service Marketplace · Geo-Aware Booking Platform</span>
+              </div>
+              <h3 class="project-title">Fixora</h3>
+              <p class="project-sub">On-Demand Local Service Booking &amp; Provider Management Platform</p>
+            </div>
+            
+            <div class="project-actions">
+              <a href="https://github.com/aditya2438/Fixora" target="_blank" rel="noopener noreferrer" class="project-btn-icon magnetic" aria-label="Fixora Source Code on GitHub" title="View GitHub Repository">
+                <i data-lucide="github" aria-hidden="true"></i>
+                <span class="btn-text">Source Code</span>
+              </a>
+              <a href="https://fixora-xn4k.onrender.com" target="_blank" rel="noopener noreferrer" class="project-btn-live magnetic" aria-label="Fixora Live Web App on Render" title="Launch Live Web Application">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>Live Demo</span>
+                <i data-lucide="external-link" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Stack Badges -->
+          <div class="badge-row">
+            <span>Java 21</span>
+            <span>Spring Boot 3.3</span>
+            <span>Spring Security</span>
+            <span>JJWT &amp; BCrypt</span>
+            <span>MySQL 8.0 (3NF/ACID)</span>
+            <span>Redis</span>
+            <span>Tailwind CSS</span>
+            <span>Docker</span>
+            <span>Render Cloud</span>
+          </div>
+
+          <!-- Architecture & Highlights -->
+          <ul class="project-bullets">
+            <li>
+              <strong>Multi-Role Marketplace Architecture:</strong> Built a production-grade service marketplace featuring dedicated dashboards (Customer, Service Pro, Admin) secured by stateless JJWT authentication and BCrypt password encryption.
+            </li>
+            <li>
+              <strong>Smart Geo-Proximity &amp; Slot Booking:</strong> Implemented location-aware service discovery using the <strong>Haversine formula</strong> across target city clusters (<strong>Ujjain, Indore, Bhopal</strong>) paired with dynamic, collision-free slot reservation logic.
+            </li>
+            <li>
+              <strong>High-Performance Relational Schema:</strong> Architected <strong>17 normalized (3NF) tables</strong> in MySQL 8.0 with composite B-Tree indexing, foreign key cascading, and ACID stored procedures for dispute handling and transaction auditing.
+            </li>
+            <li>
+              <strong>Job Lifecycle &amp; Cloud Deployment:</strong> Engineered an automated 5-stage job lifecycle pipeline (<code>BOOKED</code> → <code>ASSIGNED</code> → <code>IN_PROGRESS</code> → <code>COMPLETED</code> → <code>PAID</code>) with real-time status tracking; containerized with Docker and deployed on Render.
+            </li>
+          </ul>
+
+          <!-- Key Metrics Row -->
+          <div class="metric-row">
+            <div class="metric-col">
+              <span class="metric-val">17</span>
+              <span class="metric-desc">Normalized (3NF) tables</span>
+            </div>
+            <div class="metric-col">
+              <span class="metric-val">3</span>
+              <span class="metric-desc">Target city service clusters</span>
+            </div>
+            <div class="metric-col">
+              <span class="metric-val">5-Stage</span>
+              <span class="metric-desc">Automated job lifecycle</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE & MILESTONES ============ -->
+  <section id="experience" class="section" aria-labelledby="experience-heading">
+    <div class="container">
+      <div class="section-head" data-reveal="section">
+        <p class="section-eyebrow">Academic &amp; Engineering Journey</p>
+        <h2 id="experience-heading">Experience, milestones &amp; foundations</h2>
+        <p>Continuous learning in distributed systems, competitive programming, and high-performance backend development.</p>
+      </div>
+
+      <ol class="timeline" data-reveal="section">
+
+        <!-- Item 1: B.Tech Start -->
+        <li class="timeline-item">
+          <span class="timeline-node" aria-hidden="true"></span>
+          <div class="timeline-when">2022 – 2026</div>
+          <div class="glass-card spotlight timeline-card">
+            <div class="timeline-header">
+              <h3>Bachelor of Technology (B.Tech) in Computer Science &amp; Engineering</h3>
+              <span class="timeline-tag">Shri Vaishnav Vidyapeeth Vishwavidyalaya, Indore</span>
+            </div>
+            <p>
+              Current CGPA: <strong>6.98 / 10.0</strong>. Deep immersion in Data Structures &amp; Algorithms, Object-Oriented Software Design, Database Management Systems (DBMS), Operating Systems, and Distributed Computing.
+            </p>
+          </div>
+        </li>
+
+        <!-- Item 2: Certifications -->
+        <li class="timeline-item">
+          <span class="timeline-node" aria-hidden="true"></span>
+          <div class="timeline-when">2023 – 2024</div>
+          <div class="glass-card spotlight timeline-card">
+            <div class="timeline-header">
+              <h3>Advanced Specializations &amp; Industry Certifications</h3>
+              <span class="timeline-tag">IIT Kharagpur · NPTEL · Oracle Java</span>
+            </div>
+            <p>
+              Completed <strong>Java Programming Specialization</strong>, <strong>Cloud Computing (NPTEL / IIT Kharagpur)</strong>, and <strong>Relational Databases &amp; MySQL</strong> — strengthening deep theoretical and practical principles in distributed cloud infra and database optimization.
+            </p>
+          </div>
+        </li>
+
+        <!-- Item 3: Fixora -->
+        <li class="timeline-item">
+          <span class="timeline-node" aria-hidden="true"></span>
+          <div class="timeline-when">2024</div>
+          <div class="glass-card spotlight timeline-card">
+            <div class="timeline-header">
+              <h3>Engineered &amp; Deployed Fixora</h3>
+              <span class="timeline-tag">Full-Stack Cloud Deployment</span>
+            </div>
+            <p>
+              Built and launched Fixora, an on-demand multi-role marketplace with Haversine-based geo-discovery across Ujjain, Indore, and Bhopal, 17 normalized MySQL tables, and Dockerized deployment on Render.
+            </p>
+          </div>
+        </li>
+
+        <!-- Item 4: FairCart -->
+        <li class="timeline-item">
+          <span class="timeline-node" aria-hidden="true"></span>
+          <div class="timeline-when">2024 – 2025</div>
+          <div class="glass-card spotlight timeline-card">
+            <div class="timeline-header">
+              <h3>Architected FairCart Distributed Microservices</h3>
+              <span class="timeline-tag">Kafka &amp; Spring AI Platform</span>
+            </div>
+            <p>
+              Engineered FairCart with Spring AI LLM negotiation, Apache Kafka event streaming with DLQ, and Redis distributed caching cutting database read load by 55% with sub-25ms checkout latency.
+            </p>
+          </div>
+        </li>
+
+        <!-- Item 5: Open for Roles -->
+        <li class="timeline-item">
+          <span class="timeline-node active" aria-hidden="true"></span>
+          <div class="timeline-when">Summer 2026</div>
+          <div class="glass-card spotlight timeline-card">
+            <div class="timeline-header">
+              <h3>Graduation &amp; Open to Software Engineering Opportunities</h3>
+              <span class="timeline-tag text-brandMint">Actively Interviewing</span>
+            </div>
+            <p>
+              Graduating in 2026. Actively seeking <strong>Software Development Engineer (SDE)</strong>, <strong>Java Backend Developer</strong>, and <strong>Full-Stack Engineer</strong> roles for Summer 2026 and New Grad opportunities.
+            </p>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ LUXURY CONTACT HUB & FOOTER ============ -->
+  <section id="contact" class="section" aria-labelledby="contact-heading">
+    <div class="container">
+      <div class="glass-card spotlight contact-card" data-reveal="section">
+        
+        <div class="contact-main">
+          <div class="badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            <span>Available for Summer 2026 / New Grad Roles</span>
+          </div>
+
+          <h2 id="contact-heading">Let's build something scalable &amp; reliable together</h2>
+          
+          <p class="contact-lede">
+            Whether you're looking for a Java backend engineer to tackle high-throughput microservices, design bulletproof database schemas, or build end-to-end full-stack products — let's connect.
+          </p>
+
+          <div class="contact-row">
+            <!-- Copy Email Button -->
+            <button class="contact-item copy-email" id="copyEmailBtn" type="button" aria-label="Copy email address to clipboard" title="Click to copy email">
+              <i data-lucide="mail" aria-hidden="true"></i>
+              <span id="emailText">adityachouhan2446@gmail.com</span>
+              <span class="copy-badge"><i data-lucide="copy" class="copy-icon" aria-hidden="true"></i></span>
+            </button>
+
+            <!-- Direct Mail Link -->
+            <a class="contact-item" href="mailto:adityachouhan2446@gmail.com?subject=Software%20Engineering%20Opportunity%20%E2%80%94%20Aditya%20Chouhan" title="Send email via mail client">
+              <i data-lucide="send" aria-hidden="true"></i>
+              <span>Send Email</span>
+            </a>
+
+            <!-- Direct Phone Call -->
+            <a class="contact-item" href="tel:+917880209425" title="Call directly">
+              <i data-lucide="phone" aria-hidden="true"></i>
+              <span>+91 78802 09425</span>
+            </a>
+          </div>
+
+          <div class="contact-socials">
+            <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="icon-btn magnetic" aria-label="GitHub Profile" title="GitHub">
+              <i data-lucide="github" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="icon-btn magnetic" aria-label="LinkedIn Profile" title="LinkedIn">
+              <i data-lucide="linkedin" aria-hidden="true"></i>
+            </a>
+            <a href="mailto:adityachouhan2446@gmail.com" class="icon-btn magnetic" aria-label="Send Direct Email" title="Email">
+              <i data-lucide="mail" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Live Status & Location Widget -->
+        <div class="contact-status">
+          <div class="status-top">
+            <span class="pulse-indicator"></span>
+            <span class="status-indicator-text">Live Local Station</span>
+          </div>
+          
+          <p class="status-label">Ujjain, Madhya Pradesh, India</p>
+          <p class="status-time" id="localTime">--:--:--</p>
+          <p class="status-sub">Indian Standard Time · IST (UTC+5:30)</p>
+
+          <div class="status-coords">
+            <span>23.1793° N, 75.7849° E</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <a href="#home" class="nav-logo-mark small" aria-label="Aditya Chouhan — Top">AC</a>
+    <p>© <span id="year"></span> Aditya Chouhan. Crafted with high-performance Vanilla JS, Tailwind &amp; Liquid Glassmorphism.</p>
+    <button id="backToTop" class="icon-btn magnetic" aria-label="Scroll back to top" title="Back to top">
+      <i data-lucide="arrow-up" aria-hidden="true"></i>
+    </button>
+  </div>
+</footer>
+
+<!-- Accessibility Live Region for Copy-to-Clipboard Announcement -->
+<div id="liveRegion" class="sr-only" role="status" aria-live="polite"></div>
+
+<!-- ============ CDN SCRIPTS ============ -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.3.26/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
