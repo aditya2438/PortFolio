@@ -70,12 +70,24 @@
 
 <a href="#main" class="skip-link">Skip to main content</a>
 
-<!-- Ambient background: multi-layer gradient orbs + noise grain overlay -->
+<!-- Ambient background: multi-layer gradient orbs + live particle constellation canvas + noise grain -->
 <div class="bg-layer" aria-hidden="true">
+  <canvas id="bgCanvas" class="bg-canvas"></canvas>
   <div class="orb orb-violet"></div>
   <div class="orb orb-blue"></div>
   <div class="orb orb-mint"></div>
   <div class="orb orb-silver"></div>
+  
+  <!-- Floating Ambient Engineering Glyphs -->
+  <div class="floating-glyphs" aria-hidden="true">
+    <span class="glyph glyph-1">&lt;Java 21 /&gt;</span>
+    <span class="glyph glyph-2">{ Spring Boot 3.3 }</span>
+    <span class="glyph glyph-3">// Kafka Event Streams</span>
+    <span class="glyph glyph-4">[ Redis &lt;25ms ]</span>
+    <span class="glyph glyph-5">ACID :: 3NF</span>
+    <span class="glyph glyph-6">λ Concurrency</span>
+  </div>
+
   <svg class="grain" xmlns="http://www.w3.org/2000/svg">
     <filter id="grain-filter">
       <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"></feTurbulence>

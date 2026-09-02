@@ -255,6 +255,37 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   opacity: 0.038; mix-blend-mode: overlay; pointer-events: none;
 }
 
+/* ------------------------------- Dynamic Background Canvas & Glyphs ------------------------------- */
+.bg-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; opacity: 0.75;
+}
+
+.floating-glyphs {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.glyph {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+  font-weight: 700; user-select: none; pointer-events: none;
+  animation: floatGlyph 24s infinite ease-in-out alternate;
+  letter-spacing: -0.01em;
+}
+.glyph-1 { top: 16%; left: 6%; animation-duration: 22s; color: rgba(99, 102, 241, 0.22); text-shadow: 0 0 12px rgba(99, 102, 241, 0.35); }
+.glyph-2 { top: 28%; right: 8%; animation-duration: 26s; animation-delay: -4s; color: rgba(56, 189, 248, 0.2); text-shadow: 0 0 12px rgba(56, 189, 248, 0.35); }
+.glyph-3 { top: 56%; left: 10%; animation-duration: 28s; animation-delay: -8s; color: rgba(52, 211, 153, 0.18); text-shadow: 0 0 12px rgba(52, 211, 153, 0.35); }
+.glyph-4 { top: 74%; right: 14%; animation-duration: 20s; animation-delay: -12s; color: rgba(192, 132, 252, 0.22); text-shadow: 0 0 12px rgba(192, 132, 252, 0.35); }
+.glyph-5 { top: 44%; left: 88%; animation-duration: 25s; animation-delay: -6s; color: rgba(99, 102, 241, 0.18); text-shadow: 0 0 12px rgba(99, 102, 241, 0.3); }
+.glyph-6 { top: 86%; left: 38%; animation-duration: 30s; animation-delay: -15s; color: rgba(56, 189, 248, 0.16); text-shadow: 0 0 12px rgba(56, 189, 248, 0.3); }
+
+@keyframes floatGlyph {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(30px, -40px) rotate(6deg); }
+  66%  { transform: translate(-20px, 35px) rotate(-4deg); }
+  100% { transform: translate(25px, -20px) rotate(5deg); }
+}
+
 /* Ambient Cursor Spotlight Glow */
 .cursor-glow {
   position: fixed;

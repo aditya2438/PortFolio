@@ -619,6 +619,130 @@
     document.title = document.hidden ? 'Come back? 👋 — Aditya Chouhan' : originalTitle;
   });
 
+  /* ============================ Live Background Particle Canvas ============================ */
+  var bgCanvas = document.getElementById('bgCanvas');
+  if (bgCanvas && !prefersReducedMotion) {
+    var ctx = bgCanvas.getContext('2d');
+    var particles = [];
+    var particleCount = window.innerWidth < 768 ? 26 : 48;
+    var mouse = { x: -9999, y: -9999, radius: 140 };
+    var animationFrameId = null;
+
+    function resizeCanvas() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    window.addEventListener('mousemove', function (e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }, { passive: true });
+
+    window.addEventListener('mouseleave', function () {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    }, { passive: true });
+
+    var colors = [
+      'rgba(129, 140, 248, ', // indigo/violet
+      'rgba(56, 189, 248, ',  // sky cyan
+      'rgba(52, 211, 153, ',  // mint emerald
+      'rgba(192, 132, 252, '  // purple
+    ];
+
+    function createParticle() {
+      return {
+        x: Math.random() * bgCanvas.width,
+        y: Math.random() * bgCanvas.height,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
+        size: Math.random() * 1.8 + 1.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        baseAlpha: Math.random() * 0.4 + 0.25,
+        pulse: Math.random() * Math.PI,
+        pulseSpeed: Math.random() * 0.02 + 0.01
+      };
+    }
+
+    for (var p = 0; p < particleCount; p++) {
+      particles.push(createParticle());
+    }
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      var w = bgCanvas.width;
+      var h = bgCanvas.height;
+
+      // Update and draw particles
+      for (var i = 0; i < particles.length; i++) {
+        var pt = particles[i];
+
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.pulse += pt.pulseSpeed;
+
+        if (pt.x < 0) pt.x = w;
+        if (pt.x > w) pt.x = 0;
+        if (pt.y < 0) pt.y = h;
+        if (pt.y > h) pt.y = 0;
+
+        var dx = pt.x - mouse.x;
+        var dy = pt.y - mouse.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius && dist > 0) {
+          var force = (mouse.radius - dist) / mouse.radius;
+          pt.x += (dx / dist) * force * 1.5;
+          pt.y += (dy / dist) * force * 1.5;
+        }
+
+        var currentAlpha = pt.baseAlpha + Math.sin(pt.pulse) * 0.15;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+        ctx.fillStyle = pt.color + Math.max(0.1, currentAlpha) + ')';
+        ctx.shadowColor = pt.color + '0.6)';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // Draw constellation connections
+      var maxConnectDist = w < 768 ? 85 : 115;
+      for (var i = 0; i < particles.length; i++) {
+        for (var j = i + 1; j < particles.length; j++) {
+          var p1 = particles[i];
+          var p2 = particles[j];
+          var cdx = p1.x - p2.x;
+          var cdy = p1.y - p2.y;
+          var cDist = Math.sqrt(cdx * cdx + cdy * cdy);
+
+          if (cDist < maxConnectDist) {
+            var lineAlpha = (1 - cDist / maxConnectDist) * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = 'rgba(147, 197, 253, ' + lineAlpha + ')';
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(renderParticles);
+    }
+
+    renderParticles();
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      } else {
+        animationFrameId = requestAnimationFrame(renderParticles);
+      }
+    });
+  }
+
   /* ================================ Back to Top Trigger ================================ */
   var backToTop = document.getElementById('backToTop');
   if (backToTop) {
