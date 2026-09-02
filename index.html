@@ -197,27 +197,55 @@
   <section id="home" class="section hero" aria-label="Hero Introduction">
     <div class="container hero-grid">
 
-      <!-- Left Column: Copy & Actions -->
+      <!-- Left Column: Copy, Animated Typing & Interactive Floating Tech Stack -->
       <div class="hero-copy" data-reveal="hero">
-        <div class="badge">
+        <div class="badge hero-live-badge">
           <span class="badge-dot" aria-hidden="true"></span>
+          <span class="pulse-ring" aria-hidden="true"></span>
           <span>Open for Work · Java Developer (Fresher)</span>
         </div>
 
-        <h1 class="hero-title">
+        <h1 class="hero-title shimmer-text">
           Aditya Chouhan
         </h1>
         
-        <p class="hero-role">
-          Java Developer (Fresher) <span class="text-steeldim">|</span> Software Engineer
-        </p>
+        <!-- Dynamic Animated Role Rotator -->
+        <div class="hero-role-wrapper">
+          <span class="hero-role-prefix">&gt; </span>
+          <span class="hero-role-rotator" id="roleRotator">Java Developer (Fresher)</span>
+          <span class="role-cursor" aria-hidden="true">|</span>
+        </div>
 
         <p class="hero-lede">
           Passionate <strong>Java Fresher</strong> &amp; <strong>Software Engineer</strong> with strong fundamentals in <strong>Data Structures &amp; Algorithms (DSA)</strong>, <strong>Object-Oriented Programming (OOPs)</strong>, and modern <strong>Java 21 / Spring Boot 3.3</strong>. Dedicated to building reliable RESTful APIs, clean relational database schemas, and robust backend applications.
         </p>
 
+        <!-- Floating Interactive Micro Tech Stack Bar -->
+        <div class="hero-tech-orbit" aria-label="Core Technology Highlights">
+          <div class="orbit-chip chip-java" title="Core Language">
+            <span class="orbit-dot"></span>
+            <span>Java 21</span>
+          </div>
+          <div class="orbit-chip chip-spring" title="Framework">
+            <span class="orbit-dot"></span>
+            <span>Spring Boot 3.3</span>
+          </div>
+          <div class="orbit-chip chip-kafka" title="Event Streaming">
+            <span class="orbit-dot"></span>
+            <span>Apache Kafka</span>
+          </div>
+          <div class="orbit-chip chip-redis" title="In-Memory Cache">
+            <span class="orbit-dot"></span>
+            <span>Redis &lt;25ms</span>
+          </div>
+          <div class="orbit-chip chip-sql" title="3NF Schema &amp; ACID">
+            <span class="orbit-dot"></span>
+            <span>MySQL / PostgreSQL</span>
+          </div>
+        </div>
+
         <div class="hero-ctas">
-          <a href="#projects" class="btn-primary magnetic">
+          <a href="#projects" class="btn-primary magnetic glow-beam">
             <span>Explore Selected Works</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>

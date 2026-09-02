@@ -21,6 +21,49 @@
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* ============================ Hero Role Typewriter ============================ */
+  var roleRotator = document.getElementById('roleRotator');
+  if (roleRotator) {
+    var roles = [
+      'Java Developer (Fresher)',
+      'Spring Boot 3.3 Engineer',
+      'Backend & Microservices Builder',
+      'Relational Schemas & 3NF Specialist',
+      'Kafka Streams & Redis Caching'
+    ];
+    var currentRoleIdx = 0;
+    var currentCharIdx = roles[0].length;
+    var isDeleting = true;
+    var typeSpeed = 70;
+
+    function tickRole() {
+      var fullText = roles[currentRoleIdx];
+
+      if (isDeleting) {
+        currentCharIdx--;
+      } else {
+        currentCharIdx++;
+      }
+
+      roleRotator.textContent = fullText.substring(0, currentCharIdx);
+
+      var nextDelay = isDeleting ? 30 : typeSpeed;
+
+      if (!isDeleting && currentCharIdx === fullText.length) {
+        nextDelay = 2200;
+        isDeleting = true;
+      } else if (isDeleting && currentCharIdx === 0) {
+        isDeleting = false;
+        currentRoleIdx = (currentRoleIdx + 1) % roles.length;
+        nextDelay = 400;
+      }
+
+      setTimeout(tickRole, nextDelay);
+    }
+
+    setTimeout(tickRole, 2000);
+  }
+
   /* ===================== Smooth Scrolling (Lenis + GSAP) =================== */
   var lenis = null;
 
