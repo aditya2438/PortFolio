@@ -709,7 +709,17 @@ header {
 .bento-main strong { color: var(--titanium); font-weight: 700; }
 
 .bento-side.terminal { display: flex; flex-direction: column; min-width: 0; }
-.bento-side .terminal-body { flex: 1; }
+.bento-side .terminal-body {
+  display: block !important;
+  flex: 1;
+  background: rgba(8, 8, 14, 0.65);
+}
+.terminal-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--steel);
+}
 
 .about-links { display: flex; flex-wrap: wrap; gap: clamp(12px, 2.5vw, 22px); margin-top: 10px; }
 .tooltip-link {
@@ -775,17 +785,24 @@ header {
 
 .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
+  display: inline-flex; align-items: center; gap: 7px;
   padding: 7px 15px; border-radius: var(--r-pill);
   background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.09);
   font-size: clamp(0.78rem, 1.6vw, 0.86rem); font-weight: 500; color: #cbd5e1; cursor: default;
   transition: opacity 0.3s, border-color 0.3s, color 0.3s, transform 0.3s var(--ease-out), background 0.3s, box-shadow 0.3s;
 }
+.chip svg {
+  width: 14px; height: 14px; flex-shrink: 0; color: var(--blue);
+  transition: color 0.25s, transform 0.25s;
+}
 .chip:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
   transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
+.chip:hover svg { color: #ffffff; transform: scale(1.1); }
 .chip.is-linked {
   border-color: var(--blue);
   color: #ffffff;
@@ -793,7 +810,8 @@ header {
   box-shadow: 0 0 18px var(--blue-glow);
   transform: translateY(-2px);
 }
-.chip.is-dimmed { opacity: 0.3; }
+.chip.is-linked svg { color: #ffffff; }
+.chip.is-dimmed { opacity: 0.25; }
 
 /* ------------------------------- Featured Projects -------------------------------- */
 .projects-stack { display: flex; flex-direction: column; gap: 32px; }
@@ -874,11 +892,14 @@ header {
 
 .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .badge-row span {
+  display: inline-flex; align-items: center; gap: 6px;
   font-size: clamp(0.74rem, 1.5vw, 0.8rem);
   font-weight: 600; padding: 6px 14px; border-radius: var(--r-pill);
   background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.09);
   color: var(--steel);
+  transition: border-color 0.25s, color 0.25s;
 }
+.badge-row span:hover { border-color: rgba(99, 102, 241, 0.4); color: var(--titanium); }
 
 .project-bullets { margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
 .project-bullets li {
@@ -898,11 +919,21 @@ header {
 }
 
 .metric-row {
-  display: grid; gap: 18px; margin-top: 26px; padding-top: 22px;
+  display: grid; gap: 16px; margin-top: 26px; padding-top: 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
 }
-.metric-col { display: flex; flex-direction: column; }
+.metric-col {
+  display: flex; flex-direction: column;
+  padding: 12px 18px; border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 0.25s, transform 0.25s;
+}
+.metric-col:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateY(-2px);
+}
 .metric-val {
   font-size: clamp(1.4rem, 3vw, 1.75rem);
   font-weight: 900; color: var(--titanium);
