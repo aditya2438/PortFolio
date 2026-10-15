@@ -17,6 +17,84 @@
   }
   initIcons();
 
+  /* ==========================================================================
+     SYSTEM BOOT STARTING PRELOADER
+     ========================================================================== */
+  var sitePreloader = document.getElementById('sitePreloader');
+  var preloaderStatusText = document.getElementById('preloaderStatusText');
+  var preloaderProgressFill = document.getElementById('preloaderProgressFill');
+  var preloaderStepName = document.getElementById('preloaderStepName');
+  var preloaderPercent = document.getElementById('preloaderPercent');
+  var preloaderSkipBtn = document.getElementById('preloaderSkipBtn');
+  var preloaderDismissed = false;
+
+  function dismissPreloader() {
+    if (preloaderDismissed) return;
+    preloaderDismissed = true;
+    if (sitePreloader) {
+      sitePreloader.classList.add('loaded');
+      setTimeout(function () {
+        sitePreloader.style.display = 'none';
+      }, 700);
+    }
+    window.dispatchEvent(new Event('portfolioReady'));
+    if (typeof triggerHeroEntrance === 'function') {
+      triggerHeroEntrance();
+    }
+  }
+
+  if (sitePreloader) {
+    if (prefersReducedMotion) {
+      dismissPreloader();
+    } else {
+      var startTime = performance.now();
+      var duration = 1350; // Snappy 1.35 seconds
+      var stages = [
+        { threshold: 0.25, phase: 'Bootstrap phase: 1/4', text: 'Initializing Java 21 LTS runtime...' },
+        { threshold: 0.55, phase: 'Bootstrap phase: 2/4', text: 'Loading Spring Boot 3.3 & Spring AI...' },
+        { threshold: 0.85, phase: 'Bootstrap phase: 3/4', text: 'Connecting Kafka event streams & Redis...' },
+        { threshold: 1.00, phase: 'Bootstrap phase: 4/4', text: 'Mounting ACID 3NF Schemas · System Ready.' }
+      ];
+
+      function updateBootProgress(now) {
+        if (preloaderDismissed) return;
+        var elapsed = now - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var pct = Math.floor(eased * 100);
+
+        if (preloaderProgressFill) preloaderProgressFill.style.width = pct + '%';
+        if (preloaderPercent) preloaderPercent.textContent = pct + '%';
+
+        for (var i = 0; i < stages.length; i++) {
+          if (eased <= stages[i].threshold || i === stages.length - 1) {
+            if (preloaderStepName) preloaderStepName.textContent = stages[i].phase;
+            if (preloaderStatusText) preloaderStatusText.textContent = stages[i].text;
+            break;
+          }
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(updateBootProgress);
+        } else {
+          setTimeout(dismissPreloader, 150);
+        }
+      }
+
+      requestAnimationFrame(updateBootProgress);
+
+      if (preloaderSkipBtn) {
+        preloaderSkipBtn.addEventListener('click', dismissPreloader);
+      }
+      window.addEventListener('keydown', function (e) {
+        if (!preloaderDismissed && (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter')) {
+          dismissPreloader();
+        }
+      });
+      setTimeout(dismissPreloader, 1800);
+    }
+  }
+
   /* ------------------------------ Footer Year ----------------------------- */
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -25,11 +103,12 @@
   var roleRotator = document.getElementById('roleRotator');
   if (roleRotator) {
     var roles = [
-      'Java Developer (Fresher)',
-      'Spring Boot 3.3 Engineer',
-      'Backend & Microservices Builder',
-      'Relational Schemas & 3NF Specialist',
-      'Kafka Streams & Redis Caching'
+      'Software Developer Intern',
+      'Java Backend Developer',
+      'Spring Boot 3.3 & Spring AI',
+      'Microservices & Kafka Streams',
+      'PostgreSQL & MySQL (3NF/ACID)',
+      'Redis Distributed Caching'
     ];
     var currentRoleIdx = 0;
     var currentCharIdx = roles[0].length;
@@ -188,69 +267,142 @@
   }
 
   /* ===================== Hero Load-in Orchestration ===================== */
+  /* ===================== Hero Load-in Orchestration ===================== */
   var heroCopy = document.querySelector('.hero-copy');
   var heroVisual = document.querySelector('.hero-visual');
+  var heroEntranceTriggered = false;
 
-  if (window.gsap && !prefersReducedMotion) {
-    if (heroCopy && heroCopy.children.length) {
-      gsap.from(heroCopy.children, {
-        opacity: 0,
-        y: 24,
-        duration: 0.85,
-        stagger: 0.08,
-        ease: 'power3.out',
-        clearProps: 'opacity,transform'
-      });
-    }
-    if (heroVisual) {
-      gsap.from(heroVisual, {
-        opacity: 0,
-        y: 30,
-        scale: 0.98,
-        duration: 0.95,
-        delay: 0.2,
-        ease: 'power3.out',
-        clearProps: 'opacity,transform'
-      });
-    }
+  function triggerHeroEntrance() {
+    if (heroEntranceTriggered) return;
+    heroEntranceTriggered = true;
 
-    /* Subtle ambient scroll-linked parallax on the gradient background orbs */
-    if (window.ScrollTrigger) {
-      gsap.to('.orb-violet', { y: 160, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
-      gsap.to('.orb-blue', { y: -190, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
-      gsap.to('.orb-mint', { y: 120, x: 50, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
-      gsap.to('.orb-silver', { y: 80, x: -70, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
+    if (window.gsap && !prefersReducedMotion) {
+      if (heroCopy && heroCopy.children.length) {
+        gsap.from(heroCopy.children, {
+          opacity: 0,
+          y: 24,
+          duration: 0.85,
+          stagger: 0.08,
+          ease: 'power3.out',
+          clearProps: 'opacity,transform'
+        });
+      }
+      if (heroVisual) {
+        gsap.from(heroVisual, {
+          opacity: 0,
+          y: 30,
+          scale: 0.98,
+          duration: 0.95,
+          delay: 0.15,
+          ease: 'power3.out',
+          clearProps: 'opacity,transform'
+        });
+      }
     }
   }
 
-  /* =============================== Interactive Ambient Cursor Glow ========================= */
-  if (!isTouch && !prefersReducedMotion) {
+  // Fallback trigger if preloader was dismissed early or absent
+  if (!sitePreloader) {
+    triggerHeroEntrance();
+  }
+
+  /* Subtle ambient scroll-linked parallax on the gradient background orbs */
+  if (window.gsap && window.ScrollTrigger && !prefersReducedMotion) {
+    gsap.to('.orb-violet', { y: 160, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
+    gsap.to('.orb-blue', { y: -190, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
+    gsap.to('.orb-mint', { y: 120, x: 50, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
+    gsap.to('.orb-silver', { y: 80, x: -70, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
+  }
+
+  /* =============================== Interactive Dual-Tier Custom Cursor ========================= */
+  var cursorDot = document.getElementById('cursorDot');
+  var cursorOutline = document.getElementById('cursorOutline');
+
+  if (!isTouch && !prefersReducedMotion && window.innerWidth >= 768) {
     var cursorGlow = document.createElement('div');
     cursorGlow.className = 'cursor-glow';
     document.body.appendChild(cursorGlow);
 
     var curX = window.innerWidth / 2;
     var curY = window.innerHeight / 2;
+    var outlineX = curX;
+    var outlineY = curY;
     var targetX = curX;
     var targetY = curY;
+    var isCursorActive = false;
 
     window.addEventListener('mousemove', function (e) {
       targetX = e.clientX;
       targetY = e.clientY;
-      cursorGlow.style.opacity = '1';
+
+      if (!isCursorActive) {
+        isCursorActive = true;
+        cursorGlow.style.opacity = '1';
+        if (cursorDot) cursorDot.style.opacity = '1';
+        if (cursorOutline) cursorOutline.style.opacity = '1';
+      }
+
+      // Snap inner dot instantly with 0 latency
+      if (cursorDot) {
+        cursorDot.style.left = targetX + 'px';
+        cursorDot.style.top = targetY + 'px';
+      }
     });
 
     document.addEventListener('mouseleave', function () {
+      isCursorActive = false;
       cursorGlow.style.opacity = '0';
+      if (cursorDot) cursorDot.style.opacity = '0';
+      if (cursorOutline) cursorOutline.style.opacity = '0';
+    });
+
+    document.addEventListener('mouseenter', function () {
+      if (cursorDot) cursorDot.style.opacity = '1';
+      if (cursorOutline) cursorOutline.style.opacity = '1';
+      cursorGlow.style.opacity = '1';
+      isCursorActive = true;
     });
 
     function renderCursor() {
-      curX += (targetX - curX) * 0.14;
-      curY += (targetY - curY) * 0.14;
+      // Smooth spring lerp for outer ring and ambient glow
+      outlineX += (targetX - outlineX) * 0.18;
+      outlineY += (targetY - outlineY) * 0.18;
+      curX += (targetX - curX) * 0.12;
+      curY += (targetY - curY) * 0.12;
+
+      if (cursorOutline) {
+        cursorOutline.style.left = outlineX + 'px';
+        cursorOutline.style.top = outlineY + 'px';
+      }
       cursorGlow.style.transform = 'translate3d(' + (curX - 240) + 'px, ' + (curY - 240) + 'px, 0)';
+
       requestAnimationFrame(renderCursor);
     }
     renderCursor();
+
+    // Hover interactive expansion on clickable elements
+    var hoverSelector = 'a, button, [role="button"], [role="tab"], .magnetic, .chip, .orbit-chip, .skill-tile, .project-card, .stat-tile, .contact-item, input, textarea, .btn-primary, .btn-secondary, .btn-view-resume';
+    document.addEventListener('mouseover', function (e) {
+      if (e.target.closest(hoverSelector)) {
+        if (cursorOutline) cursorOutline.classList.add('cursor-hover');
+        if (cursorDot) cursorDot.classList.add('cursor-hover');
+      }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+      if (e.target.closest(hoverSelector)) {
+        if (cursorOutline) cursorOutline.classList.remove('cursor-hover');
+        if (cursorDot) cursorDot.classList.remove('cursor-hover');
+      }
+    });
+
+    // Active click state
+    window.addEventListener('mousedown', function () {
+      if (cursorOutline) cursorOutline.classList.add('cursor-active');
+    });
+    window.addEventListener('mouseup', function () {
+      if (cursorOutline) cursorOutline.classList.remove('cursor-active');
+    });
   }
 
   /* =============================== Magnetic Button Physics ========================= */
@@ -666,6 +818,57 @@
       closeCmdPalette();
     });
   }
+
+  /* ============================ In-Page Resume PDF Viewer Modal ============================ */
+  var resumeModal = document.getElementById('resumeModal');
+  var heroViewResumeBtn = document.getElementById('heroViewResumeBtn');
+  var viewResumeBtnNav = document.getElementById('viewResumeBtnNav');
+  var viewResumeBtnDrawer = document.getElementById('viewResumeBtnDrawer');
+  var cmdViewResume = document.getElementById('cmdViewResume');
+  var closeResumeModalBtn = document.getElementById('closeResumeModalBtn');
+
+  function openResumeModal() {
+    if (!resumeModal) return;
+    resumeModal.classList.add('open');
+    resumeModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeResumeModal() {
+    if (!resumeModal) return;
+    resumeModal.classList.remove('open');
+    resumeModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (heroViewResumeBtn) heroViewResumeBtn.addEventListener('click', openResumeModal);
+  if (viewResumeBtnNav) viewResumeBtnNav.addEventListener('click', openResumeModal);
+  if (viewResumeBtnDrawer) {
+    viewResumeBtnDrawer.addEventListener('click', function () {
+      var mobileDrawer = document.getElementById('mobileDrawer');
+      if (mobileDrawer) mobileDrawer.classList.remove('open');
+      openResumeModal();
+    });
+  }
+  if (cmdViewResume) {
+    cmdViewResume.addEventListener('click', function () {
+      closeCmdPalette();
+      setTimeout(openResumeModal, 120);
+    });
+  }
+  if (closeResumeModalBtn) closeResumeModalBtn.addEventListener('click', closeResumeModal);
+
+  if (resumeModal) {
+    resumeModal.addEventListener('click', function (e) {
+      if (e.target === resumeModal) closeResumeModal();
+    });
+  }
+
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && resumeModal && resumeModal.classList.contains('open')) {
+      closeResumeModal();
+    }
+  });
 
   /* ============================ Dynamic Tab Title on Blur ============================== */
   var originalTitle = document.title;

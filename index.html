@@ -4,23 +4,23 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <script>document.documentElement.classList.add('js');</script>
-<title>Aditya Chouhan — Java Developer (Fresher) &amp; Software Engineer</title>
-<meta name="title" content="Aditya Chouhan — Java Developer (Fresher) &amp; Software Engineer" />
-<meta name="description" content="Portfolio of Aditya Chouhan — Java Developer &amp; Fresher Software Engineer specializing in Java 21, Spring Boot 3.3, RESTful APIs, MySQL, and PostgreSQL. Open for entry-level and fresher software engineering roles." />
+<title>Aditya Chouhan — Software Developer Intern | Java Developer</title>
+<meta name="title" content="Aditya Chouhan — Software Developer Intern | Java Developer" />
+<meta name="description" content="Portfolio of Aditya Chouhan — Software Developer Intern &amp; Java Backend Developer specializing in Java 21, Spring Boot 3.3, Spring AI, Microservices, RESTful APIs, MySQL, and PostgreSQL. Open for engineering roles." />
 <meta name="author" content="Aditya Chouhan" />
-<meta name="keywords" content="Aditya Chouhan, Java Fresher, Java Developer, Software Engineer, Spring Boot, Microservices, MySQL, PostgreSQL, Fixora, FairCart, Ujjain, Indore" />
+<meta name="keywords" content="Aditya Chouhan, Software Developer Intern, Java Developer, Spring Boot 3.3, Spring AI, Microservices, MySQL, PostgreSQL, Kafka, Redis, Ujjain, Indore" />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Aditya Chouhan — Java Developer (Fresher) &amp; Software Engineer" />
-<meta property="og:description" content="Java Developer &amp; Fresher Software Engineer specializing in Java 21, Spring Boot 3.3, RESTful APIs, and relational databases. Open for work." />
+<meta property="og:title" content="Aditya Chouhan — Software Developer Intern | Java Developer" />
+<meta property="og:description" content="Software Developer Intern &amp; Java Backend Developer specializing in Java 21, Spring Boot 3.3, Spring AI, Microservices, and Relational Databases (3NF/ACID)." />
 <meta property="og:image" content="https://raw.githubusercontent.com/aditya2438/aditya2438/main/og-preview.png" />
 <meta property="og:url" content="https://aditya2438.github.io/PortFolio/" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Aditya Chouhan — Java Developer (Fresher) &amp; Software Engineer" />
-<meta name="twitter:description" content="Java Developer &amp; Fresher Software Engineer specializing in Java 21, Spring Boot 3.3, RESTful APIs, and relational databases." />
+<meta name="twitter:title" content="Aditya Chouhan — Software Developer Intern | Java Developer" />
+<meta name="twitter:description" content="Software Developer Intern &amp; Java Backend Developer specializing in Java 21, Spring Boot 3.3, Spring AI, Microservices, and Relational Databases." />
 <meta name="twitter:image" content="https://raw.githubusercontent.com/aditya2438/aditya2438/main/og-preview.png" />
 
 <!-- Inline Minimalist SVG Favicon (AC Monogram) -->
@@ -61,9 +61,49 @@
 
 <!-- Lenis CSS -->
 <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.26/dist/lenis.css" />
-<link rel="stylesheet" href="styles.css?v=3.0" />
+<link rel="stylesheet" href="styles.css?v=3.2" />
 </head>
 <body class="bg-obsidian text-titanium font-display antialiased selection:bg-brandViolet selection:text-white">
+
+<!-- ============ SYSTEM BOOT STARTING PRELOADER ============ -->
+<div id="sitePreloader" class="site-preloader" aria-label="System Boot Sequence">
+  <div class="preloader-bg-grid" aria-hidden="true"></div>
+  <div class="preloader-glow-orb" aria-hidden="true"></div>
+
+  <div class="preloader-card">
+    <div class="preloader-emblem">
+      <div class="preloader-orbit" aria-hidden="true"></div>
+      <div class="preloader-ac-logo">AC</div>
+    </div>
+
+    <div class="preloader-brand-title">Aditya Chouhan</div>
+    <div class="preloader-brand-sub">// SYSTEM BOOT SEQUENCE v3.2</div>
+
+    <div class="preloader-terminal-box">
+      <div class="preloader-log-status">
+        <span class="log-dot" aria-hidden="true"></span>
+        <span id="preloaderStatusText">Initializing Java 21 LTS runtime...</span>
+      </div>
+    </div>
+
+    <div class="preloader-progress-track">
+      <div class="preloader-progress-fill" id="preloaderProgressFill"></div>
+    </div>
+
+    <div class="preloader-progress-meta">
+      <span id="preloaderStepName">Bootstrap phase: 1/4</span>
+      <span id="preloaderPercent">0%</span>
+    </div>
+
+    <button type="button" class="preloader-skip-hint" id="preloaderSkipBtn" aria-label="Skip boot sequence">
+      Click or press any key to skip &rarr;
+    </button>
+  </div>
+</div>
+
+<!-- ============ INTERACTIVE CUSTOM CURSOR ============ -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-outline" id="cursorOutline" aria-hidden="true"></div>
 
 <!-- Top Reading Progress Indicator -->
 <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
@@ -173,6 +213,10 @@
       </ul>
 
       <div class="drawer-foot">
+        <button type="button" class="btn-resume w-full justify-center" id="viewResumeBtnDrawer" style="margin-bottom: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>View Resume Preview</span>
+        </button>
         <a class="btn-resume w-full justify-center" href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" id="resumeBtnDrawer">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
           <span>Download Resume PDF</span>
@@ -203,7 +247,7 @@
       <div class="hero-copy">
         
         <!-- Aditya Chouhan (AC) Animated Brand Emblem & Live Status Badge -->
-        <div class="hero-brand-badge magnetic" title="Aditya Chouhan — Java Developer">
+        <div class="hero-brand-badge magnetic" title="Aditya Chouhan — Software Developer Intern">
           <div class="brand-badge-logo">
             <div class="badge-orbit-ring"></div>
             <span class="badge-ac-text">AC</span>
@@ -211,7 +255,7 @@
           <div class="badge-status-wrap">
             <span class="badge-dot" aria-hidden="true"></span>
             <span class="pulse-ring" aria-hidden="true"></span>
-            <span class="badge-status-text">Open for Work · Java Developer (Fresher)</span>
+            <span class="badge-status-text">Open for Work · Software Developer Intern</span>
           </div>
         </div>
 
@@ -222,12 +266,12 @@
         <!-- Dynamic Animated Role Rotator -->
         <div class="hero-role-wrapper">
           <span class="hero-role-prefix">&gt; </span>
-          <span class="hero-role-rotator" id="roleRotator">Java Developer (Fresher)</span>
+          <span class="hero-role-rotator" id="roleRotator">Software Developer Intern</span>
           <span class="role-cursor" aria-hidden="true">|</span>
         </div>
 
         <p class="hero-lede">
-          Passionate <strong>Java Fresher</strong> &amp; <strong>Software Engineer</strong> with strong fundamentals in <strong>Data Structures &amp; Algorithms (DSA)</strong>, <strong>Object-Oriented Programming (OOPs)</strong>, and modern <strong>Java 21 / Spring Boot 3.3</strong>. Dedicated to building reliable RESTful APIs, clean relational database schemas, and robust backend applications.
+          Highly motivated <strong>Software Developer Intern</strong> &amp; <strong>Java Backend Developer</strong> (Expected Graduation: 2026) with hands-on expertise in engineering scalable microservices, distributed architectures, and high-throughput RESTful APIs. Proficient in modern Java ecosystems (<strong>Java 21 / Spring Boot 3.3</strong>), normalized relational database design (PostgreSQL, MySQL), <strong>Spring AI</strong> integrations, <strong>Apache Kafka</strong> event streams, and sub-25ms <strong>Redis</strong> caching.
         </p>
 
         <!-- Floating Interactive Micro Tech Stack Bar -->
@@ -240,6 +284,10 @@
             <span class="orbit-dot"></span>
             <span>Spring Boot 3.3</span>
           </div>
+          <div class="orbit-chip chip-spring" title="AI Integrations">
+            <span class="orbit-dot"></span>
+            <span>Spring AI</span>
+          </div>
           <div class="orbit-chip chip-kafka" title="Event Streaming">
             <span class="orbit-dot"></span>
             <span>Apache Kafka</span>
@@ -250,7 +298,7 @@
           </div>
           <div class="orbit-chip chip-sql" title="3NF Schema &amp; ACID">
             <span class="orbit-dot"></span>
-            <span>MySQL / PostgreSQL</span>
+            <span>PostgreSQL / MySQL</span>
           </div>
         </div>
 
@@ -259,9 +307,13 @@
             <span>Explore Selected Works</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>
-          <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="btn-secondary magnetic" id="resumeBtnHero">
+          <button type="button" class="btn-view-resume magnetic" id="heroViewResumeBtn" aria-label="View Resume Preview in page" title="Open Interactive Resume Viewer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>View Resume</span>
+          </button>
+          <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="btn-secondary magnetic" id="resumeBtnHero" title="Download Resume PDF">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M12 18v-6"></path><path d="m9 15 3 3 3-3"></path></svg>
-            <span>Download CV / Resume</span>
+            <span>Download CV</span>
           </a>
         </div>
 
@@ -913,7 +965,7 @@
           <h2 id="contact-heading">Let's build something scalable &amp; reliable together</h2>
           
           <p class="contact-lede">
-            Whether you're looking for a passionate <strong>Java Developer (Fresher)</strong> ready to contribute immediately, design clean database schemas, or build reliable backend services — let's connect.
+            Whether you're looking for a passionate <strong>Software Developer Intern</strong> or <strong>Java Backend Developer</strong> ready to contribute immediately, design clean database schemas, or build reliable backend services — let's connect.
           </p>
 
           <div class="contact-row">
@@ -984,7 +1036,14 @@
     </div>
     <div class="cmd-list" id="cmdList">
       <div class="cmd-group-title">Quick Actions</div>
-      <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="cmd-item" data-cmd="resume">
+      <button type="button" class="cmd-item" id="cmdViewResume" data-cmd="resume preview viewer cv online">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>View Resume (Online Preview)</span>
+        </div>
+        <span class="cmd-item-badge">Viewer</span>
+      </button>
+      <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="cmd-item" data-cmd="resume download pdf">
         <div class="cmd-item-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
           <span>Download Resume (PDF)</span>
@@ -1155,12 +1214,37 @@
     <pre class="terminal-body specs-body" id="tab-specs"><code><span class="c-com"># Profile Specifications &amp; Core Runtime</span>
 <span class="c-kw">aditya@workstation</span>:~$ ./profile --verbose
 <span class="c-out">&gt; NAME: Aditya Chouhan</span>
-<span class="c-out">&gt; ROLE: Java Developer (Fresher) | Software Engineer</span>
-<span class="c-out">&gt; RUNTIME: Java 21 LTS | Spring Boot 3.3 | REST APIs</span>
-<span class="c-out">&gt; DATABASE: MySQL 8.0 &amp; PostgreSQL (3NF / ACID)</span>
-<span class="c-out">&gt; TOOLS: Docker | Git &amp; GitHub | Maven | Postman</span>
-<span class="c-out">&gt; LOCATION: Ujjain | Indore | Bhopal, MP, India</span>
-<span class="c-out">&gt; STATUS: OPEN_FOR_WORK (Entry-Level / Fresher)</span><span class="cursor-blink">▍</span></code></pre>
+<span class="c-out">&gt; ROLE: Software Developer Intern | Java Backend Developer</span>
+<span class="c-out">&gt; RUNTIME: Java 21 LTS | Spring Boot 3.3 | Spring AI</span>
+<span class="c-out">&gt; DATABASE: PostgreSQL &amp; MySQL 8.0 (3NF / ACID) | Redis</span>
+<span class="c-out">&gt; TOOLS: Docker | Apache Kafka | Git &amp; GitHub | Postman</span>
+<span class="c-out">&gt; LOCATION: Ujjain | Indore, MP, India</span>
+<span class="c-out">&gt; STATUS: OPEN_FOR_WORK (Expected Graduation: 2026)</span><span class="cursor-blink">▍</span></code></pre>
+  </div>
+</div>
+
+<!-- ============ IN-PAGE RESUME PDF VIEWER MODAL ============ -->
+<div class="resume-modal-backdrop" id="resumeModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Resume Document Viewer">
+  <div class="resume-modal-dialog">
+    <div class="resume-modal-bar">
+      <div class="resume-modal-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+        <span>Aditya_Singh_Chouhan_Resume.pdf</span>
+        <span class="badge" style="font-size: 0.72rem; padding: 2px 8px; margin-left: 6px;">Latest 2026</span>
+      </div>
+      <div class="resume-modal-actions">
+        <a href="Aditya_Singh_Chouhan_Resume.pdf" download="Aditya_Singh_Chouhan_Resume.pdf" class="resume-modal-download-btn magnetic" title="Download PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+          <span>Download PDF</span>
+        </a>
+        <button class="resume-modal-close" id="closeResumeModalBtn" type="button" aria-label="Close resume preview">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div class="resume-modal-body">
+      <iframe src="Aditya_Singh_Chouhan_Resume.pdf#toolbar=0&navpanes=0" class="resume-iframe" title="Aditya Chouhan Resume Document"></iframe>
+    </div>
   </div>
 </div>
 
@@ -1184,6 +1268,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.3.26/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
-<script src="app.js?v=3.0"></script>
+<script src="app.js?v=3.2"></script>
 </body>
 </html>
