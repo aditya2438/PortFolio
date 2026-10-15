@@ -26,78 +26,11 @@
   var preloaderStepName = document.getElementById('preloaderStepName');
   var preloaderPercent = document.getElementById('preloaderPercent');
   var preloaderSkipBtn = document.getElementById('preloaderSkipBtn');
-  var taglineWord = document.getElementById('taglineWord');
-  var preloaderCanvas = document.getElementById('preloaderCanvas');
   var preloaderDismissed = false;
-  var preloaderAnimId = null;
-
-  // Starfield Particles for Preloader Canvas
-  if (preloaderCanvas && !prefersReducedMotion) {
-    var pCtx = preloaderCanvas.getContext('2d');
-    var pWidth = preloaderCanvas.width = window.innerWidth;
-    var pHeight = preloaderCanvas.height = window.innerHeight;
-    var pStars = [];
-    var pStarCount = 42;
-
-    for (var s = 0; s < pStarCount; s++) {
-      pStars.push({
-        x: Math.random() * pWidth,
-        y: Math.random() * pHeight,
-        size: Math.random() * 2 + 1,
-        speed: Math.random() * 0.7 + 0.3,
-        alpha: Math.random() * 0.6 + 0.3,
-        color: Math.random() > 0.5 ? 'rgba(56, 189, 248, ' : 'rgba(139, 92, 246, '
-      });
-    }
-
-    function renderPreloaderStars() {
-      if (preloaderDismissed) return;
-      pCtx.clearRect(0, 0, pWidth, pHeight);
-      for (var i = 0; i < pStars.length; i++) {
-        var star = pStars[i];
-        star.y -= star.speed;
-        if (star.y < 0) {
-          star.y = pHeight;
-          star.x = Math.random() * pWidth;
-        }
-        pCtx.beginPath();
-        pCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        pCtx.fillStyle = star.color + star.alpha + ')';
-        pCtx.fill();
-      }
-      preloaderAnimId = requestAnimationFrame(renderPreloaderStars);
-    }
-    preloaderAnimId = requestAnimationFrame(renderPreloaderStars);
-  }
-
-  // Cycling taglines: Architect. Develop. Optimize. Scale.
-  var taglines = ['Architect.', 'Develop.', 'Optimize.', 'Scale.'];
-  var taglineIndex = 0;
-  var taglineInterval = null;
-
-  if (taglineWord) {
-    taglineInterval = setInterval(function () {
-      if (preloaderDismissed) {
-        clearInterval(taglineInterval);
-        return;
-      }
-      taglineWord.style.opacity = '0';
-      taglineWord.style.transform = 'translateY(6px)';
-      setTimeout(function () {
-        taglineIndex = (taglineIndex + 1) % taglines.length;
-        taglineWord.textContent = taglines[taglineIndex];
-        taglineWord.style.opacity = '1';
-        taglineWord.style.transform = 'translateY(0)';
-      }, 160);
-    }, 380);
-  }
 
   function dismissPreloader() {
     if (preloaderDismissed) return;
     preloaderDismissed = true;
-    if (taglineInterval) clearInterval(taglineInterval);
-    if (preloaderAnimId) cancelAnimationFrame(preloaderAnimId);
-
     if (sitePreloader) {
       sitePreloader.classList.add('loaded');
       setTimeout(function () {
@@ -115,7 +48,7 @@
       dismissPreloader();
     } else {
       var startTime = performance.now();
-      var duration = 1400; // Refined 1.4 seconds boot experience
+      var duration = 1350; // Snappy 1.35 seconds
       var stages = [
         { threshold: 0.25, phase: 'Bootstrap phase: 1/4', text: 'Initializing Java 21 LTS runtime...' },
         { threshold: 0.55, phase: 'Bootstrap phase: 2/4', text: 'Loading Spring Boot 3.3 & Spring AI...' },
@@ -158,7 +91,7 @@
           dismissPreloader();
         }
       });
-      setTimeout(dismissPreloader, 1900);
+      setTimeout(dismissPreloader, 1800);
     }
   }
 
@@ -298,52 +231,11 @@
     if (e.key === 'Escape') closeDrawer();
   });
 
-  /* ======================= Active Nav Link on Scroll & Sliding Indicator ======================= */
-  var navLinksList = document.querySelector('.nav-links');
-  var navIndicator = document.getElementById('navIndicator');
-  var activeNavLink = null;
+  /* ======================= Active Nav Link on Scroll ======================= */
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('[data-nav-link]'));
   var sections = navLinks
     .map(function (link) { return document.querySelector(link.getAttribute('href')); })
     .filter(Boolean);
-
-  function positionIndicator(link) {
-    if (!navIndicator || !link || !navLinksList) return;
-    var listRect = navLinksList.getBoundingClientRect();
-    var linkRect = link.getBoundingClientRect();
-    var left = linkRect.left - listRect.left;
-    var width = linkRect.width;
-
-    navIndicator.style.left = left + 'px';
-    navIndicator.style.width = width + 'px';
-    navIndicator.style.opacity = '1';
-  }
-
-  function restoreIndicatorToActive() {
-    if (!navIndicator) return;
-    if (activeNavLink) {
-      positionIndicator(activeNavLink);
-    } else {
-      navIndicator.style.opacity = '0';
-    }
-  }
-
-  if (navLinksList && navIndicator) {
-    var desktopNavLinks = navLinksList.querySelectorAll('[data-nav-link]');
-    desktopNavLinks.forEach(function (link) {
-      link.addEventListener('mouseenter', function () {
-        positionIndicator(link);
-      });
-    });
-
-    navLinksList.addEventListener('mouseleave', function () {
-      restoreIndicatorToActive();
-    });
-
-    window.addEventListener('resize', function () {
-      if (activeNavLink) positionIndicator(activeNavLink);
-    }, { passive: true });
-  }
 
   if (sections.length && 'IntersectionObserver' in window) {
     var navObserver = new IntersectionObserver(function (entries) {
@@ -351,15 +243,10 @@
         if (!entry.isIntersecting) return;
         var id = '#' + entry.target.id;
         navLinks.forEach(function (link) {
-          var isMatch = link.getAttribute('href') === id;
-          link.classList.toggle('active', isMatch);
-          if (isMatch && link.closest('.nav-links')) {
-            activeNavLink = link;
-            positionIndicator(link);
-          }
+          link.classList.toggle('active', link.getAttribute('href') === id);
         });
       });
-    }, { rootMargin: '-35% 0px -45% 0px', threshold: 0 });
+    }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
     sections.forEach(function (s) { navObserver.observe(s); });
   }
 
@@ -555,24 +442,6 @@
       });
       card.addEventListener('mouseleave', function () { card.style.transform = ''; });
     });
-  }
-
-  /* ======================== 3D Floating Hero Tech Tokens Parallax ======================== */
-  var heroTokens = document.querySelectorAll('.hero-token');
-  if (!isTouch && !prefersReducedMotion && heroTokens.length) {
-    window.addEventListener('mousemove', function (e) {
-      var cx = window.innerWidth / 2;
-      var cy = window.innerHeight / 2;
-      var dx = (e.clientX - cx) / cx;
-      var dy = (e.clientY - cy) / cy;
-
-      heroTokens.forEach(function (token) {
-        var factor = parseFloat(token.getAttribute('data-parallax')) || 0.04;
-        var moveX = dx * 28 * (factor / 0.04);
-        var moveY = dy * 28 * (factor / 0.04);
-        token.style.transform = 'translate3d(' + moveX + 'px, ' + moveY + 'px, 0)';
-      });
-    }, { passive: true });
   }
 
   /* ======================== Interactive Floating Code Terminal ======================== */
@@ -1139,60 +1008,12 @@
     });
   }
 
-  /* ====================== Scroll-Driven Timeline Progress Line ====================== */
-  var timelineEl = document.querySelector('.timeline');
-  var timelineProgressBar = document.getElementById('timelineProgressBar');
-  var timelineNodes = document.querySelectorAll('.timeline-node');
-
-  function updateTimelineProgress() {
-    if (!timelineEl || !timelineProgressBar) return;
-    var rect = timelineEl.getBoundingClientRect();
-    var windowH = window.innerHeight;
-
-    var startOffset = windowH * 0.72;
-    var totalHeight = rect.height;
-    var currentScroll = startOffset - rect.top;
-    var progress = Math.max(0, Math.min(1, currentScroll / totalHeight));
-
-    timelineProgressBar.style.height = (progress * 100) + '%';
-
-    timelineNodes.forEach(function (node) {
-      var nodeRect = node.getBoundingClientRect();
-      var isPassed = nodeRect.top <= (windowH * 0.65);
-      node.classList.toggle('active', isPassed);
-    });
-  }
-
-  window.addEventListener('scroll', updateTimelineProgress, { passive: true });
-  window.addEventListener('resize', updateTimelineProgress, { passive: true });
-  updateTimelineProgress();
-
-  /* ========================= Floating Back to Top Button ========================= */
-  var floatingBackToTop = document.getElementById('floatingBackToTop');
-  if (floatingBackToTop) {
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 480) {
-        floatingBackToTop.classList.add('visible');
-      } else {
-        floatingBackToTop.classList.remove('visible');
-      }
-    }, { passive: true });
-
-    floatingBackToTop.addEventListener('click', function () {
-      if (window.lenis) {
-        window.lenis.scrollTo(0);
-      } else {
-        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-      }
-    });
-  }
-
   /* ================================ Back to Top Trigger ================================ */
   var backToTop = document.getElementById('backToTop');
   if (backToTop) {
     backToTop.addEventListener('click', function () {
-      if (window.lenis) {
-        window.lenis.scrollTo(0);
+      if (lenis) {
+        lenis.scrollTo(0);
       } else {
         window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       }
