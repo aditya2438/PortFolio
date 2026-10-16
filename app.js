@@ -18,6 +18,91 @@
   initIcons();
 
   /* ==========================================================================
+     STARTING CINEMATIC PRELOADER ANIMATION (Inspired by Reference Portfolio)
+     ========================================================================== */
+  var preloader = document.getElementById('preloader');
+  var preloaderParticles = document.getElementById('preloaderParticles');
+  var preloaderSleekFill = document.getElementById('preloaderSleekFill');
+  var preloaderTagline = document.getElementById('preloaderTagline');
+
+  if (preloader) {
+    // Generate floating particle elements
+    if (preloaderParticles && !prefersReducedMotion) {
+      for (var pi = 0; pi < 28; pi++) {
+        var particle = document.createElement('div');
+        particle.className = 'preloader-particle';
+        var pSize = Math.random() * 5 + 3;
+        particle.style.width = pSize + 'px';
+        particle.style.height = pSize + 'px';
+        particle.style.left = (Math.random() * 100) + '%';
+        particle.style.top = (Math.random() * 100) + '%';
+        particle.style.animationDelay = (Math.random() * 3) + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 2.5) + 's';
+        preloaderParticles.appendChild(particle);
+      }
+    }
+
+    // Cycle tagline words
+    var taglineWords = preloaderTagline ? preloaderTagline.querySelectorAll('.preloader-tagline-word, .tagline-word') : [];
+    var currentWordIdx = 0;
+    var taglineInterval = null;
+    if (taglineWords.length > 0) {
+      taglineWords[0].classList.add('active');
+      taglineInterval = setInterval(function () {
+        taglineWords[currentWordIdx].classList.remove('active');
+        currentWordIdx = (currentWordIdx + 1) % taglineWords.length;
+        taglineWords[currentWordIdx].classList.add('active');
+      }, 440);
+    }
+
+    // Progress bar fill animation
+    var progress = 0;
+    var startTime = performance.now();
+    var duration = prefersReducedMotion ? 400 : 1800; // ~1.8 seconds
+
+    function completePreloader() {
+      if (!preloader || preloader.classList.contains('loaded')) return;
+      if (taglineInterval) clearInterval(taglineInterval);
+      if (preloaderSleekFill) preloaderSleekFill.style.width = '100%';
+      preloader.classList.add('loaded');
+      preloader.setAttribute('aria-hidden', 'true');
+      setTimeout(function () {
+        if (preloader && preloader.parentNode) {
+          preloader.parentNode.removeChild(preloader);
+        }
+      }, 850);
+    }
+
+    function animateFill(currentTime) {
+      var elapsed = currentTime - startTime;
+      progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 2);
+      if (preloaderSleekFill) {
+        preloaderSleekFill.style.width = (eased * 100) + '%';
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animateFill);
+      } else {
+        setTimeout(completePreloader, 180);
+      }
+    }
+
+    requestAnimationFrame(animateFill);
+
+    // Skip on click or Escape
+    preloader.addEventListener('click', completePreloader);
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && preloader && !preloader.classList.contains('loaded')) {
+        completePreloader();
+      }
+    });
+
+    // Safety fallback: guarantee preloader dismissal even if requestAnimationFrame halts
+    setTimeout(completePreloader, 3200);
+  }
+
+  /* ==========================================================================
      SIGNAL FORGE — LIVING BACKEND SYSTEM CONSTELLATION SIMULATION
      ========================================================================== */
   var constellationCanvas = document.getElementById('constellationCanvas');
@@ -816,14 +901,23 @@
   }
 
   /* ============================ Skills Filter Bar ============================ */
-  var filterButtons = document.querySelectorAll('.filter-pill');
+  var filterButtons = document.querySelectorAll('.filter-btn, .filter-pill');
+  var skillCards = document.querySelectorAll('.skill-card');
   var skillTiles = document.querySelectorAll('.skill-tile');
 
   filterButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var filter = btn.getAttribute('data-filter');
+      var filter = btn.getAttribute('data-filter') || 'all';
       filterButtons.forEach(function (b) { b.classList.toggle('active', b === btn); });
 
+      // Filter modern skill cards with smooth visibility toggle
+      skillCards.forEach(function (card) {
+        var category = card.getAttribute('data-category');
+        var match = filter === 'all' || category === filter;
+        card.classList.toggle('is-hidden', !match);
+      });
+
+      // Filter legacy tiles if present
       skillTiles.forEach(function (tile) {
         var category = tile.getAttribute('data-category');
         var match = filter === 'all' || category === filter;
@@ -1101,19 +1195,134 @@
     });
   }
 
-  /* ============================ In-Page Resume PDF Viewer Modal ============================ */
+  /* ============================ In-Page Resume PDF Viewer Modal (PDF.js + High-DPI Canvas + Touch Zoom) ============================ */
   var resumeModal = document.getElementById('resumeModal');
   var heroViewResumeBtn = document.getElementById('heroViewResumeBtn');
   var viewResumeBtnNav = document.getElementById('viewResumeBtnNav');
   var viewResumeBtnDrawer = document.getElementById('viewResumeBtnDrawer');
   var cmdViewResume = document.getElementById('cmdViewResume');
   var closeResumeModalBtn = document.getElementById('closeResumeModalBtn');
+  var resumeCanvasWrapper = document.getElementById('resumeCanvasWrapper');
+  var resumeCanvasContainer = document.getElementById('resumeCanvasContainer');
+  var resumeLoadingSpinner = document.getElementById('resumeLoadingSpinner');
+  var resumeIframeFallback = document.getElementById('resumeIframeFallback');
+  var resumeZoomIn = document.getElementById('resumeZoomIn');
+  var resumeZoomOut = document.getElementById('resumeZoomOut');
+  var resumeZoomFit = document.getElementById('resumeZoomFit');
+  var resumeZoomLevel = document.getElementById('resumeZoomLevel');
+
+  var pdfDoc = null;
+  var pdfScale = 1.0;
+  var isRendering = false;
+  var pdfUrl = 'Aditya_Singh_Chouhan_Resume.pdf';
+
+  function calculateFitScale(firstPage) {
+    if (!resumeCanvasWrapper || !firstPage) return 1.0;
+    var containerWidth = resumeCanvasWrapper.clientWidth - (window.innerWidth < 768 ? 16 : 48);
+    var unscaledViewport = firstPage.getViewport({ scale: 1.0 });
+    var scale = containerWidth / unscaledViewport.width;
+    return Math.max(0.45, Math.min(scale, 1.6));
+  }
+
+  function renderPdfPages() {
+    if (!pdfDoc || !resumeCanvasContainer) return;
+    isRendering = true;
+    resumeCanvasContainer.innerHTML = '';
+
+    if (resumeZoomLevel) {
+      resumeZoomLevel.textContent = Math.round(pdfScale * 100) + '%';
+    }
+
+    var numPages = pdfDoc.numPages;
+    var renderPromises = [];
+
+    for (var pageNum = 1; pageNum <= numPages; pageNum++) {
+      (function (pNum) {
+        var pPromise = pdfDoc.getPage(pNum).then(function (page) {
+          var viewport = page.getViewport({ scale: pdfScale });
+          var outputScale = Math.min(window.devicePixelRatio || 1, 2);
+
+          var canvas = document.createElement('canvas');
+          var context = canvas.getContext('2d');
+
+          canvas.width = Math.floor(viewport.width * outputScale);
+          canvas.height = Math.floor(viewport.height * outputScale);
+          canvas.style.width = Math.floor(viewport.width) + 'px';
+          canvas.style.height = Math.floor(viewport.height) + 'px';
+          canvas.setAttribute('role', 'img');
+          canvas.setAttribute('aria-label', 'Resume Document Page ' + pNum);
+
+          var transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
+
+          var renderContext = {
+            canvasContext: context,
+            transform: transform,
+            viewport: viewport
+          };
+
+          resumeCanvasContainer.appendChild(canvas);
+          return page.render(renderContext).promise;
+        });
+        renderPromises.push(pPromise);
+      })(pageNum);
+    }
+
+    Promise.all(renderPromises).then(function () {
+      isRendering = false;
+      if (resumeLoadingSpinner && resumeLoadingSpinner.parentNode) {
+        resumeLoadingSpinner.parentNode.removeChild(resumeLoadingSpinner);
+      }
+    }).catch(function (err) {
+      console.warn('PDF.js render warning:', err);
+      isRendering = false;
+    });
+  }
+
+  function loadAndRenderPdf(forceReFit) {
+    if (!window.pdfjsLib) {
+      if (resumeIframeFallback) resumeIframeFallback.style.display = 'block';
+      if (resumeCanvasWrapper) resumeCanvasWrapper.style.display = 'none';
+      return;
+    }
+
+    if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    if (pdfDoc) {
+      if (forceReFit) {
+        pdfDoc.getPage(1).then(function (page) {
+          pdfScale = calculateFitScale(page);
+          renderPdfPages();
+        });
+      } else {
+        renderPdfPages();
+      }
+      return;
+    }
+
+    window.pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) {
+      pdfDoc = pdf;
+      return pdf.getPage(1);
+    }).then(function (firstPage) {
+      pdfScale = calculateFitScale(firstPage);
+      renderPdfPages();
+    }).catch(function (err) {
+      console.error('PDF.js loading failed, using iframe fallback:', err);
+      if (resumeIframeFallback) resumeIframeFallback.style.display = 'block';
+      if (resumeCanvasWrapper) resumeCanvasWrapper.style.display = 'none';
+    });
+  }
 
   function openResumeModal() {
     if (!resumeModal) return;
     resumeModal.classList.add('open');
     resumeModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+
+    setTimeout(function () {
+      loadAndRenderPdf(true);
+    }, 60);
   }
 
   function closeResumeModal() {
@@ -1122,6 +1331,41 @@
     resumeModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
+
+  if (resumeZoomIn) {
+    resumeZoomIn.addEventListener('click', function () {
+      if (!pdfDoc || isRendering) return;
+      pdfScale = Math.min(pdfScale + 0.25, 2.75);
+      renderPdfPages();
+    });
+  }
+
+  if (resumeZoomOut) {
+    resumeZoomOut.addEventListener('click', function () {
+      if (!pdfDoc || isRendering) return;
+      pdfScale = Math.max(pdfScale - 0.25, 0.45);
+      renderPdfPages();
+    });
+  }
+
+  if (resumeZoomFit) {
+    resumeZoomFit.addEventListener('click', function () {
+      if (!pdfDoc || isRendering) return;
+      pdfDoc.getPage(1).then(function (page) {
+        pdfScale = calculateFitScale(page);
+        renderPdfPages();
+      });
+    });
+  }
+
+  window.addEventListener('resize', function () {
+    if (resumeModal && resumeModal.classList.contains('open') && pdfDoc && !isRendering) {
+      pdfDoc.getPage(1).then(function (page) {
+        pdfScale = calculateFitScale(page);
+        renderPdfPages();
+      });
+    }
+  }, { passive: true });
 
   if (heroViewResumeBtn) heroViewResumeBtn.addEventListener('click', openResumeModal);
   if (viewResumeBtnNav) viewResumeBtnNav.addEventListener('click', openResumeModal);
