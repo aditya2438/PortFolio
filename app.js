@@ -1303,6 +1303,126 @@
     document.title = document.hidden ? 'Come back? 👋 — Aditya Chouhan' : originalTitle;
   });
 
+  /* ============================ 3D Cosmic Starfield Canvas (Aakarsh Reference) ============================ */
+  function initThreeBackground() {
+    var canvas = document.getElementById('bg-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    var starsGeometry = new THREE.BufferGeometry();
+    var starsCount = window.innerWidth < 768 ? 1800 : 3200;
+    var posArray = new Float32Array(starsCount * 3);
+
+    for (var i = 0; i < starsCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 100;
+    }
+
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    function createStarTexture() {
+      var starCanvas = document.createElement('canvas');
+      starCanvas.width = 32;
+      starCanvas.height = 32;
+
+      var ctx = starCanvas.getContext('2d');
+      var center = 16;
+      var radius = 14;
+
+      var gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      gradient.addColorStop(0.35, 'rgba(216, 180, 254, 0.9)');
+      gradient.addColorStop(0.7, 'rgba(100, 229, 255, 0.45)');
+      gradient.addColorStop(1, 'rgba(100, 229, 255, 0)');
+
+      ctx.beginPath();
+      ctx.arc(center, center, radius, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      return new THREE.CanvasTexture(starCanvas);
+    }
+
+    var starsMaterial = new THREE.PointsMaterial({
+      size: 0.18,
+      map: createStarTexture(),
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.85,
+      sizeAttenuation: true,
+      depthWrite: false
+    });
+
+    var starMesh = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(starMesh);
+
+    camera.position.z = 20;
+
+    var mouseX = 0;
+    var mouseY = 0;
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+
+    if (!isTouch) {
+      window.addEventListener('mousemove', function (event) {
+        mouseX = (event.clientX - windowHalfX) * 0.0001;
+        mouseY = (event.clientY - windowHalfY) * 0.0001;
+      }, { passive: true });
+    }
+
+    var animId = null;
+
+    function animate() {
+      animId = requestAnimationFrame(animate);
+
+      starMesh.rotation.y += 0.0002;
+      starMesh.rotation.x += 0.00008;
+
+      if (!isTouch) {
+        starMesh.rotation.y += mouseX * 0.35;
+        starMesh.rotation.x += mouseY * 0.35;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', function () {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      windowHalfX = window.innerWidth / 2;
+      windowHalfY = window.innerHeight / 2;
+    }, { passive: true });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (animId) cancelAnimationFrame(animId);
+      } else {
+        animate();
+      }
+    });
+  }
+
+  // Initialize Three.js 3D Background
+  if (!prefersReducedMotion) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initThreeBackground);
+    } else {
+      initThreeBackground();
+    }
+  }
+
   /* ================================ Back to Top Trigger ================================ */
   var backToTop = document.getElementById('backToTop');
   if (backToTop) {

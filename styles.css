@@ -352,7 +352,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* ==========================================================================
-   PERSPECTIVE GRID & AMBIENT AURORA BACKGROUND (Inspired by aakarsh-devhq)
+   PERSPECTIVE GRID & 3D STARFIELD BACKGROUND (Identical to aakarsh-devhq)
    ========================================================================== */
 .background-container {
   position: fixed;
@@ -365,18 +365,28 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   background-color: #07070a;
 }
 
+#bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .grid-overlay {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 50px 50px;
   mask-image: radial-gradient(ellipse 85% 65% at 50% 20%, #000 50%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 85% 65% at 50% 20%, #000 50%, transparent 100%);
-  opacity: 0.65;
+  opacity: 0.55;
+  z-index: 1;
 }
 
 .ambient-glow {
@@ -1508,14 +1518,6 @@ header {
   box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
   flex-shrink: 0;
 }
-.badge-avatar-img {
-  width: 100%; height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center 15%;
-  background: #090910;
-  display: block;
-}
 .badge-orbit-ring {
   position: absolute; inset: -3px;
   border-radius: 50%;
@@ -1524,6 +1526,12 @@ header {
   pointer-events: none;
 }
 .badge-ac-text {
+  position: relative;
+  z-index: 2;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: #090910;
+  display: flex; align-items: center; justify-content: center;
   font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 900;
   color: #ffffff; letter-spacing: -0.04em;
   line-height: 1;
@@ -2018,30 +2026,47 @@ header {
   display: none !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .skill-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-  .skill-card {
-    padding: 18px 10px 14px;
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
   }
+  .skill-card {
+    padding: 14px 6px 12px;
+    gap: 8px;
+    border-radius: 12px;
+  }
   .skill-card i {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+  .skill-card span {
+    font-size: 0.72rem;
   }
 }
 
-@media (max-width: 440px) {
+@media (max-width: 480px) {
   .skill-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
   }
   .skill-card {
-    padding: 16px 8px 12px;
+    padding: 10px 4px 8px;
+    gap: 5px;
+    border-radius: 10px;
+  }
+  .skill-card i {
+    font-size: 1.45rem;
   }
   .skill-card span {
-    font-size: 0.74rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 320px) {
+  .skill-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
   }
 }
 
@@ -2675,26 +2700,36 @@ header {
   flex-wrap: wrap;
 }
 
-.profile-avatar-wrap {
+.profile-brand-emblem {
   position: relative;
-  width: 78px;
-  height: 78px;
-  border-radius: 50%;
-  padding: 3px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  padding: 2px;
   background: conic-gradient(from 0deg, #a855f7, #6366f1, #38bdf8, #ec4899, #a855f7);
-  animation: rotateLogoRing 6s linear infinite;
+  animation: rotateLogoRing 5s linear infinite;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35);
 }
 
-.profile-avatar-img {
+.profile-brand-emblem .badge-ac-text {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center 15%;
-  background-color: #0d0d14;
-  display: block;
+  border-radius: 12px;
+  background: #090910;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+  background-image: linear-gradient(135deg, #ffffff 15%, #c084fc 60%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .profile-info {
