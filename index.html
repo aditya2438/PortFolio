@@ -61,47 +61,11 @@
 
 <!-- Lenis CSS -->
 <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.26/dist/lenis.css" />
-<link rel="stylesheet" href="styles.css?v=3.2" />
+<link rel="stylesheet" href="styles.css?v=4.0" />
 </head>
 <body class="bg-obsidian text-titanium font-display antialiased selection:bg-brandViolet selection:text-white">
 
-<!-- ============ SYSTEM BOOT STARTING PRELOADER ============ -->
-<div id="sitePreloader" class="site-preloader" aria-label="System Boot Sequence">
-  <div class="preloader-bg-grid" aria-hidden="true"></div>
-  <div class="preloader-glow-orb" aria-hidden="true"></div>
-
-  <div class="preloader-card">
-    <div class="preloader-emblem">
-      <div class="preloader-orbit" aria-hidden="true"></div>
-      <div class="preloader-ac-logo">AC</div>
-    </div>
-
-    <div class="preloader-brand-title">Aditya Chouhan</div>
-    <div class="preloader-brand-sub">// SYSTEM BOOT SEQUENCE v3.2</div>
-
-    <div class="preloader-terminal-box">
-      <div class="preloader-log-status">
-        <span class="log-dot" aria-hidden="true"></span>
-        <span id="preloaderStatusText">Initializing Java 21 LTS runtime...</span>
-      </div>
-    </div>
-
-    <div class="preloader-progress-track">
-      <div class="preloader-progress-fill" id="preloaderProgressFill"></div>
-    </div>
-
-    <div class="preloader-progress-meta">
-      <span id="preloaderStepName">Bootstrap phase: 1/4</span>
-      <span id="preloaderPercent">0%</span>
-    </div>
-
-    <button type="button" class="preloader-skip-hint" id="preloaderSkipBtn" aria-label="Skip boot sequence">
-      Click or press any key to skip &rarr;
-    </button>
-  </div>
-</div>
-
-<!-- ============ INTERACTIVE CUSTOM CURSOR ============ -->
+<!-- Interactive Custom Cursor -->
 <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
 <div class="cursor-outline" id="cursorOutline" aria-hidden="true"></div>
 
@@ -331,45 +295,67 @@
         </div>
       </div>
 
-      <!-- Right Column: Interactive Code Studio Launcher & Live Performance Stats -->
+      <!-- Right Column: Signal Forge — Living Backend System Constellation -->
       <div class="hero-visual">
         
-        <!-- Hero Interactive Code Studio Launcher Card -->
-        <div class="glass-card spotlight hero-launcher-card" tabindex="0">
-          <div class="launcher-top">
+        <div class="glass-card spotlight constellation-card" id="constellationCard">
+          <div class="constellation-header">
             <div class="terminal-dots">
               <span class="dot dot-red"></span>
               <span class="dot dot-yellow"></span>
               <span class="dot dot-green"></span>
             </div>
-            <span class="launcher-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
-              <span>Java 21 Core Runtime</span>
-            </span>
+            <div class="constellation-status">
+              <span class="pulse-beacon"></span>
+              <span class="constellation-title">SYSTEM TOPOLOGY // LIVE FLOW</span>
+            </div>
+            <button type="button" class="btn-pulse-trigger" id="pulseTriggerBtn" title="Emit Real-Time Request Wave" aria-label="Trigger Request Simulation">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              <span>Burst Wave</span>
+            </button>
           </div>
 
-          <div class="launcher-code-preview">
-            <span class="c-kw">aditya@workstation</span>:~$ java -jar portfolio.jar<br>
-            <span class="c-str">&gt; Initializing Spring Boot 3.3 Application Context...</span><br>
-            <span class="c-mint">&gt; REST Controllers, JPA Repositories &amp; Schemas loaded [OK]</span><br>
-            <span class="c-out">&gt; Status: Open for Software Engineering Opportunities</span><span class="cursor-blink">▍</span>
+          <!-- Interactive Node Canvas & Topology -->
+          <div class="constellation-stage" id="constellationStage">
+            <canvas id="constellationCanvas" class="constellation-canvas" width="480" height="260"></canvas>
+            
+            <!-- Dynamic Tooltip / Node Inspection Box -->
+            <div class="node-info-box" id="nodeInfoBox" aria-live="polite">
+              <div class="node-info-header">
+                <span class="node-tag" id="nodeTag">SPRING BOOT 3.3 CORE</span>
+                <span class="node-health" id="nodeHealth">100% HEALTHY</span>
+              </div>
+              <div class="node-info-desc" id="nodeDesc">Core service runtime orchestrating transactional workflows, Spring AI deal analysis, and async Kafka events.</div>
+              <div class="node-info-stats">
+                <span id="nodeStat1">Latency: 1.2ms</span>
+                <span id="nodeStat2">ACID: Enforced</span>
+              </div>
+            </div>
           </div>
 
-          <button class="btn-launch-terminal magnetic" id="heroOpenTerminalBtn" type="button" aria-label="Open Interactive Java Terminal Studio">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
-            <span>Open Interactive Code Terminal</span>
-          </button>
+          <!-- Quick Interactive Controls -->
+          <div class="constellation-footer">
+            <button class="btn-launch-terminal magnetic" id="heroOpenTerminalBtn" type="button" aria-label="Open Interactive Java Terminal Studio">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+              <span>Open Code Studio (⌘T)</span>
+            </button>
+            <div class="constellation-legend">
+              <span class="legend-item"><span class="legend-dot cyan"></span>Gateway &amp; Core</span>
+              <span class="legend-item"><span class="legend-dot lime"></span>Kafka &amp; Redis</span>
+              <span class="legend-item"><span class="legend-dot violet"></span>Postgres 3NF</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Metric Counter Tiles -->
+        <!-- Metric Counter Tiles (Honest & Verified) -->
         <div class="stat-row">
           <div class="glass-card stat-tile spotlight">
             <span class="stat-num">55%</span>
-            <span class="stat-label">Lower DB read load via Redis caching</span>
+            <span class="stat-label">Target DB read reduction via Redis</span>
           </div>
           <div class="glass-card stat-tile spotlight">
             <span class="stat-num">&lt;25ms</span>
-            <span class="stat-label">Cache response latency under load</span>
+            <span class="stat-label">Cache response target under load</span>
           </div>
           <div class="glass-card stat-tile spotlight">
             <span class="stat-num">17</span>
@@ -664,15 +650,40 @@
           <div class="metric-row">
             <div class="metric-col">
               <span class="metric-val">55%</span>
-              <span class="metric-desc">Lower DB read load via Redis</span>
+              <span class="metric-desc">Target DB read reduction via Redis</span>
             </div>
             <div class="metric-col">
               <span class="metric-val">&lt;25ms</span>
-              <span class="metric-desc">Cache response latency</span>
+              <span class="metric-desc">Cache response latency target</span>
             </div>
             <div class="metric-col">
               <span class="metric-val">5</span>
               <span class="metric-desc">Decoupled microservices</span>
+            </div>
+          </div>
+
+          <!-- Expandable Deep Architecture Exploration -->
+          <div class="arch-deep-wrap">
+            <button type="button" class="btn-arch-toggle magnetic" id="toggleFairCartDetails" aria-expanded="false" aria-controls="faircartDeepDetails">
+              <span class="toggle-icon">⚡</span>
+              <span>Inspect Microservices &amp; Kafka DLQ Deep Dive</span>
+              <svg class="chevron-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="arch-deep-details" id="faircartDeepDetails" hidden>
+              <div class="arch-detail-grid">
+                <div class="arch-detail-card">
+                  <h4>Event-Driven Kafka DLQ</h4>
+                  <p>Order checkouts publish to <code>order-created-events</code> with idempotent keys. If downstream inventory commits fail, payloads route to an isolated Dead-Letter Queue (DLQ) topic with exponential backoff (200ms, 400ms, 800ms) ensuring zero dropped transactions.</p>
+                </div>
+                <div class="arch-detail-card">
+                  <h4>Distributed Redis Caching</h4>
+                  <p>Cart sessions and dynamic pricing models leverage Redis in-memory storage with dual-layer TTL expiration, reducing repetitive PostgreSQL queries and keeping cart mutation response latency under 25ms.</p>
+                </div>
+                <div class="arch-detail-card">
+                  <h4>Pessimistic Inventory Locking</h4>
+                  <p>Uses <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code> in Spring Data JPA during flash-sale stock validation to eliminate race conditions, guaranteeing zero overselling across concurrent checkout threads.</p>
+                </div>
+              </div>
             </div>
           </div>
         </article>
@@ -760,6 +771,31 @@
             <div class="metric-col">
               <span class="metric-val">5-Stage</span>
               <span class="metric-desc">Automated job lifecycle</span>
+            </div>
+          </div>
+
+          <!-- Expandable Deep Architecture Exploration -->
+          <div class="arch-deep-wrap">
+            <button type="button" class="btn-arch-toggle magnetic" id="toggleFixoraDetails" aria-expanded="false" aria-controls="fixoraDeepDetails">
+              <span class="toggle-icon">⚡</span>
+              <span>Inspect Haversine Geo-Router &amp; 3NF Database Design</span>
+              <svg class="chevron-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="arch-deep-details" id="fixoraDeepDetails" hidden>
+              <div class="arch-detail-grid">
+                <div class="arch-detail-card">
+                  <h4>Haversine Trigonometric Routing</h4>
+                  <p>Calculates spherical great-circle distances across target MP clusters (Ujjain, Indore, Bhopal) with radian transformations, indexing verified service providers by localized availability bounding boxes.</p>
+                </div>
+                <div class="arch-detail-card">
+                  <h4>17-Table 3NF Normalized Schema</h4>
+                  <p>Modeled in MySQL 8.0 with foreign key cascading, composite B-Tree indexes on <code>(city_id, category_id, rating)</code>, and atomic ACID transaction logs for dispute settlements and provider earnings.</p>
+                </div>
+                <div class="arch-detail-card">
+                  <h4>5-Stage State Engine</h4>
+                  <p>Enforces a deterministic state transition machine: <code>BOOKED</code> ➔ <code>ASSIGNED</code> ➔ <code>IN_PROGRESS</code> ➔ <code>COMPLETED</code> ➔ <code>PAID</code>. Invalid state jumps are rejected by Spring Security and domain event guards.</p>
+                </div>
+              </div>
             </div>
           </div>
         </article>
@@ -1016,7 +1052,7 @@
           <p class="status-sub">Indian Standard Time · IST (UTC+5:30)</p>
 
           <div class="status-coords">
-            <span>23.1793° N, 75.7849° E</span>
+            <span>Central Hub · Madhya Pradesh, India · IST (UTC+5:30)</span>
           </div>
         </div>
 
@@ -1268,6 +1304,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.3.26/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
-<script src="app.js?v=3.2"></script>
+<script src="app.js?v=4.0"></script>
 </body>
 </html>

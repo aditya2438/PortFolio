@@ -18,82 +18,366 @@
   initIcons();
 
   /* ==========================================================================
-     SYSTEM BOOT STARTING PRELOADER
+     SIGNAL FORGE — LIVING BACKEND SYSTEM CONSTELLATION SIMULATION
      ========================================================================== */
-  var sitePreloader = document.getElementById('sitePreloader');
-  var preloaderStatusText = document.getElementById('preloaderStatusText');
-  var preloaderProgressFill = document.getElementById('preloaderProgressFill');
-  var preloaderStepName = document.getElementById('preloaderStepName');
-  var preloaderPercent = document.getElementById('preloaderPercent');
-  var preloaderSkipBtn = document.getElementById('preloaderSkipBtn');
-  var preloaderDismissed = false;
+  var constellationCanvas = document.getElementById('constellationCanvas');
+  var pulseTriggerBtn = document.getElementById('pulseTriggerBtn');
+  var nodeInfoBox = document.getElementById('nodeInfoBox');
+  var nodeTag = document.getElementById('nodeTag');
+  var nodeHealth = document.getElementById('nodeHealth');
+  var nodeDesc = document.getElementById('nodeDesc');
+  var nodeStat1 = document.getElementById('nodeStat1');
+  var nodeStat2 = document.getElementById('nodeStat2');
 
-  function dismissPreloader() {
-    if (preloaderDismissed) return;
-    preloaderDismissed = true;
-    if (sitePreloader) {
-      sitePreloader.classList.add('loaded');
-      setTimeout(function () {
-        sitePreloader.style.display = 'none';
-      }, 700);
+  if (constellationCanvas) {
+    var cCtx = constellationCanvas.getContext('2d');
+    var cWidth = 480;
+    var cHeight = 260;
+    var cDpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resizeConstellation() {
+      var rect = constellationCanvas.getBoundingClientRect();
+      cWidth = rect.width || 480;
+      cHeight = rect.height || 260;
+      constellationCanvas.width = cWidth * cDpr;
+      constellationCanvas.height = cHeight * cDpr;
+      cCtx.scale(cDpr, cDpr);
     }
-    window.dispatchEvent(new Event('portfolioReady'));
-    if (typeof triggerHeroEntrance === 'function') {
-      triggerHeroEntrance();
+    resizeConstellation();
+    window.addEventListener('resize', resizeConstellation, { passive: true });
+
+    // Defined System Nodes
+    var systemNodes = [
+      {
+        id: 'gateway',
+        label: 'API Gateway',
+        sub: 'Rate Limiter · JWT',
+        normX: 0.16,
+        normY: 0.50,
+        color: '#64e5ff',
+        health: '100% HEALTHY',
+        desc: 'Ingress reverse proxy routing client requests, verifying JWT tokens, and enforcing IP token-bucket rate limits.',
+        stat1: 'Latency: 0.8ms',
+        stat2: 'Protocol: HTTP/2'
+      },
+      {
+        id: 'core',
+        label: 'Spring Boot 3.3',
+        sub: 'Java 21 · App Core',
+        normX: 0.50,
+        normY: 0.30,
+        color: '#64e5ff',
+        health: '100% HEALTHY',
+        desc: 'Core service runtime executing transactional business logic, Spring AI deal analysis, and async Kafka event publishing.',
+        stat1: 'Latency: 1.2ms',
+        stat2: 'ACID: Enforced'
+      },
+      {
+        id: 'kafka',
+        label: 'Apache Kafka',
+        sub: 'Event Streams · DLQ',
+        normX: 0.84,
+        normY: 0.28,
+        color: '#c8ff6b',
+        health: 'STREAMING',
+        desc: 'Distributed event bus decoupling checkout & orders into dedicated partitions with exponential-backoff Dead-Letter Queues (DLQ).',
+        stat1: 'Queue: 0 DLQ Faults',
+        stat2: 'Partitions: 6 Active'
+      },
+      {
+        id: 'redis',
+        label: 'Redis Cache',
+        sub: '<25ms Read Store',
+        normX: 0.50,
+        normY: 0.74,
+        color: '#c8ff6b',
+        health: 'SUB-25MS WARM',
+        desc: 'In-memory distributed key-value cache handling session management, shopping cart state, and high-frequency read optimization.',
+        stat1: 'Hit Rate: 94.2%',
+        stat2: 'TTL: 300s Sliding'
+      },
+      {
+        id: 'postgres',
+        label: 'PostgreSQL / MySQL',
+        sub: '3NF · ACID Safe',
+        normX: 0.84,
+        normY: 0.72,
+        color: '#947cff',
+        health: 'ACID COMMITTED',
+        desc: 'Primary relational storage layer structured in 17 normalized (3NF) tables with composite B-Tree indexing and pessimistic locking.',
+        stat1: 'Isolation: READ_COMMITTED',
+        stat2: 'Tables: 17 (3NF)'
+      }
+    ];
+
+    // Conduits connecting nodes
+    var conduits = [
+      { from: 'gateway', to: 'core', color: 'rgba(100, 229, 255, 0.45)' },
+      { from: 'core', to: 'kafka', color: 'rgba(200, 255, 107, 0.45)' },
+      { from: 'core', to: 'redis', color: 'rgba(100, 229, 255, 0.45)' },
+      { from: 'core', to: 'postgres', color: 'rgba(148, 124, 255, 0.45)' },
+      { from: 'kafka', to: 'postgres', color: 'rgba(200, 255, 107, 0.35)' },
+      { from: 'redis', to: 'gateway', color: 'rgba(100, 229, 255, 0.35)' }
+    ];
+
+    // Packet Pool
+    var packets = [];
+    function emitPacket(fromId, toId, burst) {
+      packets.push({
+        fromId: fromId,
+        toId: toId,
+        progress: 0,
+        speed: (burst ? 0.024 : 0.012) + Math.random() * 0.008,
+        color: burst ? '#c8ff6b' : '#64e5ff',
+        size: burst ? 3.5 : 2.5
+      });
     }
-  }
 
-  if (sitePreloader) {
-    if (prefersReducedMotion) {
-      dismissPreloader();
-    } else {
-      var startTime = performance.now();
-      var duration = 1350; // Snappy 1.35 seconds
-      var stages = [
-        { threshold: 0.25, phase: 'Bootstrap phase: 1/4', text: 'Initializing Java 21 LTS runtime...' },
-        { threshold: 0.55, phase: 'Bootstrap phase: 2/4', text: 'Loading Spring Boot 3.3 & Spring AI...' },
-        { threshold: 0.85, phase: 'Bootstrap phase: 3/4', text: 'Connecting Kafka event streams & Redis...' },
-        { threshold: 1.00, phase: 'Bootstrap phase: 4/4', text: 'Mounting ACID 3NF Schemas · System Ready.' }
-      ];
+    // Seed continuous traffic
+    setInterval(function () {
+      if (document.hidden) return;
+      var randomConduit = conduits[Math.floor(Math.random() * conduits.length)];
+      emitPacket(randomConduit.from, randomConduit.to, false);
+    }, 450);
 
-      function updateBootProgress(now) {
-        if (preloaderDismissed) return;
-        var elapsed = now - startTime;
-        var progress = Math.min(elapsed / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3);
-        var pct = Math.floor(eased * 100);
-
-        if (preloaderProgressFill) preloaderProgressFill.style.width = pct + '%';
-        if (preloaderPercent) preloaderPercent.textContent = pct + '%';
-
-        for (var i = 0; i < stages.length; i++) {
-          if (eased <= stages[i].threshold || i === stages.length - 1) {
-            if (preloaderStepName) preloaderStepName.textContent = stages[i].phase;
-            if (preloaderStatusText) preloaderStatusText.textContent = stages[i].text;
-            break;
-          }
+    // Burst Button
+    if (pulseTriggerBtn) {
+      pulseTriggerBtn.addEventListener('click', function () {
+        for (var b = 0; b < 12; b++) {
+          var c = conduits[b % conduits.length];
+          emitPacket(c.from, c.to, true);
         }
-
-        if (progress < 1) {
-          requestAnimationFrame(updateBootProgress);
-        } else {
-          setTimeout(dismissPreloader, 150);
-        }
-      }
-
-      requestAnimationFrame(updateBootProgress);
-
-      if (preloaderSkipBtn) {
-        preloaderSkipBtn.addEventListener('click', dismissPreloader);
-      }
-      window.addEventListener('keydown', function (e) {
-        if (!preloaderDismissed && (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter')) {
-          dismissPreloader();
+        if (nodeInfoBox) {
+          nodeInfoBox.style.transform = 'scale(1.02)';
+          setTimeout(function () { nodeInfoBox.style.transform = 'none'; }, 200);
         }
       });
-      setTimeout(dismissPreloader, 1800);
     }
+
+    // Active hovered node
+    var hoveredNode = null;
+    var defaultNode = systemNodes[1]; // Core
+
+    function updateNodeInfo(node) {
+      var n = node || defaultNode;
+      if (nodeTag) nodeTag.textContent = n.label.toUpperCase();
+      if (nodeHealth) {
+        nodeHealth.textContent = n.health;
+        nodeHealth.style.color = n.color;
+        nodeHealth.style.borderColor = n.color;
+      }
+      if (nodeDesc) nodeDesc.textContent = n.desc;
+      if (nodeStat1) nodeStat1.textContent = n.stat1;
+      if (nodeStat2) nodeStat2.textContent = n.stat2;
+    }
+    updateNodeInfo(defaultNode);
+
+    // Mouse / Touch interaction
+    function getPointerPos(e) {
+      var rect = constellationCanvas.getBoundingClientRect();
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    }
+
+    function checkNodeHit(pos) {
+      var hit = null;
+      for (var i = 0; i < systemNodes.length; i++) {
+        var n = systemNodes[i];
+        var nx = n.normX * cWidth;
+        var ny = n.normY * cHeight;
+        var dx = pos.x - nx;
+        var dy = pos.y - ny;
+        if (Math.sqrt(dx * dx + dy * dy) < 28) {
+          hit = n;
+          break;
+        }
+      }
+      return hit;
+    }
+
+    constellationCanvas.addEventListener('mousemove', function (e) {
+      var pos = getPointerPos(e);
+      var hit = checkNodeHit(pos);
+      if (hit !== hoveredNode) {
+        hoveredNode = hit;
+        updateNodeInfo(hoveredNode || defaultNode);
+      }
+    });
+
+    constellationCanvas.addEventListener('mouseleave', function () {
+      hoveredNode = null;
+      updateNodeInfo(defaultNode);
+    });
+
+    constellationCanvas.addEventListener('click', function (e) {
+      var pos = getPointerPos(e);
+      var hit = checkNodeHit(pos);
+      if (hit) {
+        conduits.forEach(function (c) {
+          if (c.from === hit.id || c.to === hit.id) {
+            emitPacket(c.from, c.to, true);
+          }
+        });
+      }
+    });
+
+    constellationCanvas.addEventListener('touchstart', function (e) {
+      var pos = getPointerPos(e);
+      var hit = checkNodeHit(pos);
+      if (hit) {
+        hoveredNode = hit;
+        updateNodeInfo(hit);
+        conduits.forEach(function (c) {
+          if (c.from === hit.id) emitPacket(c.from, c.to, true);
+        });
+      }
+    }, { passive: true });
+
+    // Render loop
+    var simTime = 0;
+    function renderConstellation() {
+      cCtx.clearRect(0, 0, cWidth, cHeight);
+      simTime += 0.02;
+
+      // Map lookup
+      var nodeMap = {};
+      for (var i = 0; i < systemNodes.length; i++) {
+        var n = systemNodes[i];
+        nodeMap[n.id] = {
+          x: n.normX * cWidth,
+          y: n.normY * cHeight,
+          node: n
+        };
+      }
+
+      // Draw Conduits (lines with dash flow)
+      for (var j = 0; j < conduits.length; j++) {
+        var cond = conduits[j];
+        var p1 = nodeMap[cond.from];
+        var p2 = nodeMap[cond.to];
+        if (!p1 || !p2) continue;
+
+        cCtx.beginPath();
+        cCtx.moveTo(p1.x, p1.y);
+        cCtx.lineTo(p2.x, p2.y);
+        cCtx.strokeStyle = cond.color;
+        cCtx.lineWidth = 1.4;
+        cCtx.setLineDash([4, 6]);
+        cCtx.lineDashOffset = -simTime * 15;
+        cCtx.stroke();
+        cCtx.setLineDash([]);
+      }
+
+      // Update and draw packets
+      for (var k = packets.length - 1; k >= 0; k--) {
+        var pkt = packets[k];
+        pkt.progress += pkt.speed;
+
+        if (pkt.progress >= 1) {
+          packets.splice(k, 1);
+          continue;
+        }
+
+        var startNode = nodeMap[pkt.fromId];
+        var endNode = nodeMap[pkt.toId];
+        if (!startNode || !endNode) {
+          packets.splice(k, 1);
+          continue;
+        }
+
+        var curX = startNode.x + (endNode.x - startNode.x) * pkt.progress;
+        var curY = startNode.y + (endNode.y - startNode.y) * pkt.progress;
+
+        cCtx.beginPath();
+        cCtx.arc(curX, curY, pkt.size, 0, Math.PI * 2);
+        cCtx.fillStyle = pkt.color;
+        cCtx.shadowColor = pkt.color;
+        cCtx.shadowBlur = 10;
+        cCtx.fill();
+        cCtx.shadowBlur = 0;
+      }
+
+      // Draw Nodes
+      for (var m = 0; m < systemNodes.length; m++) {
+        var sn = systemNodes[m];
+        var nx = sn.normX * cWidth;
+        var ny = sn.normY * cHeight;
+        var isHovered = hoveredNode && hoveredNode.id === sn.id;
+
+        // Outer Halo / Pulse Ring
+        var haloPulse = Math.sin(simTime * 3 + m) * 3;
+        cCtx.beginPath();
+        cCtx.arc(nx, ny, 16 + (isHovered ? 6 : haloPulse), 0, Math.PI * 2);
+        cCtx.strokeStyle = isHovered ? '#64e5ff' : 'rgba(255, 255, 255, 0.12)';
+        cCtx.lineWidth = isHovered ? 2 : 1;
+        cCtx.stroke();
+
+        // Node Solid Disk
+        cCtx.beginPath();
+        cCtx.arc(nx, ny, 12, 0, Math.PI * 2);
+        cCtx.fillStyle = '#0d131c';
+        cCtx.fill();
+        cCtx.strokeStyle = sn.color;
+        cCtx.lineWidth = isHovered ? 2.5 : 1.5;
+        cCtx.shadowColor = sn.color;
+        cCtx.shadowBlur = isHovered ? 16 : 8;
+        cCtx.stroke();
+        cCtx.shadowBlur = 0;
+
+        // Inner core beacon
+        cCtx.beginPath();
+        cCtx.arc(nx, ny, 4, 0, Math.PI * 2);
+        cCtx.fillStyle = sn.color;
+        cCtx.fill();
+
+        // Text Labels
+        cCtx.font = (isHovered ? 'bold ' : '600 ') + '10px "JetBrains Mono", monospace';
+        cCtx.fillStyle = isHovered ? '#ffffff' : '#cbd5e1';
+        cCtx.textAlign = 'center';
+        cCtx.fillText(sn.label, nx, ny - 20);
+
+        cCtx.font = '9px "JetBrains Mono", monospace';
+        cCtx.fillStyle = 'rgba(148, 163, 184, 0.75)';
+        cCtx.fillText(sn.sub, nx, ny + 24);
+      }
+
+      if (!document.hidden && !prefersReducedMotion) {
+        requestAnimationFrame(renderConstellation);
+      }
+    }
+    renderConstellation();
+
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && !prefersReducedMotion) {
+        requestAnimationFrame(renderConstellation);
+      }
+    });
   }
+
+  /* ============================ Project Architecture Deep-Dive Drawers ============================ */
+  function setupArchToggle(btnId, detailsId) {
+    var btn = document.getElementById(btnId);
+    var details = document.getElementById(detailsId);
+    if (!btn || !details) return;
+
+    btn.addEventListener('click', function () {
+      var isHidden = details.hasAttribute('hidden');
+      if (isHidden) {
+        details.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      } else {
+        details.setAttribute('hidden', '');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  setupArchToggle('toggleFairCartDetails', 'faircartDeepDetails');
+  setupArchToggle('toggleFixoraDetails', 'fixoraDeepDetails');
 
   /* ------------------------------ Footer Year ----------------------------- */
   var yearEl = document.getElementById('year');
@@ -301,10 +585,8 @@
     }
   }
 
-  // Fallback trigger if preloader was dismissed early or absent
-  if (!sitePreloader) {
-    triggerHeroEntrance();
-  }
+  // Immediate, non-blocking hero entrance
+  triggerHeroEntrance();
 
   /* Subtle ambient scroll-linked parallax on the gradient background orbs */
   if (window.gsap && window.ScrollTrigger && !prefersReducedMotion) {
