@@ -66,7 +66,7 @@
 
 <!-- Lenis CSS -->
 <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.26/dist/lenis.css" />
-<link rel="stylesheet" href="styles.css?v=4.1" />
+<link rel="stylesheet" href="styles.css?v=4.2" />
 </head>
 <body class="bg-obsidian text-titanium font-display antialiased selection:bg-brandViolet selection:text-white">
 
@@ -100,49 +100,24 @@
   </div>
 </div>
 
-<!-- Interactive Custom Cursor -->
-<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-<div class="cursor-outline" id="cursorOutline" aria-hidden="true"></div>
-
 <!-- Top Reading Progress Indicator -->
 <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
 
 <a href="#main" class="skip-link">Skip to main content</a>
 
-<!-- Ambient background: multi-layer gradient orbs + live particle constellation canvas + noise grain -->
-<div class="bg-layer" aria-hidden="true">
-  <canvas id="bgCanvas" class="bg-canvas"></canvas>
-  <div class="orb orb-violet"></div>
-  <div class="orb orb-blue"></div>
-  <div class="orb orb-mint"></div>
-  <div class="orb orb-silver"></div>
-  
-  <!-- Floating Ambient Engineering Glyphs -->
-  <div class="floating-glyphs" aria-hidden="true">
-    <span class="glyph glyph-1">&lt;Java 21 /&gt;</span>
-    <span class="glyph glyph-2">{ Spring Boot 3.3 }</span>
-    <span class="glyph glyph-3">// Kafka Event Streams</span>
-    <span class="glyph glyph-4">[ Redis &lt;25ms ]</span>
-    <span class="glyph glyph-5">ACID :: 3NF</span>
-    <span class="glyph glyph-6">λ Concurrency</span>
-    <span class="glyph glyph-7">O(1) HashMap</span>
-    <span class="glyph glyph-8">SELECT * FROM 3NF</span>
-  </div>
-
-  <svg class="grain" xmlns="http://www.w3.org/2000/svg">
-    <filter id="grain-filter">
-      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"></feTurbulence>
-      <feColorMatrix type="saturate" values="0"></feColorMatrix>
-    </filter>
-    <rect width="100%" height="100%" filter="url(#grain-filter)"></rect>
-  </svg>
+<!-- ── Background: Modern Perspective Grid + Ambient Glow (Inspired by Reference Portfolio) ── -->
+<div class="background-container" aria-hidden="true">
+  <div class="grid-overlay"></div>
+  <div class="ambient-glow ambient-glow-1"></div>
+  <div class="ambient-glow ambient-glow-2"></div>
+  <div class="ambient-glow ambient-glow-3"></div>
 </div>
 
 <!-- ============ FLOATING GLASS NAVIGATION (macOS Dynamic Island Inspired) ============ -->
 <header>
   <nav class="nav-pill" aria-label="Primary Navigation">
     <a href="#home" class="nav-logo group" aria-label="Aditya Chouhan — Back to Top">
-      <span class="nav-logo-mark">AC</span>
+      <span class="nav-logo-mark"><span class="logo-text">AC</span></span>
       <span class="nav-logo-text">Aditya Chouhan</span>
     </a>
 
@@ -169,6 +144,12 @@
           <path d="M9 18c-4.51 2-5-2-7-2"></path>
         </svg>
       </a>
+
+      <!-- LeetCode Icon Button -->
+      <a class="icon-btn magnetic" href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" aria-label="Aditya's LeetCode Profile" title="LeetCode Profile (@kX69jmDS30)">
+        <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1.12rem;"></i>
+      </a>
+
       <!-- LinkedIn Icon Button -->
       <a class="icon-btn magnetic" href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" aria-label="Aditya's LinkedIn profile" title="LinkedIn Profile">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -193,7 +174,7 @@
     <div class="drawer-sheet" role="dialog" aria-modal="true" aria-label="Mobile navigation">
       <div class="drawer-head">
         <div class="flex items-center gap-2">
-          <span class="nav-logo-mark">AC</span>
+          <span class="nav-logo-mark"><span class="logo-text">AC</span></span>
           <span class="font-bold text-titanium text-sm">Aditya Chouhan</span>
         </div>
         <button class="menu-toggle" id="menuClose" aria-label="Close navigation menu">
@@ -208,6 +189,7 @@
         <li><a href="#projects" data-nav-link>Featured Projects</a></li>
         <li><a href="#education" data-nav-link>Education &amp; Background</a></li>
         <li><a href="#certifications" data-nav-link>Certificates &amp; Credentials</a></li>
+        <li><a href="#profiles" data-nav-link>Web Presence</a></li>
         <li><a href="#contact" data-nav-link>Contact Hub</a></li>
       </ul>
 
@@ -223,6 +205,9 @@
         <div class="drawer-social">
           <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="icon-btn" title="GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+          </a>
+          <a href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" aria-label="LeetCode" class="icon-btn" title="LeetCode Profile (@kX69jmDS30)">
+            <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1.15rem;"></i>
           </a>
           <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="icon-btn" title="LinkedIn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
@@ -245,11 +230,11 @@
       <!-- Left Column: Hologram Dev Core, Copy, Animated Typing & Interactive Floating Tech Stack -->
       <div class="hero-copy">
         
-        <!-- Aditya Chouhan (AC) Animated Brand Emblem & Live Status Badge -->
+        <!-- Aditya Chouhan (AC) Animated Brand Emblem with Profile Photo & Live Status -->
         <div class="hero-brand-badge magnetic" title="Aditya Chouhan — Software Developer Intern">
           <div class="brand-badge-logo">
+            <img src="aditya-profile.jpg" alt="Aditya Chouhan" class="badge-avatar-img" />
             <div class="badge-orbit-ring"></div>
-            <span class="badge-ac-text">AC</span>
           </div>
           <div class="badge-status-wrap">
             <span class="badge-dot" aria-hidden="true"></span>
@@ -320,6 +305,11 @@
           <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="group">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
             <span>github.com/aditya2438</span>
+            <svg class="link-arrow" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </a>
+          <a href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" class="group" title="Aditya Chouhan on LeetCode">
+            <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1.05rem;"></i>
+            <span>leetcode.com/u/kX69jmDS30</span>
             <svg class="link-arrow" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
           </a>
           <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="group">
@@ -413,6 +403,48 @@
       </div>
 
       <div class="bento-about">
+        <!-- Profile & Engineering Identity Showcase Card -->
+        <div class="glass-card spotlight about-profile-card" data-reveal="section">
+          <div class="profile-avatar-wrap">
+            <img src="aditya-profile.jpg" alt="Aditya Chouhan — Software Developer Intern" class="profile-avatar-img" />
+          </div>
+          
+          <div class="profile-info">
+            <h3 class="profile-name">Aditya Chouhan</h3>
+            <span class="profile-role-tag">
+              <span class="badge-dot" style="margin-right: 4px;" aria-hidden="true"></span>
+              Software Developer Intern
+            </span>
+          </div>
+
+          <div class="profile-badges-row">
+            <a href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" class="profile-stat-badge leetcode-badge" title="Visit LeetCode Profile">
+              <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1.4rem;"></i>
+              <div class="stat-badge-text">
+                <span class="badge-title">LeetCode Profile</span>
+                <span class="badge-sub">@kX69jmDS30 · Problem Solving</span>
+              </div>
+              <svg class="pill-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+            </a>
+
+            <div class="profile-stat-badge">
+              <i class="devicon-java-plain colored" style="font-size: 1.35rem;"></i>
+              <div class="stat-badge-text">
+                <span class="badge-title">Core Runtime</span>
+                <span class="badge-sub">Java 21 · Spring Boot 3.3</span>
+              </div>
+            </div>
+
+            <div class="profile-stat-badge">
+              <i class="fa-solid fa-graduation-cap" style="color: #64e5ff; font-size: 1.25rem;"></i>
+              <div class="stat-badge-text">
+                <span class="badge-title">IPS Academy, Indore</span>
+                <span class="badge-sub">B.Tech CSE (2022 – 2026)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Main Bento Glass Card -->
         <div class="glass-card spotlight bento-main" data-reveal="section">
           <div class="bento-badge">
@@ -434,6 +466,11 @@
             <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="about-pill-btn magnetic" title="View GitHub Profile &amp; Repositories">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
               <span>GitHub Repositories</span>
+              <svg class="pill-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+            </a>
+            <a href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" class="about-pill-btn magnetic" title="View LeetCode Algorithmic Solutions">
+              <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1rem;"></i>
+              <span>LeetCode Profile</span>
               <svg class="pill-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
             </a>
             <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="about-pill-btn magnetic" title="View LinkedIn Profile">
@@ -1077,6 +1114,122 @@
     </div>
   </section>
 
+  <!-- ============ WEB PRESENCE & DEV NETWORK SHOWCASE ============ -->
+  <section id="profiles" class="section profiles-section" aria-labelledby="profiles-heading">
+    <div class="container">
+      
+      <!-- Top Profile Identity Banner (Inspired by reference bottom profile) -->
+      <div class="glass-card spotlight profile-identity-card" data-reveal="section">
+        <div class="profile-avatar-outer">
+          <div class="profile-avatar-orbit"></div>
+          <div class="profile-img-main">
+            <img src="aditya-profile.jpg" alt="Aditya Chouhan — Developer Profile" class="profile-portrait-bottom" />
+          </div>
+          <span class="profile-online-badge" title="Open to Work"></span>
+        </div>
+
+        <div class="profile-title-block">
+          <div class="badge badge-subtle">
+            <span class="badge-dot" aria-hidden="true"></span>
+            <span>Web Presence · Engineering Network</span>
+          </div>
+          <h2 id="profiles-heading" class="profiles-heading">
+            Web Presence — <span class="purple-gradient-text">Dev Network!</span>
+          </h2>
+          <p class="profiles-subtitle">
+            Explore my verified algorithmic problem solving on LeetCode, active production codebases on GitHub, and professional software engineering network.
+          </p>
+          <div class="profile-handle-tags">
+            <span class="profile-tag-pill">@aditya2438</span>
+            <span class="profile-tag-pill">LeetCode: @kX69jmDS30</span>
+            <span class="profile-tag-pill">Java &amp; Spring Boot</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Platform Cards Grid -->
+      <div class="profiles-grid" data-reveal="section">
+
+        <!-- LeetCode Card -->
+        <a href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" class="glass-card spotlight profile-card leetcode-card group" title="Visit Aditya's LeetCode Profile (@kX69jmDS30)">
+          <div class="profile-card-top">
+            <div class="profile-card-icon leetcode-icon-wrap">
+              <i class="devicon-leetcode-plain"></i>
+            </div>
+            <span class="profile-tag">DSA &amp; Problem Solving</span>
+          </div>
+          <div class="profile-card-body">
+            <h3 class="profile-card-platform">LeetCode</h3>
+            <p class="profile-card-handle">@kX69jmDS30</p>
+            <p class="profile-card-desc">Consistent practice in Data Structures, Algorithms, Arrays, Trees, Dynamic Programming, and SQL challenges.</p>
+          </div>
+          <div class="profile-card-footer">
+            <span class="profile-cta">View Profile &amp; Stats</span>
+            <svg class="profile-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+          </div>
+        </a>
+
+        <!-- GitHub Card -->
+        <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="glass-card spotlight profile-card github-card group" title="Visit Aditya's GitHub Profile (@aditya2438)">
+          <div class="profile-card-top">
+            <div class="profile-card-icon github-icon-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+            </div>
+            <span class="profile-tag">Code &amp; Repositories</span>
+          </div>
+          <div class="profile-card-body">
+            <h3 class="profile-card-platform">GitHub</h3>
+            <p class="profile-card-handle">@aditya2438</p>
+            <p class="profile-card-desc">Production codebases, FairCart REST backend, Fixora microservices, database schemas, and open-source contributions.</p>
+          </div>
+          <div class="profile-card-footer">
+            <span class="profile-cta">Explore Repositories</span>
+            <svg class="profile-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+          </div>
+        </a>
+
+        <!-- LinkedIn Card -->
+        <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="glass-card spotlight profile-card linkedin-card group" title="Visit Aditya's LinkedIn Profile">
+          <div class="profile-card-top">
+            <div class="profile-card-icon linkedin-icon-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            </div>
+            <span class="profile-tag">Professional Network</span>
+          </div>
+          <div class="profile-card-body">
+            <h3 class="profile-card-platform">LinkedIn</h3>
+            <p class="profile-card-handle">in/adityachouhan24</p>
+            <p class="profile-card-desc">Career milestones, engineering insights, Java &amp; Spring Boot development updates, and professional connections.</p>
+          </div>
+          <div class="profile-card-footer">
+            <span class="profile-cta">Connect on LinkedIn</span>
+            <svg class="profile-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+          </div>
+        </a>
+
+        <!-- Email / Direct Connect Card -->
+        <a href="mailto:adityachouhan2446@gmail.com?subject=Software%20Engineering%20Opportunity%20%E2%80%94%20Aditya%20Chouhan" class="glass-card spotlight profile-card mail-card group" title="Send direct email to Aditya">
+          <div class="profile-card-top">
+            <div class="profile-card-icon mail-icon-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            </div>
+            <span class="profile-tag">Direct Inquiries</span>
+          </div>
+          <div class="profile-card-body">
+            <h3 class="profile-card-platform">Direct Email</h3>
+            <p class="profile-card-handle">adityachouhan2446@gmail.com</p>
+            <p class="profile-card-desc">Ready for software developer internships, full-time backend positions, and technical collaborations.</p>
+          </div>
+          <div class="profile-card-footer">
+            <span class="profile-cta">Send Direct Email</span>
+            <svg class="profile-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ============ LUXURY CONTACT HUB & FOOTER ============ -->
   <section id="contact" class="section" aria-labelledby="contact-heading">
     <div class="container">
@@ -1104,6 +1257,12 @@
               </span>
             </button>
 
+            <!-- LeetCode Link -->
+            <a class="contact-item" href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" title="LeetCode Profile (@kX69jmDS30)">
+              <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1.15rem;"></i>
+              <span>LeetCode Profile</span>
+            </a>
+
             <!-- Direct Mail Link -->
             <a class="contact-item" href="mailto:adityachouhan2446@gmail.com?subject=Software%20Engineering%20Opportunity%20%E2%80%94%20Aditya%20Chouhan" title="Send email via mail client">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
@@ -1120,6 +1279,9 @@
           <div class="contact-socials">
             <a href="https://github.com/aditya2438" target="_blank" rel="noopener noreferrer" class="icon-btn magnetic" aria-label="GitHub Profile" title="GitHub">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+            </a>
+            <a href="https://leetcode.com/u/kX69jmDS30/" target="_blank" rel="noopener noreferrer" class="icon-btn magnetic" aria-label="LeetCode Profile" title="LeetCode Profile (@kX69jmDS30)">
+              <i class="devicon-leetcode-plain" style="color: #ffa116; font-size: 1.15rem;"></i>
             </a>
             <a href="https://www.linkedin.com/in/adityachouhan24" target="_blank" rel="noopener noreferrer" class="icon-btn magnetic" aria-label="LinkedIn Profile" title="LinkedIn">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
@@ -1240,6 +1402,13 @@
           <span>Certifications &amp; Credentials</span>
         </div>
         <span class="cmd-item-badge">#certifications</span>
+      </a>
+      <a href="#profiles" class="cmd-item" data-cmd="profiles presence leetcode github network developer">
+        <div class="cmd-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          <span>Web Presence &amp; Dev Network (LeetCode, GitHub)</span>
+        </div>
+        <span class="cmd-item-badge">#profiles</span>
       </a>
       <a href="#contact" class="cmd-item" data-cmd="contact">
         <div class="cmd-item-left">
@@ -1410,7 +1579,7 @@
 <!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="container footer-inner">
-    <a href="#home" class="nav-logo-mark small" aria-label="Aditya Chouhan — Top">AC</a>
+    <a href="#home" class="nav-logo-mark small" aria-label="Aditya Chouhan — Top"><span class="logo-text">AC</span></a>
     <p>© <span id="year"></span> Aditya Chouhan. Crafted with high-performance Vanilla JS, Tailwind &amp; Liquid Glassmorphism.</p>
     <button id="backToTop" class="icon-btn magnetic" aria-label="Scroll back to top" title="Back to top">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg>
@@ -1428,6 +1597,6 @@
 <script src="https://unpkg.com/lenis@1.3.26/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="app.js?v=4.1"></script>
+<script src="app.js?v=4.2"></script>
 </body>
 </html>
