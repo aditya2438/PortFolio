@@ -575,7 +575,10 @@
     drawer.classList.add('open');
     drawer.setAttribute('aria-hidden', 'false');
     if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
     var focusTarget = menuClose || drawer.querySelector('a, button');
     if (focusTarget) focusTarget.focus();
   }
@@ -585,7 +588,10 @@
     drawer.classList.remove('open');
     drawer.setAttribute('aria-hidden', 'true');
     if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
+    if (lenis) lenis.start();
     if (menuToggle) menuToggle.focus();
   }
 
@@ -725,14 +731,20 @@
     if (!termModal) return;
     termModal.classList.add('open');
     termModal.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
   }
 
   function closeTermModal() {
     if (!termModal || !termModal.classList.contains('open')) return;
     termModal.classList.remove('open');
     termModal.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
+    if (lenis) lenis.start();
   }
 
   if (floatingTermBtn) floatingTermBtn.addEventListener('click', openTermModal);
@@ -1020,14 +1032,20 @@
       filterCmdItems('');
       setTimeout(function () { cmdInput.focus(); }, 50);
     }
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
   }
 
   function closeCmdPalette() {
     if (!cmdModal || !cmdModal.classList.contains('open')) return;
     cmdModal.classList.remove('open');
     cmdModal.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
+    if (lenis) lenis.start();
   }
 
   function filterCmdItems(query) {
@@ -1115,6 +1133,7 @@
   var pdfDoc = null;
   var pdfScale = 1.0;
   var isRendering = false;
+  var pendingScale = null;
   var pdfUrl = 'Aditya_Singh_Chouhan_Resume.pdf';
 
   function calculateFitScale(firstPage) {
@@ -1125,9 +1144,35 @@
     return Math.max(0.45, Math.min(scale, 1.6));
   }
 
+  function applyZoom(newScale) {
+    if (!pdfDoc) return;
+    var clamped = Math.min(Math.max(Number(newScale.toFixed(2)), 0.45), 2.75);
+    pdfScale = clamped;
+    if (isRendering) {
+      pendingScale = clamped;
+      return;
+    }
+    renderPdfPages();
+  }
+
+  function fitResume() {
+    if (!pdfDoc || !resumeCanvasWrapper) return;
+    pdfDoc.getPage(1).then(function (page) {
+      var fitScale = calculateFitScale(page);
+      applyZoom(fitScale);
+    });
+  }
+
   function renderPdfPages() {
     if (!pdfDoc || !resumeCanvasContainer) return;
     isRendering = true;
+
+    // Preserve scroll position ratio across zoom renders so user doesn't jump to top
+    var prevScrollRatio = 0;
+    if (resumeCanvasWrapper && resumeCanvasWrapper.scrollHeight > 0) {
+      prevScrollRatio = resumeCanvasWrapper.scrollTop / resumeCanvasWrapper.scrollHeight;
+    }
+
     resumeCanvasContainer.innerHTML = '';
 
     if (resumeZoomLevel) {
@@ -1173,9 +1218,18 @@
       if (resumeLoadingSpinner && resumeLoadingSpinner.parentNode) {
         resumeLoadingSpinner.parentNode.removeChild(resumeLoadingSpinner);
       }
+      if (resumeCanvasWrapper && prevScrollRatio > 0) {
+        resumeCanvasWrapper.scrollTop = Math.round(prevScrollRatio * resumeCanvasWrapper.scrollHeight);
+      }
+      if (pendingScale !== null) {
+        var nextScale = pendingScale;
+        pendingScale = null;
+        applyZoom(nextScale);
+      }
     }).catch(function (err) {
       console.warn('PDF.js render warning:', err);
       isRendering = false;
+      pendingScale = null;
     });
   }
 
@@ -1219,10 +1273,26 @@
     if (!resumeModal) return;
     resumeModal.classList.add('open');
     resumeModal.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
+
+    // Pause Lenis smooth scrolling so mouse wheel does not scroll the background website
+    if (lenis) {
+      lenis.stop();
+    }
+
+    // Reset initial scroll position to the top of the resume
+    if (resumeCanvasWrapper) {
+      resumeCanvasWrapper.scrollTop = 0;
+      resumeCanvasWrapper.scrollLeft = 0;
+    }
 
     setTimeout(function () {
       loadAndRenderPdf(true);
+      if (resumeCanvasWrapper) {
+        resumeCanvasWrapper.focus();
+      }
     }, 60);
   }
 
@@ -1230,33 +1300,30 @@
     if (!resumeModal) return;
     resumeModal.classList.remove('open');
     resumeModal.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
+
+    // Resume Lenis smooth scrolling for page navigation
+    if (lenis) {
+      lenis.start();
+    }
   }
 
   if (resumeZoomIn) {
     resumeZoomIn.addEventListener('click', function () {
-      if (!pdfDoc || isRendering) return;
-      pdfScale = Math.min(pdfScale + 0.25, 2.75);
-      renderPdfPages();
+      applyZoom(pdfScale + 0.25);
     });
   }
 
   if (resumeZoomOut) {
     resumeZoomOut.addEventListener('click', function () {
-      if (!pdfDoc || isRendering) return;
-      pdfScale = Math.max(pdfScale - 0.25, 0.45);
-      renderPdfPages();
+      applyZoom(pdfScale - 0.25);
     });
   }
 
   if (resumeZoomFit) {
-    resumeZoomFit.addEventListener('click', function () {
-      if (!pdfDoc || isRendering) return;
-      pdfDoc.getPage(1).then(function (page) {
-        pdfScale = calculateFitScale(page);
-        renderPdfPages();
-      });
-    });
+    resumeZoomFit.addEventListener('click', fitResume);
   }
 
   window.addEventListener('resize', function () {
@@ -1289,11 +1356,139 @@
     resumeModal.addEventListener('click', function (e) {
       if (e.target === resumeModal) closeResumeModal();
     });
+
+    // Isolate wheel scrolling to resume viewer, preventing full website from scrolling
+    resumeModal.addEventListener('wheel', function (e) {
+      e.stopPropagation();
+      if (resumeCanvasWrapper && !resumeCanvasWrapper.contains(e.target)) {
+        e.preventDefault();
+        resumeCanvasWrapper.scrollTop += e.deltaY;
+        resumeCanvasWrapper.scrollLeft += e.deltaX;
+      }
+    }, { passive: false });
+  }
+
+  if (resumeCanvasWrapper) {
+    resumeCanvasWrapper.addEventListener('wheel', function (e) {
+      // Pinch gesture on trackpad or Ctrl + Mouse Wheel -> Zoom document smoothly
+      if (e.ctrlKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        var delta = e.deltaY < 0 ? 0.15 : -0.15;
+        applyZoom(pdfScale + delta);
+        return;
+      }
+
+      e.stopPropagation();
+      var maxScrollTop = resumeCanvasWrapper.scrollHeight - resumeCanvasWrapper.clientHeight;
+      var atTop = resumeCanvasWrapper.scrollTop <= 0 && e.deltaY < 0;
+      var atBottom = resumeCanvasWrapper.scrollTop >= maxScrollTop - 1 && e.deltaY > 0;
+      if (atTop || atBottom) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+  }
+
+  // Mouse Drag-to-Pan across zoomed document (grab and pan like Acrobat/Drive)
+  var isPanning = false;
+  var panStartX = 0;
+  var panStartY = 0;
+  var panScrollLeft = 0;
+  var panScrollTop = 0;
+
+  if (resumeCanvasWrapper) {
+    resumeCanvasWrapper.addEventListener('mousedown', function (e) {
+      if (e.button !== 0 || e.target.closest('button, a')) return;
+      isPanning = true;
+      resumeCanvasWrapper.classList.add('is-panning');
+      panStartX = e.pageX - resumeCanvasWrapper.offsetLeft;
+      panStartY = e.pageY - resumeCanvasWrapper.offsetTop;
+      panScrollLeft = resumeCanvasWrapper.scrollLeft;
+      panScrollTop = resumeCanvasWrapper.scrollTop;
+    });
+
+    window.addEventListener('mousemove', function (e) {
+      if (!isPanning || !resumeCanvasWrapper) return;
+      e.preventDefault();
+      var x = e.pageX - resumeCanvasWrapper.offsetLeft;
+      var y = e.pageY - resumeCanvasWrapper.offsetTop;
+      resumeCanvasWrapper.scrollLeft = panScrollLeft - (x - panStartX);
+      resumeCanvasWrapper.scrollTop = panScrollTop - (y - panStartY);
+    });
+
+    window.addEventListener('mouseup', function () {
+      if (isPanning && resumeCanvasWrapper) {
+        isPanning = false;
+        resumeCanvasWrapper.classList.remove('is-panning');
+      }
+    });
+  }
+
+  // Mobile Touch Pinch-to-Zoom
+  var touchPinchDist = null;
+  var touchPinchStartScale = 1.0;
+
+  function getTouchDistance(touches) {
+    if (!touches || touches.length < 2) return 0;
+    var dx = touches[0].clientX - touches[1].clientX;
+    var dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  if (resumeCanvasWrapper) {
+    resumeCanvasWrapper.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) {
+        touchPinchDist = getTouchDistance(e.touches);
+        touchPinchStartScale = pdfScale;
+      }
+    }, { passive: true });
+
+    resumeCanvasWrapper.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 2 && touchPinchDist) {
+        var currentDist = getTouchDistance(e.touches);
+        if (currentDist > 0) {
+          e.preventDefault();
+          var ratio = currentDist / touchPinchDist;
+          applyZoom(touchPinchStartScale * ratio);
+        }
+      }
+    }, { passive: false });
+
+    resumeCanvasWrapper.addEventListener('touchend', function (e) {
+      if (e.touches.length < 2) {
+        touchPinchDist = null;
+      }
+    }, { passive: true });
   }
 
   window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && resumeModal && resumeModal.classList.contains('open')) {
-      closeResumeModal();
+    if (resumeModal && resumeModal.classList.contains('open')) {
+      if (e.key === 'Escape') {
+        closeResumeModal();
+      } else if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        applyZoom(pdfScale + 0.25);
+      } else if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        applyZoom(pdfScale - 0.25);
+      } else if (e.key === '0' || e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        fitResume();
+      } else if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].indexOf(e.key) !== -1) {
+        if (resumeCanvasWrapper) {
+          var step = (e.key === 'PageDown' || e.key === ' ') ? resumeCanvasWrapper.clientHeight * 0.8 :
+                     (e.key === 'PageUp') ? -resumeCanvasWrapper.clientHeight * 0.8 :
+                     (e.key === 'ArrowDown') ? 60 :
+                     (e.key === 'ArrowUp') ? -60 :
+                     (e.key === 'Home') ? -resumeCanvasWrapper.scrollHeight :
+                     (e.key === 'End') ? resumeCanvasWrapper.scrollHeight : 0;
+          if (step !== 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            resumeCanvasWrapper.scrollTop += step;
+          }
+        }
+      }
     }
   });
 
