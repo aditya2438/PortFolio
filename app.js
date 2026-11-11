@@ -18,9 +18,17 @@
   initIcons();
 
   /* ==========================================================================
-     STARTING KINETIC WORDMARK PRELOADER (Bounce -> Pivot -> Morph -> Split)
+     STARTING KINETIC WORDMARK & SPLIT-APERTURE PRELOADER
      ========================================================================== */
   var preloader = document.getElementById('preloader');
+  var preloaderCurtainLeft = document.getElementById('preloaderCurtainLeft');
+  var preloaderCurtainRight = document.getElementById('preloaderCurtainRight');
+  var preloaderGrid = document.getElementById('preloaderGrid');
+  var preloaderSpot = document.getElementById('preloaderSpot');
+  var preloaderSeam = document.getElementById('preloaderSeam');
+  var preloaderHud = document.getElementById('preloaderHud');
+  var preloaderCounter = document.getElementById('preloaderCounter');
+  var preloaderWordWrap = document.getElementById('preloaderWordWrap');
   var preloaderWordStatic = document.getElementById('preloaderWordStatic');
   var preloaderWordLeft = document.getElementById('preloaderWordLeft');
   var preloaderWordRight = document.getElementById('preloaderWordRight');
@@ -29,11 +37,17 @@
   var preloaderAnimHeading = document.getElementById('preloaderAnimHeading');
   var preloaderDot = document.getElementById('preloaderDot');
   var preloaderGlow = document.getElementById('preloaderGlow');
+  var preloaderFxLayer = document.getElementById('preloaderFxLayer');
+  var preloaderHorizon = document.getElementById('preloaderHorizon');
+  var preloaderSubtitle = document.getElementById('preloaderSubtitle');
+  var preloaderProgressRail = document.getElementById('preloaderProgressRail');
+  var preloaderProgressFill = document.getElementById('preloaderProgressFill');
   var preloaderActive = Boolean(preloader);
 
   if (preloader) {
     var SOURCE_WORD = 'ADITYA';
     var TARGET_WORD = 'PORTFOLIO';
+    var CIPHER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/%';
     var PIVOT_ANGLE = 63;
     var preloaderDone = false;
     var preloaderCancelled = false;
@@ -42,6 +56,7 @@
     var animCtx = null;
     var exitTl = null;
     var resizeHandler = null;
+    var lastPct = -1;
 
     function lockPreloaderScroll() {
       window.scrollTo(0, 0);
@@ -56,6 +71,106 @@
       if (lenis && !document.documentElement.classList.contains('modal-open')) {
         lenis.start();
       }
+    }
+
+    function setBootProgress(pct) {
+      var clamped = Math.max(0, Math.min(100, Math.round(pct)));
+      if (clamped === lastPct) return;
+      lastPct = clamped;
+      if (preloaderCounter) {
+        preloaderCounter.textContent = (clamped < 10 ? '0' : '') + clamped + '%';
+      }
+      if (preloaderProgressFill) {
+        preloaderProgressFill.style.transform = 'scaleX(' + (clamped / 100) + ')';
+      }
+    }
+
+    function spawnShockwave(x, y, size, alpha) {
+      if (preloaderCancelled || preloaderDone || !preloaderFxLayer || !window.gsap) return;
+      if (preloaderFxLayer.childElementCount > 28) return;
+      var ring = document.createElement('span');
+      ring.className = 'preloader-shockwave';
+      ring.style.width = size + 'px';
+      ring.style.height = size + 'px';
+      ring.style.left = x + 'px';
+      ring.style.top = y + 'px';
+      preloaderFxLayer.appendChild(ring);
+      gsap.fromTo(ring, {
+        xPercent: -50,
+        yPercent: -50,
+        scaleX: 0.2,
+        scaleY: 0.06,
+        opacity: alpha || 0.72
+      }, {
+        scaleX: 2.35,
+        scaleY: 0.72,
+        opacity: 0,
+        duration: 0.56,
+        ease: 'power3.out',
+        onComplete: function () {
+          if (ring.parentNode) ring.parentNode.removeChild(ring);
+        }
+      });
+    }
+
+    function spawnSparks(x, y, count, maxDist) {
+      if (preloaderCancelled || preloaderDone || !preloaderFxLayer || !window.gsap) return;
+      if (preloaderFxLayer.childElementCount > 28) return;
+      for (var sIdx = 0; sIdx < count; sIdx++) {
+        (function () {
+          var spark = document.createElement('span');
+          spark.className = 'preloader-spark';
+          var sz = gsap.utils.random(2, 3.6);
+          spark.style.width = sz + 'px';
+          spark.style.height = sz + 'px';
+          spark.style.left = x + 'px';
+          spark.style.top = y + 'px';
+          preloaderFxLayer.appendChild(spark);
+
+          var angle = gsap.utils.random(-168, -12) * Math.PI / 180;
+          var dist = gsap.utils.random(maxDist * 0.45, maxDist);
+          var tx = Math.cos(angle) * dist;
+          var ty = Math.sin(angle) * dist;
+
+          gsap.fromTo(spark, {
+            xPercent: -50,
+            yPercent: -50,
+            x: 0,
+            y: 0,
+            opacity: 0.95,
+            scale: 1
+          }, {
+            x: tx,
+            y: ty,
+            opacity: 0,
+            scale: 0.15,
+            duration: gsap.utils.random(0.35, 0.58),
+            ease: 'power2.out',
+            onComplete: function () {
+              if (spark.parentNode) spark.parentNode.removeChild(spark);
+            }
+          });
+        })();
+      }
+    }
+
+    function pulseHorizon(peakOpacity) {
+      if (preloaderCancelled || preloaderDone || !preloaderHorizon || !window.gsap) return;
+      gsap.killTweensOf(preloaderHorizon, 'opacity');
+      gsap.fromTo(preloaderHorizon, { opacity: peakOpacity || 0.9 }, {
+        opacity: 0.28,
+        duration: 0.45,
+        ease: 'power2.out'
+      });
+    }
+
+    function triggerImpactShake(amp) {
+      if (preloaderCancelled || preloaderDone || !preloaderWordWrap || !window.gsap) return;
+      gsap.fromTo(preloaderWordWrap, { y: amp }, {
+        y: 0,
+        duration: 0.28,
+        ease: 'elastic.out(1, 0.36)'
+      });
     }
 
     function onPreloaderKeydown(e) {
@@ -78,6 +193,7 @@
         if (animCtx) { animCtx.revert(); animCtx = null; }
         if (exitTl) { exitTl.kill(); exitTl = null; }
       }
+      if (preloaderFxLayer) preloaderFxLayer.innerHTML = '';
 
       unlockPreloaderScroll();
       if (typeof triggerHeroEntrance === 'function') {
@@ -144,6 +260,9 @@
             }
           });
         }
+        if (preloaderSpot) {
+          gsap.to(preloaderSpot, { x: 0, scale: 1.08, opacity: 0.56, duration: 0.45, ease: 'power2.out' });
+        }
       } else {
         if (preloaderWordStatic) preloaderWordStatic.style.opacity = '1';
         if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
@@ -158,18 +277,29 @@
         }
 
         var revealedCount = Math.floor(morphStep / 3);
-        var morphed = TARGET_WORD.split('').map(function (_, idx) {
-          if (idx < revealedCount) return TARGET_WORD[idx];
-          if (idx < SOURCE_WORD.length) return SOURCE_WORD[idx];
-          return '';
-        }).join('');
+        var activeLen = morphStep >= 27
+          ? TARGET_WORD.length
+          : Math.min(TARGET_WORD.length, Math.max(SOURCE_WORD.length, revealedCount + 2));
+
+        var morphed = '';
+        for (var cIdx = 0; cIdx < activeLen; cIdx++) {
+          if (morphStep >= 27 || cIdx < revealedCount) {
+            morphed += TARGET_WORD[cIdx];
+          } else if (cIdx === revealedCount || cIdx >= SOURCE_WORD.length) {
+            morphed += CIPHER_CHARS[(morphStep * 7 + cIdx * 3) % CIPHER_CHARS.length];
+          } else {
+            morphed += SOURCE_WORD[cIdx];
+          }
+        }
 
         if (preloaderWordLeft) preloaderWordLeft.textContent = morphed.slice(0, 4);
         if (preloaderWordRight) preloaderWordRight.textContent = morphed.slice(4);
+        setBootProgress(68 + (morphStep / 27) * 32);
 
         if (morphStep >= 27) {
           clearInterval(morphInterval);
           morphInterval = null;
+          setBootProgress(100);
 
           if (!window.gsap || !preloaderWordLeft || !preloaderWordRight) {
             finishPreloader(true);
@@ -177,9 +307,12 @@
           }
 
           var isMobile = window.innerWidth < 768;
-          var splitDist = isMobile
-            ? Math.max(window.innerWidth * 0.24, 80)
-            : Math.min(340, window.innerWidth * 0.24);
+          var crackDist = isMobile
+            ? Math.max(window.innerWidth * 0.08, 22)
+            : Math.min(72, window.innerWidth * 0.05);
+          var outerDist = isMobile
+            ? Math.max(window.innerWidth * 0.34, 120)
+            : Math.min(440, window.innerWidth * 0.32);
 
           exitTl = gsap.timeline({
             onComplete: function () {
@@ -187,38 +320,87 @@
             }
           });
 
+          // Liquid-chrome specular sheen sweep + subtitle reveal upon "PORTFOLIO" lock
           exitTl
-            .to(preloaderWordLeft, {
-              x: -splitDist / 2,
-              duration: 1.15,
-              ease: 'power3.inOut'
-            }, '+=0.2')
-            .to(preloaderWordRight, {
-              x: splitDist / 2,
-              duration: 1.15,
-              ease: 'power3.inOut'
-            }, '<')
             .to([preloaderWordLeft, preloaderWordRight], {
-              opacity: 0,
-              duration: 0.65,
+              '--sheen-x': '-75%',
+              duration: 0.52,
               ease: 'power2.inOut'
-            }, '<+0.4')
-            .to(preloader, {
+            }, 0)
+            .fromTo(preloaderSubtitle, {
+              y: 12,
               opacity: 0,
-              duration: 0.75,
-              ease: 'power2.inOut',
+              letterSpacing: '0.42em'
+            }, {
+              y: 0,
+              opacity: 1,
+              letterSpacing: isMobile ? '0.16em' : '0.24em',
+              duration: 0.45,
+              ease: 'power3.out'
+            }, 0.04);
+
+          // Center light seam ignites vertically
+          if (preloaderSeam) {
+            exitTl.to(preloaderSeam, {
+              scaleY: 1,
+              opacity: 0.92,
+              duration: 0.28,
+              ease: 'power3.out'
+            }, 0.42);
+          }
+
+          // First micro crack between PORT | FOLIO as HUD fades cleanly
+          exitTl
+            .to(preloaderWordLeft, { x: -crackDist, duration: 0.26, ease: 'power2.out' }, 0.56)
+            .to(preloaderWordRight, { x: crackDist, duration: 0.26, ease: 'power2.out' }, 0.56)
+            .to([preloaderHud, preloaderProgressRail, preloaderSubtitle, preloaderHorizon, preloaderGrid, preloaderSpot], {
+              opacity: 0,
+              duration: 0.28,
+              ease: 'power2.out'
+            }, 0.56);
+
+          // Dual radial curtains + PORT / FOLIO aperture slide wide open to reveal the Hero
+          exitTl
+            .to(preloaderCurtainLeft, {
+              xPercent: -104,
+              duration: 1.0,
+              ease: 'power4.inOut',
               onStart: function () {
                 unlockPreloaderScroll();
                 if (typeof triggerHeroEntrance === 'function') {
                   triggerHeroEntrance();
                 }
               }
-            }, '<');
+            }, 0.72)
+            .to(preloaderCurtainRight, {
+              xPercent: 104,
+              duration: 1.0,
+              ease: 'power4.inOut'
+            }, 0.72)
+            .to(preloaderWordLeft, {
+              x: -outerDist,
+              scale: 1.05,
+              opacity: 0,
+              duration: 0.85,
+              ease: 'power3.inOut'
+            }, 0.72)
+            .to(preloaderWordRight, {
+              x: outerDist,
+              scale: 1.05,
+              opacity: 0,
+              duration: 0.85,
+              ease: 'power3.inOut'
+            }, 0.72)
+            .to(preloaderSeam, {
+              opacity: 0,
+              duration: 0.28,
+              ease: 'power2.out'
+            }, 0.72);
           return;
         }
 
         morphStep += 1;
-      }, 50);
+      }, 48);
     }
 
     function runKineticIntro() {
@@ -232,8 +414,13 @@
         if (preloaderWordLeft) preloaderWordLeft.textContent = 'PORT';
         if (preloaderWordRight) preloaderWordRight.textContent = 'FOLIO';
         if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
+        setBootProgress(100);
         setTimeout(function () { finishPreloader(true); }, 350);
         return;
+      }
+
+      if (preloaderSpot) {
+        gsap.set(preloaderSpot, { xPercent: -50, yPercent: -50 });
       }
 
       var chars = SOURCE_WORD.split('');
@@ -350,7 +537,12 @@
               .to(el, { y: 0, duration: dur * 0.55, ease: 'power2.in' }, at + dur * 0.45)
               .to(el, { rotation: 0, duration: dur, ease: 'power2.out' }, at)
               .to(el, { y: -fontSize * 0.05, duration: 0.09, ease: 'power2.out' }, at + dur)
-              .to(el, { y: 0, duration: 0.16, ease: 'power2.in' }, at + dur + 0.09);
+              .to(el, { y: 0, duration: 0.16, ease: 'power2.in' }, at + dur + 0.09)
+              .call(function () {
+                spawnShockwave(box.cx, pivotPt.y, fontSize * 0.58, 0.55);
+                spawnSparks(box.cx, pivotPt.y, 4, fontSize * 0.42);
+                pulseHorizon(0.62);
+              }, null, at + dur);
 
             return at + dur;
           }
@@ -358,6 +550,14 @@
           function tiltAndLaunch(tl, angleDeg, indices, at) {
             if (!indices.length) return at;
             var tip = tipAt(angleDeg);
+            if (preloaderSpot) {
+              tl.to(preloaderSpot, {
+                x: angleDeg < 0 ? -64 : 64,
+                opacity: 0.65,
+                duration: 0.42,
+                ease: 'power2.out'
+              }, at);
+            }
             tl.to(pivotEl, { rotation: angleDeg, duration: 0.4, ease: 'back.out(1.4)' }, at);
             tl.to(pivotEl, { rotation: angleDeg + (angleDeg < 0 ? 6 : -6), duration: 0.08 }, at + 0.34)
               .to(pivotEl, { rotation: angleDeg, duration: 0.3, ease: 'elastic.out(1, 0.5)' }, at + 0.42);
@@ -366,6 +566,9 @@
             indices.forEach(function (letterIdx, order) {
               var launchAt = at + 0.34 + order * 0.1;
               pulseGlow(tl, tip, 0.5 - order * 0.1, launchAt);
+              tl.call(function () {
+                spawnSparks(tip.x, tip.y, 5, fontSize * 0.5);
+              }, null, launchAt);
               maxEnd = Math.max(maxEnd, launchLetter(tl, letterIdx, tip, launchAt));
             });
             return maxEnd;
@@ -373,6 +576,9 @@
 
           var master = gsap.timeline({
             defaults: { ease: 'power2.out' },
+            onUpdate: function () {
+              setBootProgress(master.progress() * 68);
+            },
             onComplete: startMorphAndSplit
           });
           master.timeScale(1.15);
@@ -382,6 +588,20 @@
             .set(letterEls, { opacity: 0, x: 0, y: 0, rotation: 0, scale: 1 })
             .set(pivotEl, { opacity: 0, y: dropStartY, rotation: 0 })
             .set(preloaderDot, { opacity: 0, y: dropStartY, scale: 1 });
+
+          if (preloaderHorizon) {
+            master.fromTo(preloaderHorizon, {
+              xPercent: -50,
+              scaleX: 0,
+              opacity: 0.15
+            }, {
+              xPercent: -50,
+              scaleX: 1,
+              opacity: 0.32,
+              duration: 0.65,
+              ease: 'power3.out'
+            }, 0.2);
+          }
 
           var introScale = 0.5;
           var bounceTl = gsap.timeline({ defaults: { ease: 'power2.out' } });
@@ -397,7 +617,16 @@
             .to(preloaderDot, { y: 0, duration: 0.18, ease: 'power2.in' }, 0.68)
             .to(preloaderDot, { scaleX: 0.92, scaleY: 1.08, duration: 0.14, ease: 'power1.in' }, 0.72)
             .to(preloaderDot, { scaleX: 1.2, scaleY: 0.74, duration: 0.05 }, 0.86)
-            .to(preloaderDot, { scaleX: 1, scaleY: 1, duration: 0.36, ease: 'elastic.out(1, 0.42)' }, 0.91);
+            .to(preloaderDot, { scaleX: 1, scaleY: 1, duration: 0.36, ease: 'elastic.out(1, 0.42)' }, 0.91)
+            .call(function () {
+              spawnShockwave(pivotPt.x, pivotPt.y + fontSize * 0.1, fontSize * 0.52, 0.7);
+              spawnSparks(pivotPt.x, pivotPt.y + fontSize * 0.1, 5, fontSize * 0.36);
+              pulseHorizon(0.8);
+            }, null, 0.42)
+            .call(function () {
+              spawnShockwave(pivotPt.x, pivotPt.y + fontSize * 0.1, fontSize * 0.4, 0.45);
+              pulseHorizon(0.5);
+            }, null, 0.86);
           pulseGlow(bounceTl, pivotPt, 0.4, 0.42);
           pulseGlow(bounceTl, pivotPt, 0.24, 0.86);
 
@@ -412,7 +641,16 @@
             .to(pivotEl, { y: 0, duration: 0.1, ease: 'power2.in' }, 1.3)
             .to(pivotEl, { scaleX: 1.12, scaleY: 0.88, duration: 0.05 }, 1.4)
             .to(pivotEl, { scaleX: 1, scaleY: 1, duration: 0.38, ease: 'elastic.out(1, 0.4)' }, 1.45)
-            .fromTo(pivotEl, { rotation: -9 }, { rotation: 0, duration: 0.5, ease: 'elastic.out(1, 0.36)' }, 1.19);
+            .fromTo(pivotEl, { rotation: -9 }, { rotation: 0, duration: 0.5, ease: 'elastic.out(1, 0.36)' }, 1.19)
+            .call(function () {
+              spawnShockwave(pivotPt.x, pivotPt.y, fontSize * 0.82, 0.85);
+              spawnSparks(pivotPt.x, pivotPt.y, 7, fontSize * 0.55);
+              pulseHorizon(1.0);
+              triggerImpactShake(4);
+              if (preloaderSpot) {
+                gsap.fromTo(preloaderSpot, { opacity: 0.82 }, { opacity: 0.46, duration: 0.55, ease: 'power2.out' });
+              }
+            }, null, 1.14);
           pulseGlow(bounceTl, pivotPt, 0.6, 1.14);
           pulseGlow(bounceTl, pivotPt, 0.26, 1.4);
 
@@ -434,7 +672,11 @@
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function () {
               if (preloaderCancelled || preloaderDone) return;
-              if (master.progress() < 1) master.progress(1);
+              if (master.progress() < 1) {
+                master.progress(1, true);
+                if (preloaderFxLayer) preloaderFxLayer.innerHTML = '';
+                startMorphAndSplit();
+              }
             }, 150);
           };
           window.addEventListener('resize', resizeHandler);

@@ -129,7 +129,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .skip-link:focus { top: 16px; }
 
 /* ==========================================================================
-   STARTING KINETIC WORDMARK PRELOADER
+   STARTING KINETIC WORDMARK & SPLIT-APERTURE PRELOADER
    ========================================================================== */
 html.preloader-active,
 body.preloader-active {
@@ -141,7 +141,7 @@ body.preloader-active {
   position: fixed;
   inset: 0;
   z-index: 100000;
-  background: radial-gradient(circle, #222222 0%, #000000 80%);
+  background: transparent;
   overflow: hidden;
   opacity: 1;
   visibility: visible;
@@ -156,15 +156,127 @@ body.preloader-active {
   pointer-events: none;
 }
 
-.preloader-backdrop {
+/* Dual Seamless Radial-Spotlight Curtains */
+.preloader-curtain {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.preloader-curtain-left {
+  left: 0;
+  width: 51%;
+}
+
+.preloader-curtain-right {
+  right: 0;
+  width: 50%;
+}
+
+.preloader-curtain-bg {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100%;
+  background: radial-gradient(circle, #222222 0%, #000000 80%);
+}
+
+.preloader-curtain-left .preloader-curtain-bg {
+  left: 0;
+}
+
+.preloader-curtain-right .preloader-curtain-bg {
+  right: 0;
+}
+
+.preloader-curtain-bg::after {
+  content: '';
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  pointer-events: none;
 }
 
+/* Precision Architectural Dot Matrix & Ambient Tracking Spotlight */
+.preloader-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.085) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.9) 18%, transparent 74%);
+  mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.9) 18%, transparent 74%);
+  will-change: opacity;
+}
+
+.preloader-spot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(320px, 56vw, 760px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 42%, transparent 72%);
+  filter: blur(18px);
+  opacity: 0.42;
+  will-change: transform, opacity;
+}
+
+.preloader-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  z-index: 15;
+  pointer-events: none;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: center center;
+  background: linear-gradient(to bottom, transparent 6%, rgba(255, 255, 255, 0.95) 50%, transparent 94%);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.72);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Monochrome Corner Telemetry HUD */
+.preloader-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.preloader-hud-corner {
+  position: absolute;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(0.6rem, 1.05vw, 0.74rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+}
+
+.preloader-hud-tl { top: clamp(18px, 3.2vw, 34px); left: clamp(18px, 3.5vw, 38px); }
+.preloader-hud-tr { top: clamp(18px, 3.2vw, 34px); right: clamp(18px, 3.5vw, 38px); color: rgba(255, 255, 255, 0.76); font-variant-numeric: tabular-nums; }
+.preloader-hud-bl { bottom: clamp(18px, 3.2vw, 34px); left: clamp(18px, 3.5vw, 38px); }
+.preloader-hud-br { bottom: clamp(18px, 3.2vw, 34px); right: clamp(18px, 3.5vw, 38px); color: rgba(255, 255, 255, 0.28); }
+
+@media (max-width: 520px) {
+  .preloader-hud-bl { display: none; }
+  .preloader-hud-br { left: 50%; right: auto; transform: translateX(-50%); bottom: 48px; }
+}
+
+/* Centered Typography Stage & Baseline Physics Layer */
 .preloader-stage {
   position: absolute;
   top: 50%;
@@ -176,8 +288,16 @@ body.preloader-active {
   -webkit-user-select: none;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   width: max-content;
+}
+
+.preloader-word-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  will-change: transform;
 }
 
 .preloader-word {
@@ -198,7 +318,12 @@ body.preloader-active {
 
 .preloader-word-gradient {
   color: transparent;
-  background-image: linear-gradient(to bottom, #ffffff 0%, #d1d5db 50%, #1f2937 100%);
+  background-image:
+    linear-gradient(112deg, transparent 24%, rgba(255, 255, 255, 0.96) 48%, rgba(255, 255, 255, 0.96) 52%, transparent 76%),
+    linear-gradient(to bottom, #ffffff 0%, #d1d5db 50%, #1f2937 100%);
+  background-size: 240% 100%, 100% 100%;
+  background-position: var(--sheen-x, 165%) 0, 0 0;
+  background-repeat: no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -246,6 +371,85 @@ body.preloader-active {
   opacity: 0;
   pointer-events: none;
   will-change: opacity;
+}
+
+.preloader-fx-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.preloader-shockwave {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.preloader-spark {
+  position: absolute;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.preloader-horizon {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 112%;
+  max-width: 86vw;
+  height: 1px;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center center;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.38);
+  opacity: 0.25;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.preloader-subtitle {
+  margin: clamp(16px, 2.4vw, 26px) 0 0 0;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(0.6rem, 1.35vw, 0.84rem);
+  font-weight: 500;
+  letter-spacing: 0.44em;
+  text-transform: uppercase;
+  color: rgba(229, 231, 235, 0.8);
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  will-change: transform, opacity, letter-spacing;
+}
+
+.preloader-progress-rail {
+  position: absolute;
+  bottom: clamp(20px, 3.6vh, 34px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(130px, 22vw, 240px);
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  overflow: hidden;
+  z-index: 12;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.preloader-progress-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.25), #ffffff, rgba(255, 255, 255, 0.25));
+  transform: scaleX(0);
+  transform-origin: center center;
+  will-change: transform;
 }
 
 :focus-visible {

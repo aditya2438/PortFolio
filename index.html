@@ -66,28 +66,65 @@
 
 <!-- Lenis CSS -->
 <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.26/dist/lenis.css" />
-<link rel="stylesheet" href="styles.css?v=4.5" />
+<link rel="stylesheet" href="styles.css?v=4.6" />
 </head>
 <body class="bg-obsidian text-titanium font-display antialiased selection:bg-brandViolet selection:text-white">
 
-<!-- ── Preloader: Kinetic Wordmark Boot Sequence ── -->
+<!-- ── Preloader: Kinetic Wordmark & Split Aperture Boot Sequence ── -->
 <div class="preloader" id="preloader" aria-label="Portfolio Loading">
-  <div class="preloader-backdrop" aria-hidden="true"></div>
+  <!-- Dual radial-spotlight curtains that part open on exit -->
+  <div class="preloader-curtain preloader-curtain-left" id="preloaderCurtainLeft" aria-hidden="true">
+    <div class="preloader-curtain-bg"></div>
+  </div>
+  <div class="preloader-curtain preloader-curtain-right" id="preloaderCurtainRight" aria-hidden="true">
+    <div class="preloader-curtain-bg"></div>
+  </div>
 
+  <!-- Architectural micro-grid, reactive spotlight & vertical split seam -->
+  <div class="preloader-grid" id="preloaderGrid" aria-hidden="true"></div>
+  <div class="preloader-spot" id="preloaderSpot" aria-hidden="true"></div>
+  <div class="preloader-seam" id="preloaderSeam" aria-hidden="true"></div>
+
+  <!-- Minimalist Monochrome Corner Telemetry HUD -->
+  <div class="preloader-hud" id="preloaderHud" aria-hidden="true">
+    <span class="preloader-hud-corner preloader-hud-tl">+ // INIT.SEQ</span>
+    <span class="preloader-hud-corner preloader-hud-tr" id="preloaderCounter">00%</span>
+    <span class="preloader-hud-corner preloader-hud-bl">ADITYA CHOUHAN</span>
+    <span class="preloader-hud-corner preloader-hud-br">CLICK OR ESC TO SKIP</span>
+  </div>
+
+  <!-- Centered Kinetic Typography Stage -->
   <div class="preloader-stage" id="preloaderStage">
-    <!-- Morph & split layer ("ADITYA" -> "PORTFOLIO" -> "PORT" | "FOLIO") -->
-    <h1 class="preloader-word preloader-word-static" id="preloaderWordStatic" aria-hidden="true">
-      <span class="preloader-word-split-part preloader-word-gradient" id="preloaderWordLeft">ADIT</span><span class="preloader-word-split-part preloader-word-gradient" id="preloaderWordRight">YA</span>
-    </h1>
+    <div class="preloader-word-wrap" id="preloaderWordWrap">
+      <!-- Morph & split layer ("ADITYA" -> "PORTFOLIO" -> "PORT" | "FOLIO") -->
+      <h1 class="preloader-word preloader-word-static" id="preloaderWordStatic" aria-hidden="true">
+        <span class="preloader-word-split-part preloader-word-gradient" id="preloaderWordLeft">ADIT</span><span class="preloader-word-split-part preloader-word-gradient" id="preloaderWordRight">YA</span>
+      </h1>
 
-    <!-- Kinetic bounce & tilt launch layer ("ADITYA" wordmark pivot animation) -->
-    <div class="preloader-word-anim" id="preloaderWordAnim" aria-hidden="true">
-      <div class="preloader-vi-root" id="preloaderViRoot">
-        <h1 class="preloader-word" id="preloaderAnimHeading"></h1>
-        <span class="preloader-dot" id="preloaderDot"></span>
-        <span class="preloader-glow" id="preloaderGlow"></span>
+      <!-- Kinetic bounce & tilt launch layer ("ADITYA" wordmark pivot animation) -->
+      <div class="preloader-word-anim" id="preloaderWordAnim" aria-hidden="true">
+        <div class="preloader-vi-root" id="preloaderViRoot">
+          <h1 class="preloader-word" id="preloaderAnimHeading"></h1>
+          <span class="preloader-dot" id="preloaderDot"></span>
+          <span class="preloader-glow" id="preloaderGlow"></span>
+        </div>
       </div>
+
+      <!-- Baseline shockwaves & impact micro-sparks -->
+      <div class="preloader-fx-layer" id="preloaderFxLayer" aria-hidden="true"></div>
+      <!-- Reactive metallic baseline horizon -->
+      <div class="preloader-horizon" id="preloaderHorizon" aria-hidden="true"></div>
     </div>
+
+    <!-- Tracked subtitle revealed on "PORTFOLIO" lock -->
+    <p class="preloader-subtitle" id="preloaderSubtitle" aria-hidden="true">
+      SOFTWARE DEVELOPER &bull; JAVA &amp; SPRING AI
+    </p>
+  </div>
+
+  <!-- Bottom hairline telemetry bar -->
+  <div class="preloader-progress-rail" id="preloaderProgressRail" aria-hidden="true">
+    <div class="preloader-progress-fill" id="preloaderProgressFill"></div>
   </div>
 </div>
 
@@ -1590,6 +1627,6 @@
 <script src="https://unpkg.com/lenis@1.3.26/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="app.js?v=4.5"></script>
+<script src="app.js?v=4.6"></script>
 </body>
 </html>
