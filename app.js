@@ -18,16 +18,21 @@
   initIcons();
 
   /* ==========================================================================
-     STARTING KINETIC WORDMARK & SPLIT-APERTURE PRELOADER
+     STARTING AURORA ORBITAL KINETIC WORDMARK & 3D APERTURE PRELOADER
      ========================================================================== */
   var preloader = document.getElementById('preloader');
   var preloaderCurtainLeft = document.getElementById('preloaderCurtainLeft');
   var preloaderCurtainRight = document.getElementById('preloaderCurtainRight');
+  var preloaderAurora = document.getElementById('preloaderAurora');
   var preloaderGrid = document.getElementById('preloaderGrid');
   var preloaderSpot = document.getElementById('preloaderSpot');
+  var preloaderOrbits = document.getElementById('preloaderOrbits');
+  var preloaderLaser = document.getElementById('preloaderLaser');
   var preloaderSeam = document.getElementById('preloaderSeam');
   var preloaderHud = document.getElementById('preloaderHud');
   var preloaderCounter = document.getElementById('preloaderCounter');
+  var preloaderStage = document.getElementById('preloaderStage');
+  var preloaderKicker = document.getElementById('preloaderKicker');
   var preloaderWordWrap = document.getElementById('preloaderWordWrap');
   var preloaderWordStatic = document.getElementById('preloaderWordStatic');
   var preloaderWordLeft = document.getElementById('preloaderWordLeft');
@@ -35,7 +40,7 @@
   var preloaderWordAnim = document.getElementById('preloaderWordAnim');
   var preloaderViRoot = document.getElementById('preloaderViRoot');
   var preloaderAnimHeading = document.getElementById('preloaderAnimHeading');
-  var preloaderDot = document.getElementById('preloaderDot');
+  var preloaderCoreOrb = document.getElementById('preloaderCoreOrb');
   var preloaderGlow = document.getElementById('preloaderGlow');
   var preloaderFxLayer = document.getElementById('preloaderFxLayer');
   var preloaderHorizon = document.getElementById('preloaderHorizon');
@@ -47,8 +52,15 @@
   if (preloader) {
     var SOURCE_WORD = 'ADITYA';
     var TARGET_WORD = 'PORTFOLIO';
-    var CIPHER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/%';
-    var PIVOT_ANGLE = 63;
+    var CIPHER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/%$';
+    var SHOCKWAVE_COLORS = [
+      'rgba(100, 229, 255, 0.88)',
+      'rgba(139, 124, 246, 0.88)',
+      'rgba(126, 227, 192, 0.88)',
+      'rgba(255, 255, 255, 0.92)'
+    ];
+    var SPARK_COLORS = ['#ffffff', '#64e5ff', '#8b7cf6', '#7ee3c0', '#5b8cff'];
+
     var preloaderDone = false;
     var preloaderCancelled = false;
     var morphInterval = null;
@@ -56,6 +68,7 @@
     var animCtx = null;
     var exitTl = null;
     var resizeHandler = null;
+    var pointerHandler = null;
     var lastPct = -1;
 
     function lockPreloaderScroll() {
@@ -85,27 +98,30 @@
       }
     }
 
-    function spawnShockwave(x, y, size, alpha) {
+    function spawnShockwave(x, y, size, alpha, colorIdx) {
       if (preloaderCancelled || preloaderDone || !preloaderFxLayer || !window.gsap) return;
-      if (preloaderFxLayer.childElementCount > 28) return;
+      if (preloaderFxLayer.childElementCount > 34) return;
       var ring = document.createElement('span');
+      var stroke = SHOCKWAVE_COLORS[(colorIdx || 0) % SHOCKWAVE_COLORS.length];
       ring.className = 'preloader-shockwave';
       ring.style.width = size + 'px';
       ring.style.height = size + 'px';
       ring.style.left = x + 'px';
       ring.style.top = y + 'px';
+      ring.style.borderColor = stroke;
+      ring.style.boxShadow = '0 0 18px ' + stroke;
       preloaderFxLayer.appendChild(ring);
       gsap.fromTo(ring, {
         xPercent: -50,
         yPercent: -50,
-        scaleX: 0.2,
-        scaleY: 0.06,
-        opacity: alpha || 0.72
+        scaleX: 0.22,
+        scaleY: 0.08,
+        opacity: alpha || 0.85
       }, {
-        scaleX: 2.35,
-        scaleY: 0.72,
+        scaleX: 2.5,
+        scaleY: 0.8,
         opacity: 0,
-        duration: 0.56,
+        duration: 0.6,
         ease: 'power3.out',
         onComplete: function () {
           if (ring.parentNode) ring.parentNode.removeChild(ring);
@@ -113,69 +129,71 @@
       });
     }
 
-    function spawnSparks(x, y, count, maxDist) {
+    function spawnSparks(x, y, count, maxDist, fullCircle) {
       if (preloaderCancelled || preloaderDone || !preloaderFxLayer || !window.gsap) return;
-      if (preloaderFxLayer.childElementCount > 28) return;
+      if (preloaderFxLayer.childElementCount > 34) return;
       for (var sIdx = 0; sIdx < count; sIdx++) {
-        (function () {
+        (function (idx) {
           var spark = document.createElement('span');
+          var color = SPARK_COLORS[idx % SPARK_COLORS.length];
+          var sz = gsap.utils.random(2.2, 4.2);
           spark.className = 'preloader-spark';
-          var sz = gsap.utils.random(2, 3.6);
           spark.style.width = sz + 'px';
           spark.style.height = sz + 'px';
           spark.style.left = x + 'px';
           spark.style.top = y + 'px';
+          spark.style.background = color;
+          spark.style.boxShadow = '0 0 10px ' + color;
           preloaderFxLayer.appendChild(spark);
 
-          var angle = gsap.utils.random(-168, -12) * Math.PI / 180;
+          var angleDeg = fullCircle
+            ? gsap.utils.random(0, 360)
+            : gsap.utils.random(-166, -14);
+          var angle = angleDeg * Math.PI / 180;
           var dist = gsap.utils.random(maxDist * 0.45, maxDist);
-          var tx = Math.cos(angle) * dist;
-          var ty = Math.sin(angle) * dist;
 
           gsap.fromTo(spark, {
             xPercent: -50,
             yPercent: -50,
             x: 0,
             y: 0,
-            opacity: 0.95,
+            opacity: 0.98,
             scale: 1
           }, {
-            x: tx,
-            y: ty,
+            x: Math.cos(angle) * dist,
+            y: Math.sin(angle) * dist,
             opacity: 0,
-            scale: 0.15,
-            duration: gsap.utils.random(0.35, 0.58),
+            scale: 0.12,
+            duration: gsap.utils.random(0.36, 0.62),
             ease: 'power2.out',
             onComplete: function () {
               if (spark.parentNode) spark.parentNode.removeChild(spark);
             }
           });
-        })();
+        })(sIdx);
       }
     }
 
     function pulseHorizon(peakOpacity) {
       if (preloaderCancelled || preloaderDone || !preloaderHorizon || !window.gsap) return;
       gsap.killTweensOf(preloaderHorizon, 'opacity');
-      gsap.fromTo(preloaderHorizon, { opacity: peakOpacity || 0.9 }, {
+      gsap.fromTo(preloaderHorizon, { opacity: peakOpacity || 0.95 }, {
         opacity: 0.28,
-        duration: 0.45,
+        duration: 0.46,
         ease: 'power2.out'
-      });
-    }
-
-    function triggerImpactShake(amp) {
-      if (preloaderCancelled || preloaderDone || !preloaderWordWrap || !window.gsap) return;
-      gsap.fromTo(preloaderWordWrap, { y: amp }, {
-        y: 0,
-        duration: 0.28,
-        ease: 'elastic.out(1, 0.36)'
       });
     }
 
     function onPreloaderKeydown(e) {
       if (e.key === 'Escape' && !preloaderDone) {
         finishPreloader(true);
+      }
+    }
+
+    function detachPointerParallax() {
+      if (pointerHandler) {
+        preloader.removeEventListener('mousemove', pointerHandler);
+        pointerHandler = null;
       }
     }
 
@@ -187,6 +205,7 @@
       if (morphInterval) { clearInterval(morphInterval); morphInterval = null; }
       if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
       if (resizeHandler) { window.removeEventListener('resize', resizeHandler); resizeHandler = null; }
+      detachPointerParallax();
       window.removeEventListener('keydown', onPreloaderKeydown);
 
       if (immediate) {
@@ -216,52 +235,22 @@
       }
     }
 
-    function measureGlyphBounds(ch, el, rectH) {
-      try {
-        var canvas = measureGlyphBounds.canvas || (measureGlyphBounds.canvas = document.createElement('canvas'));
-        var ctx = canvas.getContext('2d');
-        if (!ctx) return null;
-        var cs = getComputedStyle(el);
-        ctx.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
-        var metrics = ctx.measureText(ch);
-        if (
-          !isFinite(metrics.actualBoundingBoxLeft) ||
-          !isFinite(metrics.fontBoundingBoxAscent) ||
-          !isFinite(metrics.fontBoundingBoxDescent)
-        ) {
-          return null;
-        }
-        var totalH = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-        var topY = (rectH - totalH) / 2 + metrics.fontBoundingBoxAscent;
-        return {
-          cx: (metrics.actualBoundingBoxRight - metrics.actualBoundingBoxLeft) / 2,
-          bottom: topY + metrics.fontBoundingBoxDescent,
-          height: totalH
-        };
-      } catch (err) {
-        return null;
-      }
-    }
-
     function startMorphAndSplit() {
       if (preloaderCancelled || preloaderDone) return;
 
       if (window.gsap) {
         if (preloaderWordStatic) {
-          gsap.to(preloaderWordStatic, { opacity: 1, duration: 0.18, ease: 'power2.out' });
+          gsap.to(preloaderWordStatic, { opacity: 1, duration: 0.16, ease: 'power2.out' });
         }
         if (preloaderWordAnim) {
           gsap.to(preloaderWordAnim, {
             opacity: 0,
-            duration: 0.25,
+            duration: 0.22,
             ease: 'power2.out',
             onComplete: function () {
               if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
             }
           });
-        }
-        if (preloaderSpot) {
-          gsap.to(preloaderSpot, { x: 0, scale: 1.08, opacity: 0.56, duration: 0.45, ease: 'power2.out' });
         }
       } else {
         if (preloaderWordStatic) preloaderWordStatic.style.opacity = '1';
@@ -276,14 +265,14 @@
           return;
         }
 
-        var revealedCount = Math.floor(morphStep / 3);
-        var activeLen = morphStep >= 27
+        var revealedCount = Math.floor((morphStep * TARGET_WORD.length) / 24);
+        var activeLen = morphStep >= 24
           ? TARGET_WORD.length
           : Math.min(TARGET_WORD.length, Math.max(SOURCE_WORD.length, revealedCount + 2));
 
         var morphed = '';
         for (var cIdx = 0; cIdx < activeLen; cIdx++) {
-          if (morphStep >= 27 || cIdx < revealedCount) {
+          if (morphStep >= 24 || cIdx < revealedCount) {
             morphed += TARGET_WORD[cIdx];
           } else if (cIdx === revealedCount || cIdx >= SOURCE_WORD.length) {
             morphed += CIPHER_CHARS[(morphStep * 7 + cIdx * 3) % CIPHER_CHARS.length];
@@ -294,9 +283,9 @@
 
         if (preloaderWordLeft) preloaderWordLeft.textContent = morphed.slice(0, 4);
         if (preloaderWordRight) preloaderWordRight.textContent = morphed.slice(4);
-        setBootProgress(68 + (morphStep / 27) * 32);
+        setBootProgress(66 + (morphStep / 24) * 34);
 
-        if (morphStep >= 27) {
+        if (morphStep >= 24) {
           clearInterval(morphInterval);
           morphInterval = null;
           setBootProgress(100);
@@ -306,13 +295,18 @@
             return;
           }
 
+          detachPointerParallax();
+          if (preloaderStage) {
+            gsap.to(preloaderStage, { rotationX: 0, rotationY: 0, duration: 0.35, ease: 'power2.out' });
+          }
+
           var isMobile = window.innerWidth < 768;
           var crackDist = isMobile
             ? Math.max(window.innerWidth * 0.08, 22)
-            : Math.min(72, window.innerWidth * 0.05);
+            : Math.min(76, window.innerWidth * 0.055);
           var outerDist = isMobile
-            ? Math.max(window.innerWidth * 0.34, 120)
-            : Math.min(440, window.innerWidth * 0.32);
+            ? Math.max(window.innerWidth * 0.36, 128)
+            : Math.min(460, window.innerWidth * 0.34);
 
           exitTl = gsap.timeline({
             onComplete: function () {
@@ -320,50 +314,68 @@
             }
           });
 
-          // Liquid-chrome specular sheen sweep + subtitle reveal upon "PORTFOLIO" lock
+          // Act 2 Lock Beat: liquid aurora sheen sweep + orbital overdrive + two-tone subtitle
           exitTl
             .to([preloaderWordLeft, preloaderWordRight], {
               '--sheen-x': '-75%',
-              duration: 0.52,
+              duration: 0.5,
               ease: 'power2.inOut'
             }, 0)
             .fromTo(preloaderSubtitle, {
-              y: 12,
+              y: 14,
               opacity: 0,
-              letterSpacing: '0.42em'
+              letterSpacing: '0.44em'
             }, {
               y: 0,
               opacity: 1,
               letterSpacing: isMobile ? '0.16em' : '0.24em',
-              duration: 0.45,
+              duration: 0.44,
               ease: 'power3.out'
             }, 0.04);
 
-          // Center light seam ignites vertically
+          if (preloaderOrbits) {
+            exitTl.to(preloaderOrbits, {
+              scale: 1.48,
+              opacity: 0,
+              duration: 0.54,
+              ease: 'power2.in'
+            }, 0.06);
+          }
+
+          // Act 3 Fracture: prismatic vertical laser seam + elastic tension skew crack
           if (preloaderSeam) {
             exitTl.to(preloaderSeam, {
               scaleY: 1,
-              opacity: 0.92,
-              duration: 0.28,
+              opacity: 1,
+              duration: 0.26,
               ease: 'power3.out'
-            }, 0.42);
+            }, 0.38);
           }
 
-          // First micro crack between PORT | FOLIO as HUD fades cleanly
           exitTl
-            .to(preloaderWordLeft, { x: -crackDist, duration: 0.26, ease: 'power2.out' }, 0.56)
-            .to(preloaderWordRight, { x: crackDist, duration: 0.26, ease: 'power2.out' }, 0.56)
-            .to([preloaderHud, preloaderProgressRail, preloaderSubtitle, preloaderHorizon, preloaderGrid, preloaderSpot], {
-              opacity: 0,
-              duration: 0.28,
+            .to(preloaderWordLeft, {
+              x: -crackDist,
+              skewX: -6,
+              duration: 0.24,
               ease: 'power2.out'
-            }, 0.56);
+            }, 0.5)
+            .to(preloaderWordRight, {
+              x: crackDist,
+              skewX: 6,
+              duration: 0.24,
+              ease: 'power2.out'
+            }, 0.5)
+            .to([preloaderHud, preloaderProgressRail, preloaderKicker, preloaderSubtitle, preloaderHorizon, preloaderGrid, preloaderSpot, preloaderAurora], {
+              opacity: 0,
+              duration: 0.26,
+              ease: 'power2.out'
+            }, 0.52);
 
-          // Dual radial curtains + PORT / FOLIO aperture slide wide open to reveal the Hero
+          // Act 3 Reveal: 3D outward swing + dual radial aurora curtains sliding open
           exitTl
             .to(preloaderCurtainLeft, {
               xPercent: -104,
-              duration: 1.0,
+              duration: 0.96,
               ease: 'power4.inOut',
               onStart: function () {
                 unlockPreloaderScroll();
@@ -371,40 +383,72 @@
                   triggerHeroEntrance();
                 }
               }
-            }, 0.72)
+            }, 0.68)
             .to(preloaderCurtainRight, {
               xPercent: 104,
-              duration: 1.0,
+              duration: 0.96,
               ease: 'power4.inOut'
-            }, 0.72)
+            }, 0.68)
             .to(preloaderWordLeft, {
               x: -outerDist,
-              scale: 1.05,
+              skewX: 0,
+              rotationY: 16,
+              scale: 1.1,
               opacity: 0,
-              duration: 0.85,
+              duration: 0.82,
               ease: 'power3.inOut'
-            }, 0.72)
+            }, 0.68)
             .to(preloaderWordRight, {
               x: outerDist,
-              scale: 1.05,
+              skewX: 0,
+              rotationY: -16,
+              scale: 1.1,
               opacity: 0,
-              duration: 0.85,
+              duration: 0.82,
               ease: 'power3.inOut'
-            }, 0.72)
+            }, 0.68)
             .to(preloaderSeam, {
               opacity: 0,
-              duration: 0.28,
+              duration: 0.26,
               ease: 'power2.out'
-            }, 0.72);
+            }, 0.68);
           return;
         }
 
         morphStep += 1;
-      }, 48);
+      }, 42);
+    }
+
+    function setupPointerParallax() {
+      if (isTouch || prefersReducedMotion || !window.gsap) return;
+      pointerHandler = function (e) {
+        if (preloaderCancelled || preloaderDone) return;
+        var nx = (e.clientX / (window.innerWidth || 1)) * 2 - 1;
+        var ny = (e.clientY / (window.innerHeight || 1)) * 2 - 1;
+        if (preloaderStage) {
+          gsap.to(preloaderStage, {
+            rotationY: nx * 4.5,
+            rotationX: -ny * 3.5,
+            duration: 0.45,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        }
+        if (preloaderSpot) {
+          gsap.to(preloaderSpot, {
+            x: nx * 95,
+            y: ny * 65,
+            duration: 0.6,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        }
+      };
+      preloader.addEventListener('mousemove', pointerHandler);
     }
 
     function runKineticIntro() {
-      if (!window.gsap || !preloaderViRoot || !preloaderAnimHeading || !preloaderDot || !preloaderGlow) {
+      if (!window.gsap || !preloaderViRoot || !preloaderAnimHeading || !preloaderCoreOrb || !preloaderGlow) {
         finishPreloader(true);
         return;
       }
@@ -422,28 +466,27 @@
       if (preloaderSpot) {
         gsap.set(preloaderSpot, { xPercent: -50, yPercent: -50 });
       }
+      if (preloaderCoreOrb) {
+        gsap.set(preloaderCoreOrb, { xPercent: -50, yPercent: -50 });
+      }
+      if (preloaderGlow) {
+        gsap.set(preloaderGlow, { xPercent: -50, yPercent: -50 });
+      }
+
+      setupPointerParallax();
 
       var chars = SOURCE_WORD.split('');
-      var pivotIndex = chars.findIndex(function (ch) { return 'Iil1'.indexOf(ch) !== -1; });
-      if (pivotIndex === -1) pivotIndex = 0;
-
       preloaderAnimHeading.innerHTML = '';
-      var letterEls = chars.map(function (ch) {
+      var letterEls = chars.map(function (ch, idx) {
         var span = document.createElement('span');
         span.className = 'preloader-letter preloader-word-gradient';
+        span.style.setProperty('--char-i', String(idx));
         span.textContent = ch === ' ' ? '\u00A0' : ch;
         preloaderAnimHeading.appendChild(span);
         return span;
       });
 
-      var pivotEl = letterEls[pivotIndex];
-      var nonPivot = [];
-      for (var ni = 0; ni < chars.length; ni++) {
-        if (ni !== pivotIndex && chars[ni].trim()) nonPivot.push(ni);
-      }
-
       gsap.set(letterEls, { opacity: 0 });
-      gsap.set(preloaderDot, { opacity: 0 });
 
       var fontWait = (document.fonts && document.fonts.ready)
         ? Promise.race([
@@ -456,216 +499,177 @@
         if (preloaderCancelled || preloaderDone) return;
 
         animCtx = gsap.context(function () {
-          gsap.set(letterEls.concat([preloaderDot]), { clearProps: 'transform' });
+          gsap.set(letterEls, { clearProps: 'transform,filter' });
 
           var rootRect = preloaderViRoot.getBoundingClientRect();
           var fontSize = parseFloat(getComputedStyle(preloaderAnimHeading).fontSize) || 16;
+          var centerPt = { x: rootRect.width / 2, y: rootRect.height / 2 };
           var boxes = letterEls.map(function (el) {
             var r = el.getBoundingClientRect();
             return {
-              left: r.left - rootRect.left,
-              top: r.top - rootRect.top,
-              w: r.width,
-              h: r.height,
               cx: r.left - rootRect.left + r.width / 2,
-              cy: r.top - rootRect.top + r.height / 2
+              cy: r.top - rootRect.top + r.height / 2,
+              bottom: r.bottom - rootRect.top
             };
           });
 
-          var pBox = boxes[pivotIndex];
-          var glyph = measureGlyphBounds(chars[pivotIndex], pivotEl, pBox.h) || {
-            cx: pBox.w / 2,
-            bottom: pBox.h,
-            height: pBox.h * 0.78
-          };
-          var pivotPt = { x: pBox.left + glyph.cx, y: pBox.top + glyph.bottom };
-          var pivotHeight = glyph.height;
-          var dotSize = fontSize * 0.24;
+          var orbSize = Math.max(14, Math.min(24, fontSize * 0.16));
+          var glowSize = fontSize * 2.8;
+          var dropFromY = -(window.innerHeight * 0.55);
 
-          gsap.set(pivotEl, {
-            transformOrigin: (glyph.cx / pBox.w * 100) + '% ' + (glyph.bottom / pBox.h * 100) + '%'
-          });
-          gsap.set(preloaderDot, {
-            width: dotSize,
-            height: dotSize,
-            left: pivotPt.x - dotSize / 2,
-            top: pivotPt.y + fontSize * 0.1
-          });
-
-          function tipAt(deg) {
-            var rad = deg * Math.PI / 180;
-            return {
-              x: pivotPt.x + Math.sin(rad) * pivotHeight,
-              y: pivotPt.y - Math.cos(rad) * pivotHeight
-            };
-          }
-
-          var dropStartY = -(rootRect.top + pivotPt.y) - fontSize;
-          var glowSize = fontSize * 2.6;
-
-          function pulseGlow(tl, pt, alpha, at) {
-            tl.set(preloaderGlow, {
-              width: glowSize,
-              height: glowSize,
-              left: pt.x - glowSize / 2,
-              top: pt.y - glowSize / 2
-            }, at)
-              .to(preloaderGlow, { opacity: alpha, duration: 0.05, ease: 'none' }, at)
-              .to(preloaderGlow, { opacity: 0, duration: 0.34, ease: 'power2.out' }, at + 0.05);
-          }
-
-          function launchLetter(tl, idx, originPt, at) {
-            var el = letterEls[idx];
-            var box = boxes[idx];
-            var dx = originPt.x - box.cx;
-            var dy = originPt.y - box.cy;
-            var dur = 0.5 + Math.min(Math.abs(dx) / 900, 0.32);
-            var arcPeak = -(Math.abs(dx) * 0.3 + fontSize * 0.25);
-            var spin = (dx > 0 ? -1 : 1) * gsap.utils.random(170, 300);
-
-            tl.set(el, {
-              x: dx,
-              y: dy,
-              rotation: spin,
-              scale: 0.3,
-              opacity: 0,
-              transformOrigin: '50% 50%'
-            }, at)
-              .to(el, { opacity: 1, scale: 1, duration: dur * 0.45 }, at)
-              .to(el, { x: 0, duration: dur, ease: 'power1.out' }, at)
-              .to(el, { y: Math.min(dy, 0) + arcPeak, duration: dur * 0.45, ease: 'power2.out' }, at)
-              .to(el, { y: 0, duration: dur * 0.55, ease: 'power2.in' }, at + dur * 0.45)
-              .to(el, { rotation: 0, duration: dur, ease: 'power2.out' }, at)
-              .to(el, { y: -fontSize * 0.05, duration: 0.09, ease: 'power2.out' }, at + dur)
-              .to(el, { y: 0, duration: 0.16, ease: 'power2.in' }, at + dur + 0.09)
-              .call(function () {
-                spawnShockwave(box.cx, pivotPt.y, fontSize * 0.58, 0.55);
-                spawnSparks(box.cx, pivotPt.y, 4, fontSize * 0.42);
-                pulseHorizon(0.62);
-              }, null, at + dur);
-
-            return at + dur;
-          }
-
-          function tiltAndLaunch(tl, angleDeg, indices, at) {
-            if (!indices.length) return at;
-            var tip = tipAt(angleDeg);
-            if (preloaderSpot) {
-              tl.to(preloaderSpot, {
-                x: angleDeg < 0 ? -64 : 64,
-                opacity: 0.65,
-                duration: 0.42,
-                ease: 'power2.out'
-              }, at);
-            }
-            tl.to(pivotEl, { rotation: angleDeg, duration: 0.4, ease: 'back.out(1.4)' }, at);
-            tl.to(pivotEl, { rotation: angleDeg + (angleDeg < 0 ? 6 : -6), duration: 0.08 }, at + 0.34)
-              .to(pivotEl, { rotation: angleDeg, duration: 0.3, ease: 'elastic.out(1, 0.5)' }, at + 0.42);
-
-            var maxEnd = at;
-            indices.forEach(function (letterIdx, order) {
-              var launchAt = at + 0.34 + order * 0.1;
-              pulseGlow(tl, tip, 0.5 - order * 0.1, launchAt);
-              tl.call(function () {
-                spawnSparks(tip.x, tip.y, 5, fontSize * 0.5);
-              }, null, launchAt);
-              maxEnd = Math.max(maxEnd, launchLetter(tl, letterIdx, tip, launchAt));
-            });
-            return maxEnd;
-          }
+          gsap.set(preloaderCoreOrb, { width: orbSize, height: orbSize });
+          gsap.set(preloaderGlow, { width: glowSize, height: glowSize });
 
           var master = gsap.timeline({
-            defaults: { ease: 'power2.out' },
+            defaults: { ease: 'power3.out' },
             onUpdate: function () {
-              setBootProgress(master.progress() * 68);
+              setBootProgress(master.progress() * 66);
             },
             onComplete: startMorphAndSplit
           });
-          master.timeScale(1.15);
+
+          master.set(preloaderViRoot, { opacity: 1 });
+
+          // Act 1A: Vertical laser drop + core orb singularity ignition (0.00s -> 0.52s)
+          if (preloaderLaser) {
+            master
+              .fromTo(preloaderLaser, { xPercent: -50, scaleY: 0, opacity: 0.9 }, {
+                xPercent: -50,
+                scaleY: 1,
+                opacity: 1,
+                duration: 0.34,
+                ease: 'power3.in'
+              }, 0)
+              .to(preloaderLaser, { scaleY: 0, opacity: 0, transformOrigin: 'bottom center', duration: 0.24, ease: 'power2.out' }, 0.36);
+          }
 
           master
-            .set(preloaderViRoot, { opacity: 1 })
-            .set(letterEls, { opacity: 0, x: 0, y: 0, rotation: 0, scale: 1 })
-            .set(pivotEl, { opacity: 0, y: dropStartY, rotation: 0 })
-            .set(preloaderDot, { opacity: 0, y: dropStartY, scale: 1 });
+            .fromTo(preloaderCoreOrb, { y: dropFromY, scale: 0.7, opacity: 1 }, {
+              y: 0,
+              scale: 1.35,
+              opacity: 1,
+              duration: 0.36,
+              ease: 'power3.in'
+            }, 0)
+            .to(preloaderCoreOrb, { scale: 2.9, opacity: 0, duration: 0.26, ease: 'power2.out' }, 0.36)
+            .fromTo(preloaderGlow, { scale: 0.2, opacity: 0 }, { scale: 1.25, opacity: 0.9, duration: 0.14, ease: 'power2.out' }, 0.36)
+            .to(preloaderGlow, { scale: 1.75, opacity: 0, duration: 0.45, ease: 'power2.out' }, 0.5)
+            .call(function () {
+              spawnShockwave(centerPt.x, centerPt.y, fontSize * 0.95, 0.95, 0);
+              spawnShockwave(centerPt.x, centerPt.y, fontSize * 0.55, 0.85, 1);
+              spawnSparks(centerPt.x, centerPt.y, 12, fontSize * 0.95, true);
+              pulseHorizon(1.0);
+            }, null, 0.36);
 
           if (preloaderHorizon) {
             master.fromTo(preloaderHorizon, {
               xPercent: -50,
               scaleX: 0,
-              opacity: 0.15
+              opacity: 0.2
             }, {
               xPercent: -50,
               scaleX: 1,
-              opacity: 0.32,
-              duration: 0.65,
+              opacity: 0.36,
+              duration: 0.52,
               ease: 'power3.out'
-            }, 0.2);
+            }, 0.36);
           }
 
-          var introScale = 0.5;
-          var bounceTl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-          var dotRebound = fontSize * 0.4;
+          if (preloaderKicker) {
+            master.fromTo(preloaderKicker, {
+              y: -12,
+              opacity: 0,
+              letterSpacing: '0.52em'
+            }, {
+              y: 0,
+              opacity: 1,
+              letterSpacing: '0.32em',
+              duration: 0.5,
+              ease: 'power3.out'
+            }, 0.34);
+          }
 
-          bounceTl
-            .set(preloaderDot, { opacity: 1 }, 0)
-            .to(preloaderDot, { y: 0, duration: 0.42, ease: 'power2.in' }, 0)
-            .to(preloaderDot, { scaleX: 0.82, scaleY: 1.22, duration: 0.28, ease: 'power1.in' }, 0.14)
-            .to(preloaderDot, { scaleX: 1.4, scaleY: 0.52, duration: 0.06 }, 0.42)
-            .to(preloaderDot, { y: -dotRebound, duration: 0.2 }, 0.48)
-            .to(preloaderDot, { scaleX: 1, scaleY: 1, duration: 0.18 }, 0.48)
-            .to(preloaderDot, { y: 0, duration: 0.18, ease: 'power2.in' }, 0.68)
-            .to(preloaderDot, { scaleX: 0.92, scaleY: 1.08, duration: 0.14, ease: 'power1.in' }, 0.72)
-            .to(preloaderDot, { scaleX: 1.2, scaleY: 0.74, duration: 0.05 }, 0.86)
-            .to(preloaderDot, { scaleX: 1, scaleY: 1, duration: 0.36, ease: 'elastic.out(1, 0.42)' }, 0.91)
-            .call(function () {
-              spawnShockwave(pivotPt.x, pivotPt.y + fontSize * 0.1, fontSize * 0.52, 0.7);
-              spawnSparks(pivotPt.x, pivotPt.y + fontSize * 0.1, 5, fontSize * 0.36);
-              pulseHorizon(0.8);
-            }, null, 0.42)
-            .call(function () {
-              spawnShockwave(pivotPt.x, pivotPt.y + fontSize * 0.1, fontSize * 0.4, 0.45);
-              pulseHorizon(0.5);
-            }, null, 0.86);
-          pulseGlow(bounceTl, pivotPt, 0.4, 0.42);
-          pulseGlow(bounceTl, pivotPt, 0.24, 0.86);
+          // Gyroscope orbit rings spin up cleanly on impact
+          if (preloaderOrbits) {
+            var outerRing = preloaderOrbits.querySelector('.preloader-orbit-outer');
+            var innerRing = preloaderOrbits.querySelector('.preloader-orbit-inner');
+            master.fromTo(preloaderOrbits, { scale: 0.55, opacity: 0 }, {
+              scale: 1,
+              opacity: 1,
+              duration: 0.65,
+              ease: 'back.out(1.4)'
+            }, 0.36);
+            if (outerRing) {
+              master.to(outerRing, { rotation: 165, duration: 2.0, ease: 'power1.inOut' }, 0.36);
+            }
+            if (innerRing) {
+              master.to(innerRing, { rotation: -210, duration: 2.0, ease: 'power1.inOut' }, 0.36);
+            }
+          }
 
-          var pivotHop = fontSize * 0.13;
-          bounceTl
-            .set(pivotEl, { opacity: 1 }, 0.8)
-            .to(pivotEl, { y: 0, duration: 0.34, ease: 'power2.in' }, 0.8)
-            .to(pivotEl, { scaleX: 0.86, scaleY: 1.16, duration: 0.24, ease: 'power1.in' }, 0.88)
-            .to(pivotEl, { scaleX: 1.32, scaleY: 0.64, duration: 0.06 }, 1.14)
-            .to(pivotEl, { y: -pivotHop, duration: 0.1 }, 1.2)
-            .to(pivotEl, { scaleX: 1, scaleY: 1, duration: 0.12 }, 1.2)
-            .to(pivotEl, { y: 0, duration: 0.1, ease: 'power2.in' }, 1.3)
-            .to(pivotEl, { scaleX: 1.12, scaleY: 0.88, duration: 0.05 }, 1.4)
-            .to(pivotEl, { scaleX: 1, scaleY: 1, duration: 0.38, ease: 'elastic.out(1, 0.4)' }, 1.45)
-            .fromTo(pivotEl, { rotation: -9 }, { rotation: 0, duration: 0.5, ease: 'elastic.out(1, 0.36)' }, 1.19)
-            .call(function () {
-              spawnShockwave(pivotPt.x, pivotPt.y, fontSize * 0.82, 0.85);
-              spawnSparks(pivotPt.x, pivotPt.y, 7, fontSize * 0.55);
-              pulseHorizon(1.0);
-              triggerImpactShake(4);
-              if (preloaderSpot) {
-                gsap.fromTo(preloaderSpot, { opacity: 0.82 }, { opacity: 0.46, duration: 0.55, ease: 'power2.out' });
-              }
-            }, null, 1.14);
-          pulseGlow(bounceTl, pivotPt, 0.6, 1.14);
-          pulseGlow(bounceTl, pivotPt, 0.26, 1.4);
+          // Act 1B: 3D Center-Out Vortex Convergence of "ADITYA" (0.44s -> 1.48s)
+          var centerOrder = chars.map(function (_, i) { return i; }).sort(function (a, b) {
+            return Math.abs(a - (chars.length - 1) / 2) - Math.abs(b - (chars.length - 1) / 2);
+          });
 
-          master.add(bounceTl.timeScale(introScale), 0);
+          centerOrder.forEach(function (letterIdx, order) {
+            var el = letterEls[letterIdx];
+            var box = boxes[letterIdx];
+            var sign = letterIdx % 2 === 0 ? -1 : 1;
+            var offsetFromCenter = letterIdx - (chars.length - 1) / 2;
+            var entryAt = 0.44 + order * 0.085;
 
-          var leftIndices = nonPivot.filter(function (idx) { return idx < pivotIndex; }).reverse();
-          var rightIndices = nonPivot.filter(function (idx) { return idx > pivotIndex; });
-          var cursorTime = 1.4 / introScale;
+            master
+              .fromTo(el, {
+                x: offsetFromCenter * fontSize * 0.48,
+                y: sign * fontSize * 0.92,
+                z: -240,
+                rotationX: sign * 72,
+                rotationY: offsetFromCenter * 15,
+                rotationZ: sign * -20,
+                scale: 0.42,
+                opacity: 0,
+                filter: 'blur(9px)'
+              }, {
+                x: 0,
+                y: 0,
+                z: 0,
+                rotationX: 0,
+                rotationY: 0,
+                rotationZ: 0,
+                scale: 1,
+                opacity: 1,
+                filter: 'blur(0px)',
+                duration: 0.64,
+                ease: 'back.out(1.5)',
+                clearProps: 'filter'
+              }, entryAt)
+              .call(function () {
+                spawnShockwave(box.cx, box.bottom, fontSize * 0.56, 0.55, letterIdx);
+                spawnSparks(box.cx, box.bottom, 4, fontSize * 0.42, false);
+                pulseHorizon(0.68);
+              }, null, entryAt + 0.46);
+          });
 
-          cursorTime = tiltAndLaunch(master, -PIVOT_ANGLE, leftIndices, cursorTime);
-          cursorTime = tiltAndLaunch(master, PIVOT_ANGLE, rightIndices, leftIndices.length ? cursorTime - 0.3 : cursorTime);
-
-          master
-            .to(pivotEl, { rotation: 0, duration: 0.5, ease: 'elastic.out(1, 0.55)' }, cursorTime - 0.16)
-            .to(preloaderDot, { opacity: 0, scale: 0, duration: 0.3, ease: 'power2.in' }, cursorTime - 0.12);
+          // Act 1C: Chromatic Wave Ripple sweep left-to-right across locked "ADITYA" (1.42s -> 2.05s)
+          letterEls.forEach(function (el, idx) {
+            var waveAt = 1.42 + idx * 0.055;
+            master
+              .to(el, {
+                y: -fontSize * 0.14,
+                scaleY: 1.14,
+                scaleX: 0.94,
+                duration: 0.16,
+                ease: 'power2.out'
+              }, waveAt)
+              .to(el, {
+                y: 0,
+                scaleY: 1,
+                scaleX: 1,
+                duration: 0.36,
+                ease: 'elastic.out(1, 0.45)'
+              }, waveAt + 0.16);
+          });
 
           var resizeTimer = null;
           resizeHandler = function () {
@@ -692,7 +696,7 @@
     window.addEventListener('keydown', onPreloaderKeydown);
 
     // Safety fallback if fonts, GSAP, or timers stall
-    safetyTimer = setTimeout(function () { finishPreloader(true); }, 13000);
+    safetyTimer = setTimeout(function () { finishPreloader(true); }, 11000);
   }
 
   /* ==========================================================================
