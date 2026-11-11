@@ -129,22 +129,24 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .skip-link:focus { top: 16px; }
 
 /* ==========================================================================
-   STARTING CINEMATIC PRELOADER (Inspired by Reference Portfolio)
+   STARTING KINETIC WORDMARK PRELOADER
    ========================================================================== */
+html.preloader-active,
+body.preloader-active {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
 .preloader {
   position: fixed;
   inset: 0;
   z-index: 100000;
-  background: #04060a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  background: radial-gradient(circle, #222222 0%, #000000 80%);
   overflow: hidden;
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.75s ease;
   user-select: none;
+  -webkit-user-select: none;
   cursor: pointer;
 }
 
@@ -154,146 +156,96 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   pointer-events: none;
 }
 
-.preloader-particles {
+.preloader-backdrop {
   position: absolute;
   inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   pointer-events: none;
-  overflow: hidden;
 }
 
-.preloader-particle {
+.preloader-stage {
   position: absolute;
-  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(100, 229, 255, 0.85) 0%, rgba(148, 124, 255, 0.45) 60%, transparent 100%);
-  animation: preloaderParticleFloat 4.2s ease-in-out infinite alternate;
-}
-
-@keyframes preloaderParticleFloat {
-  0% { transform: translateY(0) scale(0.8); opacity: 0.25; }
-  50% { transform: translateY(-30px) scale(1.2); opacity: 0.95; }
-  100% { transform: translateY(-60px) scale(0.6); opacity: 0.2; }
-}
-
-.preloader-content {
-  position: relative;
-  z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 22px;
-  padding: 24px;
-  max-width: 90vw;
+  align-items: flex-start;
+  width: max-content;
 }
 
-.preloader-brand {
+.preloader-word {
+  margin: 0;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  animation: preloaderBrandGlow 2.5s ease-in-out infinite alternate;
-}
-
-.preloader-brand-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: 'Valorant', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-  font-size: clamp(2.2rem, 6vw, 3.6rem);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #ffffff;
+  align-items: baseline;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-size: clamp(2.75rem, 13.8vw, 13rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
   text-transform: uppercase;
-  text-shadow: 0 0 35px rgba(100, 229, 255, 0.35);
+  white-space: nowrap;
+  word-break: normal;
+  filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.45));
 }
 
-.preloader-brand-subtitle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.72rem, 1.8vw, 0.82rem);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  margin-top: 6px;
-}
-
-.preloader-brand-subtitle .subtitle-line {
-  display: inline-block;
-  width: 32px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(100, 229, 255, 0.6), transparent);
-}
-
-@keyframes preloaderBrandGlow {
-  0% { text-shadow: 0 0 20px rgba(100, 229, 255, 0.2); }
-  100% { text-shadow: 0 0 45px rgba(100, 229, 255, 0.6), 0 0 70px rgba(148, 124, 255, 0.35); }
-}
-
-.preloader-brand-accent {
-  background: linear-gradient(135deg, #64e5ff 0%, #947cff 50%, #c8ff6b 100%);
+.preloader-word-gradient {
+  color: transparent;
+  background-image: linear-gradient(to bottom, #ffffff 0%, #d1d5db 50%, #1f2937 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.preloader-track {
-  width: clamp(220px, 50vw, 340px);
-  padding: 4px;
-}
-
-.preloader-sleek-track {
-  width: clamp(220px, 50vw, 340px);
-  height: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
-  margin-block: 16px;
-}
-
-.preloader-sleek-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #64e5ff, #947cff, #c8ff6b);
-  border-radius: 999px;
-  box-shadow: 0 0 14px rgba(100, 229, 255, 0.9);
-  transition: width 0.12s linear;
-}
-
-.preloader-tagline {
-  position: relative;
-  height: 26px;
-  min-width: 220px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.preloader-tagline-word,
-.tagline-word {
-  position: absolute;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.85rem, 2.2vw, 0.98rem);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #94a3b8;
+.preloader-word-static {
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), color 0.32s;
-  pointer-events: none;
 }
 
-.preloader-tagline-word.active,
-.tagline-word.active {
+.preloader-word-split-part {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.preloader-word-anim {
+  position: absolute;
+  top: 0;
+  left: 0;
   opacity: 1;
-  transform: translateY(0);
-  color: #64e5ff;
-  text-shadow: 0 0 15px rgba(100, 229, 255, 0.5);
+}
+
+.preloader-vi-root {
+  position: relative;
+  opacity: 0;
+}
+
+.preloader-letter {
+  display: inline-block;
+  will-change: transform;
+}
+
+.preloader-dot {
+  position: absolute;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.preloader-glow {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
 }
 
 :focus-visible {

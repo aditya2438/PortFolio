@@ -18,88 +18,439 @@
   initIcons();
 
   /* ==========================================================================
-     STARTING CINEMATIC PRELOADER ANIMATION (Inspired by Reference Portfolio)
+     STARTING KINETIC WORDMARK PRELOADER (Bounce -> Pivot -> Morph -> Split)
      ========================================================================== */
   var preloader = document.getElementById('preloader');
-  var preloaderParticles = document.getElementById('preloaderParticles');
-  var preloaderSleekFill = document.getElementById('preloaderSleekFill');
-  var preloaderTagline = document.getElementById('preloaderTagline');
+  var preloaderWordStatic = document.getElementById('preloaderWordStatic');
+  var preloaderWordLeft = document.getElementById('preloaderWordLeft');
+  var preloaderWordRight = document.getElementById('preloaderWordRight');
+  var preloaderWordAnim = document.getElementById('preloaderWordAnim');
+  var preloaderViRoot = document.getElementById('preloaderViRoot');
+  var preloaderAnimHeading = document.getElementById('preloaderAnimHeading');
+  var preloaderDot = document.getElementById('preloaderDot');
+  var preloaderGlow = document.getElementById('preloaderGlow');
+  var preloaderActive = Boolean(preloader);
 
   if (preloader) {
-    // Generate floating particle elements
-    if (preloaderParticles && !prefersReducedMotion) {
-      for (var pi = 0; pi < 28; pi++) {
-        var particle = document.createElement('div');
-        particle.className = 'preloader-particle';
-        var pSize = Math.random() * 5 + 3;
-        particle.style.width = pSize + 'px';
-        particle.style.height = pSize + 'px';
-        particle.style.left = (Math.random() * 100) + '%';
-        particle.style.top = (Math.random() * 100) + '%';
-        particle.style.animationDelay = (Math.random() * 3) + 's';
-        particle.style.animationDuration = (Math.random() * 3 + 2.5) + 's';
-        preloaderParticles.appendChild(particle);
+    var SOURCE_WORD = 'ADITYA';
+    var TARGET_WORD = 'PORTFOLIO';
+    var PIVOT_ANGLE = 63;
+    var preloaderDone = false;
+    var preloaderCancelled = false;
+    var morphInterval = null;
+    var safetyTimer = null;
+    var animCtx = null;
+    var exitTl = null;
+    var resizeHandler = null;
+
+    function lockPreloaderScroll() {
+      window.scrollTo(0, 0);
+      document.documentElement.classList.add('preloader-active');
+      document.body.classList.add('preloader-active');
+    }
+
+    function unlockPreloaderScroll() {
+      preloaderActive = false;
+      document.documentElement.classList.remove('preloader-active');
+      document.body.classList.remove('preloader-active');
+      if (lenis && !document.documentElement.classList.contains('modal-open')) {
+        lenis.start();
       }
     }
 
-    // Cycle tagline words
-    var taglineWords = preloaderTagline ? preloaderTagline.querySelectorAll('.preloader-tagline-word, .tagline-word') : [];
-    var currentWordIdx = 0;
-    var taglineInterval = null;
-    if (taglineWords.length > 0) {
-      taglineWords[0].classList.add('active');
-      taglineInterval = setInterval(function () {
-        taglineWords[currentWordIdx].classList.remove('active');
-        currentWordIdx = (currentWordIdx + 1) % taglineWords.length;
-        taglineWords[currentWordIdx].classList.add('active');
-      }, 440);
+    function onPreloaderKeydown(e) {
+      if (e.key === 'Escape' && !preloaderDone) {
+        finishPreloader(true);
+      }
     }
 
-    // Progress bar fill animation
-    var progress = 0;
-    var startTime = performance.now();
-    var duration = prefersReducedMotion ? 400 : 1800; // ~1.8 seconds
+    function finishPreloader(immediate) {
+      if (preloaderDone) return;
+      preloaderDone = true;
+      preloaderCancelled = true;
 
-    function completePreloader() {
-      if (!preloader || preloader.classList.contains('loaded')) return;
-      if (taglineInterval) clearInterval(taglineInterval);
-      if (preloaderSleekFill) preloaderSleekFill.style.width = '100%';
-      preloader.classList.add('loaded');
+      if (morphInterval) { clearInterval(morphInterval); morphInterval = null; }
+      if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
+      if (resizeHandler) { window.removeEventListener('resize', resizeHandler); resizeHandler = null; }
+      window.removeEventListener('keydown', onPreloaderKeydown);
+
+      if (immediate) {
+        if (animCtx) { animCtx.revert(); animCtx = null; }
+        if (exitTl) { exitTl.kill(); exitTl = null; }
+      }
+
+      unlockPreloaderScroll();
+      if (typeof triggerHeroEntrance === 'function') {
+        triggerHeroEntrance();
+      }
+
       preloader.setAttribute('aria-hidden', 'true');
-      setTimeout(function () {
-        if (preloader && preloader.parentNode) {
-          preloader.parentNode.removeChild(preloader);
-        }
-      }, 850);
-    }
-
-    function animateFill(currentTime) {
-      var elapsed = currentTime - startTime;
-      progress = Math.min(elapsed / duration, 1);
-      var eased = 1 - Math.pow(1 - progress, 2);
-      if (preloaderSleekFill) {
-        preloaderSleekFill.style.width = (eased * 100) + '%';
-      }
-
-      if (progress < 1) {
-        requestAnimationFrame(animateFill);
+      if (immediate && window.gsap) {
+        gsap.to(preloader, {
+          opacity: 0,
+          duration: 0.35,
+          ease: 'power2.out',
+          onComplete: function () {
+            if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+          }
+        });
       } else {
-        setTimeout(completePreloader, 180);
+        preloader.classList.add('loaded');
+        if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
       }
     }
 
-    requestAnimationFrame(animateFill);
-
-    // Skip on click or Escape
-    preloader.addEventListener('click', completePreloader);
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && preloader && !preloader.classList.contains('loaded')) {
-        completePreloader();
+    function measureGlyphBounds(ch, el, rectH) {
+      try {
+        var canvas = measureGlyphBounds.canvas || (measureGlyphBounds.canvas = document.createElement('canvas'));
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return null;
+        var cs = getComputedStyle(el);
+        ctx.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+        var metrics = ctx.measureText(ch);
+        if (
+          !isFinite(metrics.actualBoundingBoxLeft) ||
+          !isFinite(metrics.fontBoundingBoxAscent) ||
+          !isFinite(metrics.fontBoundingBoxDescent)
+        ) {
+          return null;
+        }
+        var totalH = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+        var topY = (rectH - totalH) / 2 + metrics.fontBoundingBoxAscent;
+        return {
+          cx: (metrics.actualBoundingBoxRight - metrics.actualBoundingBoxLeft) / 2,
+          bottom: topY + metrics.fontBoundingBoxDescent,
+          height: totalH
+        };
+      } catch (err) {
+        return null;
       }
-    });
+    }
 
-    // Safety fallback: guarantee preloader dismissal even if requestAnimationFrame halts
-    setTimeout(completePreloader, 3200);
+    function startMorphAndSplit() {
+      if (preloaderCancelled || preloaderDone) return;
+
+      if (window.gsap) {
+        if (preloaderWordStatic) {
+          gsap.to(preloaderWordStatic, { opacity: 1, duration: 0.18, ease: 'power2.out' });
+        }
+        if (preloaderWordAnim) {
+          gsap.to(preloaderWordAnim, {
+            opacity: 0,
+            duration: 0.25,
+            ease: 'power2.out',
+            onComplete: function () {
+              if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
+            }
+          });
+        }
+      } else {
+        if (preloaderWordStatic) preloaderWordStatic.style.opacity = '1';
+        if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
+      }
+
+      var morphStep = 0;
+      morphInterval = setInterval(function () {
+        if (preloaderCancelled || preloaderDone) {
+          clearInterval(morphInterval);
+          morphInterval = null;
+          return;
+        }
+
+        var revealedCount = Math.floor(morphStep / 3);
+        var morphed = TARGET_WORD.split('').map(function (_, idx) {
+          if (idx < revealedCount) return TARGET_WORD[idx];
+          if (idx < SOURCE_WORD.length) return SOURCE_WORD[idx];
+          return '';
+        }).join('');
+
+        if (preloaderWordLeft) preloaderWordLeft.textContent = morphed.slice(0, 4);
+        if (preloaderWordRight) preloaderWordRight.textContent = morphed.slice(4);
+
+        if (morphStep >= 27) {
+          clearInterval(morphInterval);
+          morphInterval = null;
+
+          if (!window.gsap || !preloaderWordLeft || !preloaderWordRight) {
+            finishPreloader(true);
+            return;
+          }
+
+          var isMobile = window.innerWidth < 768;
+          var splitDist = isMobile
+            ? Math.max(window.innerWidth * 0.24, 80)
+            : Math.min(340, window.innerWidth * 0.24);
+
+          exitTl = gsap.timeline({
+            onComplete: function () {
+              finishPreloader(false);
+            }
+          });
+
+          exitTl
+            .to(preloaderWordLeft, {
+              x: -splitDist / 2,
+              duration: 1.15,
+              ease: 'power3.inOut'
+            }, '+=0.2')
+            .to(preloaderWordRight, {
+              x: splitDist / 2,
+              duration: 1.15,
+              ease: 'power3.inOut'
+            }, '<')
+            .to([preloaderWordLeft, preloaderWordRight], {
+              opacity: 0,
+              duration: 0.65,
+              ease: 'power2.inOut'
+            }, '<+0.4')
+            .to(preloader, {
+              opacity: 0,
+              duration: 0.75,
+              ease: 'power2.inOut',
+              onStart: function () {
+                unlockPreloaderScroll();
+                if (typeof triggerHeroEntrance === 'function') {
+                  triggerHeroEntrance();
+                }
+              }
+            }, '<');
+          return;
+        }
+
+        morphStep += 1;
+      }, 50);
+    }
+
+    function runKineticIntro() {
+      if (!window.gsap || !preloaderViRoot || !preloaderAnimHeading || !preloaderDot || !preloaderGlow) {
+        finishPreloader(true);
+        return;
+      }
+
+      if (prefersReducedMotion) {
+        if (preloaderWordStatic) preloaderWordStatic.style.opacity = '1';
+        if (preloaderWordLeft) preloaderWordLeft.textContent = 'PORT';
+        if (preloaderWordRight) preloaderWordRight.textContent = 'FOLIO';
+        if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
+        setTimeout(function () { finishPreloader(true); }, 350);
+        return;
+      }
+
+      var chars = SOURCE_WORD.split('');
+      var pivotIndex = chars.findIndex(function (ch) { return 'Iil1'.indexOf(ch) !== -1; });
+      if (pivotIndex === -1) pivotIndex = 0;
+
+      preloaderAnimHeading.innerHTML = '';
+      var letterEls = chars.map(function (ch) {
+        var span = document.createElement('span');
+        span.className = 'preloader-letter preloader-word-gradient';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        preloaderAnimHeading.appendChild(span);
+        return span;
+      });
+
+      var pivotEl = letterEls[pivotIndex];
+      var nonPivot = [];
+      for (var ni = 0; ni < chars.length; ni++) {
+        if (ni !== pivotIndex && chars[ni].trim()) nonPivot.push(ni);
+      }
+
+      gsap.set(letterEls, { opacity: 0 });
+      gsap.set(preloaderDot, { opacity: 0 });
+
+      var fontWait = (document.fonts && document.fonts.ready)
+        ? Promise.race([
+            document.fonts.ready,
+            new Promise(function (resolve) { setTimeout(resolve, 450); })
+          ])
+        : Promise.resolve();
+
+      fontWait.then(function () {
+        if (preloaderCancelled || preloaderDone) return;
+
+        animCtx = gsap.context(function () {
+          gsap.set(letterEls.concat([preloaderDot]), { clearProps: 'transform' });
+
+          var rootRect = preloaderViRoot.getBoundingClientRect();
+          var fontSize = parseFloat(getComputedStyle(preloaderAnimHeading).fontSize) || 16;
+          var boxes = letterEls.map(function (el) {
+            var r = el.getBoundingClientRect();
+            return {
+              left: r.left - rootRect.left,
+              top: r.top - rootRect.top,
+              w: r.width,
+              h: r.height,
+              cx: r.left - rootRect.left + r.width / 2,
+              cy: r.top - rootRect.top + r.height / 2
+            };
+          });
+
+          var pBox = boxes[pivotIndex];
+          var glyph = measureGlyphBounds(chars[pivotIndex], pivotEl, pBox.h) || {
+            cx: pBox.w / 2,
+            bottom: pBox.h,
+            height: pBox.h * 0.78
+          };
+          var pivotPt = { x: pBox.left + glyph.cx, y: pBox.top + glyph.bottom };
+          var pivotHeight = glyph.height;
+          var dotSize = fontSize * 0.24;
+
+          gsap.set(pivotEl, {
+            transformOrigin: (glyph.cx / pBox.w * 100) + '% ' + (glyph.bottom / pBox.h * 100) + '%'
+          });
+          gsap.set(preloaderDot, {
+            width: dotSize,
+            height: dotSize,
+            left: pivotPt.x - dotSize / 2,
+            top: pivotPt.y + fontSize * 0.1
+          });
+
+          function tipAt(deg) {
+            var rad = deg * Math.PI / 180;
+            return {
+              x: pivotPt.x + Math.sin(rad) * pivotHeight,
+              y: pivotPt.y - Math.cos(rad) * pivotHeight
+            };
+          }
+
+          var dropStartY = -(rootRect.top + pivotPt.y) - fontSize;
+          var glowSize = fontSize * 2.6;
+
+          function pulseGlow(tl, pt, alpha, at) {
+            tl.set(preloaderGlow, {
+              width: glowSize,
+              height: glowSize,
+              left: pt.x - glowSize / 2,
+              top: pt.y - glowSize / 2
+            }, at)
+              .to(preloaderGlow, { opacity: alpha, duration: 0.05, ease: 'none' }, at)
+              .to(preloaderGlow, { opacity: 0, duration: 0.34, ease: 'power2.out' }, at + 0.05);
+          }
+
+          function launchLetter(tl, idx, originPt, at) {
+            var el = letterEls[idx];
+            var box = boxes[idx];
+            var dx = originPt.x - box.cx;
+            var dy = originPt.y - box.cy;
+            var dur = 0.5 + Math.min(Math.abs(dx) / 900, 0.32);
+            var arcPeak = -(Math.abs(dx) * 0.3 + fontSize * 0.25);
+            var spin = (dx > 0 ? -1 : 1) * gsap.utils.random(170, 300);
+
+            tl.set(el, {
+              x: dx,
+              y: dy,
+              rotation: spin,
+              scale: 0.3,
+              opacity: 0,
+              transformOrigin: '50% 50%'
+            }, at)
+              .to(el, { opacity: 1, scale: 1, duration: dur * 0.45 }, at)
+              .to(el, { x: 0, duration: dur, ease: 'power1.out' }, at)
+              .to(el, { y: Math.min(dy, 0) + arcPeak, duration: dur * 0.45, ease: 'power2.out' }, at)
+              .to(el, { y: 0, duration: dur * 0.55, ease: 'power2.in' }, at + dur * 0.45)
+              .to(el, { rotation: 0, duration: dur, ease: 'power2.out' }, at)
+              .to(el, { y: -fontSize * 0.05, duration: 0.09, ease: 'power2.out' }, at + dur)
+              .to(el, { y: 0, duration: 0.16, ease: 'power2.in' }, at + dur + 0.09);
+
+            return at + dur;
+          }
+
+          function tiltAndLaunch(tl, angleDeg, indices, at) {
+            if (!indices.length) return at;
+            var tip = tipAt(angleDeg);
+            tl.to(pivotEl, { rotation: angleDeg, duration: 0.4, ease: 'back.out(1.4)' }, at);
+            tl.to(pivotEl, { rotation: angleDeg + (angleDeg < 0 ? 6 : -6), duration: 0.08 }, at + 0.34)
+              .to(pivotEl, { rotation: angleDeg, duration: 0.3, ease: 'elastic.out(1, 0.5)' }, at + 0.42);
+
+            var maxEnd = at;
+            indices.forEach(function (letterIdx, order) {
+              var launchAt = at + 0.34 + order * 0.1;
+              pulseGlow(tl, tip, 0.5 - order * 0.1, launchAt);
+              maxEnd = Math.max(maxEnd, launchLetter(tl, letterIdx, tip, launchAt));
+            });
+            return maxEnd;
+          }
+
+          var master = gsap.timeline({
+            defaults: { ease: 'power2.out' },
+            onComplete: startMorphAndSplit
+          });
+          master.timeScale(1.15);
+
+          master
+            .set(preloaderViRoot, { opacity: 1 })
+            .set(letterEls, { opacity: 0, x: 0, y: 0, rotation: 0, scale: 1 })
+            .set(pivotEl, { opacity: 0, y: dropStartY, rotation: 0 })
+            .set(preloaderDot, { opacity: 0, y: dropStartY, scale: 1 });
+
+          var introScale = 0.5;
+          var bounceTl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+          var dotRebound = fontSize * 0.4;
+
+          bounceTl
+            .set(preloaderDot, { opacity: 1 }, 0)
+            .to(preloaderDot, { y: 0, duration: 0.42, ease: 'power2.in' }, 0)
+            .to(preloaderDot, { scaleX: 0.82, scaleY: 1.22, duration: 0.28, ease: 'power1.in' }, 0.14)
+            .to(preloaderDot, { scaleX: 1.4, scaleY: 0.52, duration: 0.06 }, 0.42)
+            .to(preloaderDot, { y: -dotRebound, duration: 0.2 }, 0.48)
+            .to(preloaderDot, { scaleX: 1, scaleY: 1, duration: 0.18 }, 0.48)
+            .to(preloaderDot, { y: 0, duration: 0.18, ease: 'power2.in' }, 0.68)
+            .to(preloaderDot, { scaleX: 0.92, scaleY: 1.08, duration: 0.14, ease: 'power1.in' }, 0.72)
+            .to(preloaderDot, { scaleX: 1.2, scaleY: 0.74, duration: 0.05 }, 0.86)
+            .to(preloaderDot, { scaleX: 1, scaleY: 1, duration: 0.36, ease: 'elastic.out(1, 0.42)' }, 0.91);
+          pulseGlow(bounceTl, pivotPt, 0.4, 0.42);
+          pulseGlow(bounceTl, pivotPt, 0.24, 0.86);
+
+          var pivotHop = fontSize * 0.13;
+          bounceTl
+            .set(pivotEl, { opacity: 1 }, 0.8)
+            .to(pivotEl, { y: 0, duration: 0.34, ease: 'power2.in' }, 0.8)
+            .to(pivotEl, { scaleX: 0.86, scaleY: 1.16, duration: 0.24, ease: 'power1.in' }, 0.88)
+            .to(pivotEl, { scaleX: 1.32, scaleY: 0.64, duration: 0.06 }, 1.14)
+            .to(pivotEl, { y: -pivotHop, duration: 0.1 }, 1.2)
+            .to(pivotEl, { scaleX: 1, scaleY: 1, duration: 0.12 }, 1.2)
+            .to(pivotEl, { y: 0, duration: 0.1, ease: 'power2.in' }, 1.3)
+            .to(pivotEl, { scaleX: 1.12, scaleY: 0.88, duration: 0.05 }, 1.4)
+            .to(pivotEl, { scaleX: 1, scaleY: 1, duration: 0.38, ease: 'elastic.out(1, 0.4)' }, 1.45)
+            .fromTo(pivotEl, { rotation: -9 }, { rotation: 0, duration: 0.5, ease: 'elastic.out(1, 0.36)' }, 1.19);
+          pulseGlow(bounceTl, pivotPt, 0.6, 1.14);
+          pulseGlow(bounceTl, pivotPt, 0.26, 1.4);
+
+          master.add(bounceTl.timeScale(introScale), 0);
+
+          var leftIndices = nonPivot.filter(function (idx) { return idx < pivotIndex; }).reverse();
+          var rightIndices = nonPivot.filter(function (idx) { return idx > pivotIndex; });
+          var cursorTime = 1.4 / introScale;
+
+          cursorTime = tiltAndLaunch(master, -PIVOT_ANGLE, leftIndices, cursorTime);
+          cursorTime = tiltAndLaunch(master, PIVOT_ANGLE, rightIndices, leftIndices.length ? cursorTime - 0.3 : cursorTime);
+
+          master
+            .to(pivotEl, { rotation: 0, duration: 0.5, ease: 'elastic.out(1, 0.55)' }, cursorTime - 0.16)
+            .to(preloaderDot, { opacity: 0, scale: 0, duration: 0.3, ease: 'power2.in' }, cursorTime - 0.12);
+
+          var resizeTimer = null;
+          resizeHandler = function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+              if (preloaderCancelled || preloaderDone) return;
+              if (master.progress() < 1) master.progress(1);
+            }, 150);
+          };
+          window.addEventListener('resize', resizeHandler);
+        }, preloaderViRoot);
+      });
+    }
+
+    lockPreloaderScroll();
+    runKineticIntro();
+
+    // Allow impatient visitors to skip via click or Escape
+    preloader.addEventListener('click', function () { finishPreloader(true); });
+    window.addEventListener('keydown', onPreloaderKeydown);
+
+    // Safety fallback if fonts, GSAP, or timers stall
+    safetyTimer = setTimeout(function () { finishPreloader(true); }, 13000);
   }
 
   /* ==========================================================================
@@ -539,6 +890,10 @@
         requestAnimationFrame(raf);
       });
     }
+
+    if (preloaderActive) {
+      lenis.stop();
+    }
   }
 
   function scrollToTarget(target) {
@@ -676,8 +1031,10 @@
     }
   }
 
-  // Immediate, non-blocking hero entrance
-  triggerHeroEntrance();
+  // Defer hero entrance until kinetic preloader completes (or run immediately if preloader is absent)
+  if (!preloaderActive) {
+    triggerHeroEntrance();
+  }
 
   /* =============================== Magnetic Button Physics ========================= */
   if (!isTouch && !prefersReducedMotion) {
