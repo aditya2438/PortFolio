@@ -9,18 +9,46 @@
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-  /* ------------------------------ Lucide Icons ---------------------------------- */
-  function initIcons() {
-    if (window.lucide && typeof lucide.createIcons === 'function') {
-      lucide.createIcons();
+  /* ------------------------------ Startup Scheduler ----------------------------- */
+  var deferredStartups = [];
+  var deferredStarted = false;
+  var preloader = document.getElementById('preloader');
+  var preloaderActive = Boolean(preloader);
+
+  function runAfterPreloader(fn) {
+    if (typeof fn !== 'function') return;
+    if (!preloaderActive || deferredStarted) {
+      fn();
+    } else {
+      deferredStartups.push(fn);
     }
   }
-  initIcons();
+
+  function flushDeferredStartups() {
+    if (deferredStarted) return;
+    deferredStarted = true;
+    while (deferredStartups.length) {
+      var fn = deferredStartups.shift();
+      try { fn(); } catch (_) {}
+    }
+  }
+
+  /* ------------------------------ Lucide Icons ---------------------------------- */
+  var iconsInitialized = false;
+  function initIcons() {
+    if (iconsInitialized) return;
+    if (window.lucide && typeof lucide.createIcons === 'function') {
+      lucide.createIcons();
+      iconsInitialized = true;
+    }
+  }
+  if (!preloaderActive) {
+    initIcons();
+  }
 
   /* ==========================================================================
      STARTING AURORA ORBITAL KINETIC WORDMARK & 3D APERTURE PRELOADER
      ========================================================================== */
-  var preloader = document.getElementById('preloader');
   var preloaderCurtainLeft = document.getElementById('preloaderCurtainLeft');
   var preloaderCurtainRight = document.getElementById('preloaderCurtainRight');
   var preloaderAurora = document.getElementById('preloaderAurora');
@@ -47,7 +75,6 @@
   var preloaderSubtitle = document.getElementById('preloaderSubtitle');
   var preloaderProgressRail = document.getElementById('preloaderProgressRail');
   var preloaderProgressFill = document.getElementById('preloaderProgressFill');
-  var preloaderActive = Boolean(preloader);
 
   if (preloader) {
     var SOURCE_WORD = 'ADITYA';
@@ -63,13 +90,51 @@
 
     var preloaderDone = false;
     var preloaderCancelled = false;
-    var morphInterval = null;
+    var morphTween = null;
+    var idleOrbTween = null;
     var safetyTimer = null;
     var animCtx = null;
     var exitTl = null;
     var resizeHandler = null;
     var pointerHandler = null;
     var lastPct = -1;
+    var fxRingPool = [];
+    var fxSparkPool = [];
+    var fxRingCursor = 0;
+    var fxSparkCursor = 0;
+
+    if (window.gsap) {
+      gsap.ticker.lagSmoothing(250, 33);
+    }
+
+    function initFxPools() {
+      if (!preloaderFxLayer || fxRingPool.length > 0) return;
+      preloaderFxLayer.innerHTML = '';
+
+      for (var r = 0; r < 8; r++) {
+        var ring = document.createElement('span');
+        ring.className = 'preloader-shockwave';
+        ring.style.left = '0px';
+        ring.style.top = '0px';
+        ring.style.width = '100px';
+        ring.style.height = '100px';
+        preloaderFxLayer.appendChild(ring);
+        fxRingPool.push(ring);
+      }
+
+      for (var s = 0; s < 18; s++) {
+        var spark = document.createElement('span');
+        var color = SPARK_COLORS[s % SPARK_COLORS.length];
+        spark.className = 'preloader-spark';
+        spark.style.left = '0px';
+        spark.style.top = '0px';
+        spark.style.width = '4px';
+        spark.style.height = '4px';
+        spark.style.background = color;
+        preloaderFxLayer.appendChild(spark);
+        fxSparkPool.push(spark);
+      }
+    }
 
     function lockPreloaderScroll() {
       window.scrollTo(0, 0);
@@ -81,6 +146,7 @@
       preloaderActive = false;
       document.documentElement.classList.remove('preloader-active');
       document.body.classList.remove('preloader-active');
+      initIcons();
       if (lenis && !document.documentElement.classList.contains('modal-open')) {
         lenis.start();
       }
@@ -99,79 +165,65 @@
     }
 
     function spawnShockwave(x, y, size, alpha, colorIdx) {
-      if (preloaderCancelled || preloaderDone || !preloaderFxLayer || !window.gsap) return;
-      if (preloaderFxLayer.childElementCount > 34) return;
-      var ring = document.createElement('span');
+      if (preloaderCancelled || preloaderDone || !fxRingPool.length || !window.gsap) return;
+      var ring = fxRingPool[fxRingCursor % fxRingPool.length];
+      fxRingCursor += 1;
+
       var stroke = SHOCKWAVE_COLORS[(colorIdx || 0) % SHOCKWAVE_COLORS.length];
-      ring.className = 'preloader-shockwave';
-      ring.style.width = size + 'px';
-      ring.style.height = size + 'px';
-      ring.style.left = x + 'px';
-      ring.style.top = y + 'px';
+      var baseScale = Math.max(0.28, (size || 80) / 100);
       ring.style.borderColor = stroke;
-      ring.style.boxShadow = '0 0 18px ' + stroke;
-      preloaderFxLayer.appendChild(ring);
+
+      gsap.killTweensOf(ring);
       gsap.fromTo(ring, {
+        x: x,
+        y: y,
         xPercent: -50,
         yPercent: -50,
-        scaleX: 0.22,
-        scaleY: 0.08,
-        opacity: alpha || 0.85
+        scaleX: baseScale * 0.24,
+        scaleY: baseScale * 0.09,
+        opacity: alpha || 0.85,
+        force3D: true
       }, {
-        scaleX: 2.5,
-        scaleY: 0.8,
+        scaleX: baseScale * 2.4,
+        scaleY: baseScale * 0.78,
         opacity: 0,
-        duration: 0.6,
+        duration: 0.56,
         ease: 'power3.out',
-        onComplete: function () {
-          if (ring.parentNode) ring.parentNode.removeChild(ring);
-        }
+        force3D: true
       });
     }
 
     function spawnSparks(x, y, count, maxDist, fullCircle) {
-      if (preloaderCancelled || preloaderDone || !preloaderFxLayer || !window.gsap) return;
-      if (preloaderFxLayer.childElementCount > 34) return;
-      for (var sIdx = 0; sIdx < count; sIdx++) {
-        (function (idx) {
-          var spark = document.createElement('span');
-          var color = SPARK_COLORS[idx % SPARK_COLORS.length];
-          var sz = gsap.utils.random(2.2, 4.2);
-          spark.className = 'preloader-spark';
-          spark.style.width = sz + 'px';
-          spark.style.height = sz + 'px';
-          spark.style.left = x + 'px';
-          spark.style.top = y + 'px';
-          spark.style.background = color;
-          spark.style.boxShadow = '0 0 10px ' + color;
-          preloaderFxLayer.appendChild(spark);
+      if (preloaderCancelled || preloaderDone || !fxSparkPool.length || !window.gsap) return;
+      var safeCount = Math.min(count, fxSparkPool.length);
+      for (var sIdx = 0; sIdx < safeCount; sIdx++) {
+        var spark = fxSparkPool[(fxSparkCursor + sIdx) % fxSparkPool.length];
+        var angleDeg = fullCircle
+          ? ((360 / safeCount) * sIdx + gsap.utils.random(-14, 14))
+          : gsap.utils.random(-166, -14);
+        var angle = angleDeg * Math.PI / 180;
+        var dist = gsap.utils.random(maxDist * 0.45, maxDist);
 
-          var angleDeg = fullCircle
-            ? gsap.utils.random(0, 360)
-            : gsap.utils.random(-166, -14);
-          var angle = angleDeg * Math.PI / 180;
-          var dist = gsap.utils.random(maxDist * 0.45, maxDist);
-
-          gsap.fromTo(spark, {
-            xPercent: -50,
-            yPercent: -50,
-            x: 0,
-            y: 0,
-            opacity: 0.98,
-            scale: 1
-          }, {
-            x: Math.cos(angle) * dist,
-            y: Math.sin(angle) * dist,
-            opacity: 0,
-            scale: 0.12,
-            duration: gsap.utils.random(0.36, 0.62),
-            ease: 'power2.out',
-            onComplete: function () {
-              if (spark.parentNode) spark.parentNode.removeChild(spark);
-            }
-          });
-        })(sIdx);
+        gsap.killTweensOf(spark);
+        gsap.fromTo(spark, {
+          xPercent: -50,
+          yPercent: -50,
+          x: x,
+          y: y,
+          opacity: 0.96,
+          scale: gsap.utils.random(0.7, 1.1),
+          force3D: true
+        }, {
+          x: x + Math.cos(angle) * dist,
+          y: y + Math.sin(angle) * dist,
+          opacity: 0,
+          scale: 0.14,
+          duration: gsap.utils.random(0.34, 0.56),
+          ease: 'power2.out',
+          force3D: true
+        });
       }
+      fxSparkCursor = (fxSparkCursor + safeCount) % fxSparkPool.length;
     }
 
     function pulseHorizon(peakOpacity) {
@@ -179,7 +231,7 @@
       gsap.killTweensOf(preloaderHorizon, 'opacity');
       gsap.fromTo(preloaderHorizon, { opacity: peakOpacity || 0.95 }, {
         opacity: 0.28,
-        duration: 0.46,
+        duration: 0.44,
         ease: 'power2.out'
       });
     }
@@ -202,7 +254,8 @@
       preloaderDone = true;
       preloaderCancelled = true;
 
-      if (morphInterval) { clearInterval(morphInterval); morphInterval = null; }
+      if (morphTween) { morphTween.kill(); morphTween = null; }
+      if (idleOrbTween) { idleOrbTween.kill(); idleOrbTween = null; }
       if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
       if (resizeHandler) { window.removeEventListener('resize', resizeHandler); resizeHandler = null; }
       detachPointerParallax();
@@ -213,11 +266,17 @@
         if (exitTl) { exitTl.kill(); exitTl = null; }
       }
       if (preloaderFxLayer) preloaderFxLayer.innerHTML = '';
+      fxRingPool.length = 0;
+      fxSparkPool.length = 0;
 
       unlockPreloaderScroll();
       if (typeof triggerHeroEntrance === 'function') {
         triggerHeroEntrance();
       }
+      if (window.gsap) {
+        gsap.ticker.lagSmoothing(0);
+      }
+      requestAnimationFrame(flushDeferredStartups);
 
       preloader.setAttribute('aria-hidden', 'true');
       if (immediate && window.gsap) {
@@ -257,37 +316,48 @@
         if (preloaderWordAnim) preloaderWordAnim.style.display = 'none';
       }
 
-      var morphStep = 0;
-      morphInterval = setInterval(function () {
-        if (preloaderCancelled || preloaderDone) {
-          clearInterval(morphInterval);
-          morphInterval = null;
-          return;
-        }
+      var morphState = { step: 0 };
+      var lastRenderedStep = -1;
+      var lastMorphText = '';
 
-        var revealedCount = Math.floor((morphStep * TARGET_WORD.length) / 24);
-        var activeLen = morphStep >= 24
-          ? TARGET_WORD.length
-          : Math.min(TARGET_WORD.length, Math.max(SOURCE_WORD.length, revealedCount + 2));
+      morphTween = gsap.to(morphState, {
+        step: 24,
+        duration: 0.96,
+        ease: 'none',
+        onUpdate: function () {
+          if (preloaderCancelled || preloaderDone) return;
+          var curStep = Math.round(morphState.step);
+          if (curStep === lastRenderedStep) return;
+          lastRenderedStep = curStep;
 
-        var morphed = '';
-        for (var cIdx = 0; cIdx < activeLen; cIdx++) {
-          if (morphStep >= 24 || cIdx < revealedCount) {
-            morphed += TARGET_WORD[cIdx];
-          } else if (cIdx === revealedCount || cIdx >= SOURCE_WORD.length) {
-            morphed += CIPHER_CHARS[(morphStep * 7 + cIdx * 3) % CIPHER_CHARS.length];
-          } else {
-            morphed += SOURCE_WORD[cIdx];
+          var revealedCount = Math.floor((curStep * TARGET_WORD.length) / 24);
+          var activeLen = curStep >= 24
+            ? TARGET_WORD.length
+            : Math.min(TARGET_WORD.length, Math.max(SOURCE_WORD.length, revealedCount + 2));
+
+          var morphed = '';
+          for (var cIdx = 0; cIdx < activeLen; cIdx++) {
+            if (curStep >= 24 || cIdx < revealedCount) {
+              morphed += TARGET_WORD[cIdx];
+            } else if (cIdx === revealedCount || cIdx >= SOURCE_WORD.length) {
+              morphed += CIPHER_CHARS[(curStep * 7 + cIdx * 3) % CIPHER_CHARS.length];
+            } else {
+              morphed += SOURCE_WORD[cIdx];
+            }
           }
-        }
 
-        if (preloaderWordLeft) preloaderWordLeft.textContent = morphed.slice(0, 4);
-        if (preloaderWordRight) preloaderWordRight.textContent = morphed.slice(4);
-        setBootProgress(66 + (morphStep / 24) * 34);
-
-        if (morphStep >= 24) {
-          clearInterval(morphInterval);
-          morphInterval = null;
+          if (morphed !== lastMorphText) {
+            lastMorphText = morphed;
+            if (preloaderWordLeft) preloaderWordLeft.textContent = morphed.slice(0, 4);
+            if (preloaderWordRight) preloaderWordRight.textContent = morphed.slice(4);
+          }
+          setBootProgress(66 + (morphState.step / 24) * 34);
+        },
+        onComplete: function () {
+          morphTween = null;
+          if (preloaderCancelled || preloaderDone) return;
+          if (preloaderWordLeft) preloaderWordLeft.textContent = 'PORT';
+          if (preloaderWordRight) preloaderWordRight.textContent = 'FOLIO';
           setBootProgress(100);
 
           if (!window.gsap || !preloaderWordLeft || !preloaderWordRight) {
@@ -318,19 +388,20 @@
           exitTl
             .to([preloaderWordLeft, preloaderWordRight], {
               '--sheen-x': '-75%',
-              duration: 0.5,
+              duration: 0.48,
               ease: 'power2.inOut'
             }, 0)
             .fromTo(preloaderSubtitle, {
-              y: 14,
-              opacity: 0,
-              letterSpacing: '0.44em'
+              y: 12,
+              scale: 0.96,
+              opacity: 0
             }, {
               y: 0,
+              scale: 1,
               opacity: 1,
-              letterSpacing: isMobile ? '0.16em' : '0.24em',
               duration: 0.44,
-              ease: 'power3.out'
+              ease: 'power3.out',
+              force3D: true
             }, 0.04);
 
           if (preloaderOrbits) {
@@ -338,7 +409,8 @@
               scale: 1.48,
               opacity: 0,
               duration: 0.54,
-              ease: 'power2.in'
+              ease: 'power2.in',
+              force3D: true
             }, 0.06);
           }
 
@@ -348,7 +420,8 @@
               scaleY: 1,
               opacity: 1,
               duration: 0.26,
-              ease: 'power3.out'
+              ease: 'power3.out',
+              force3D: true
             }, 0.38);
           }
 
@@ -357,13 +430,15 @@
               x: -crackDist,
               skewX: -6,
               duration: 0.24,
-              ease: 'power2.out'
+              ease: 'power2.out',
+              force3D: true
             }, 0.5)
             .to(preloaderWordRight, {
               x: crackDist,
               skewX: 6,
               duration: 0.24,
-              ease: 'power2.out'
+              ease: 'power2.out',
+              force3D: true
             }, 0.5)
             .to([preloaderHud, preloaderProgressRail, preloaderKicker, preloaderSubtitle, preloaderHorizon, preloaderGrid, preloaderSpot, preloaderAurora], {
               opacity: 0,
@@ -377,6 +452,7 @@
               xPercent: -104,
               duration: 0.96,
               ease: 'power4.inOut',
+              force3D: true,
               onStart: function () {
                 unlockPreloaderScroll();
                 if (typeof triggerHeroEntrance === 'function') {
@@ -387,7 +463,8 @@
             .to(preloaderCurtainRight, {
               xPercent: 104,
               duration: 0.96,
-              ease: 'power4.inOut'
+              ease: 'power4.inOut',
+              force3D: true
             }, 0.68)
             .to(preloaderWordLeft, {
               x: -outerDist,
@@ -396,7 +473,8 @@
               scale: 1.1,
               opacity: 0,
               duration: 0.82,
-              ease: 'power3.inOut'
+              ease: 'power3.inOut',
+              force3D: true
             }, 0.68)
             .to(preloaderWordRight, {
               x: outerDist,
@@ -405,46 +483,59 @@
               scale: 1.1,
               opacity: 0,
               duration: 0.82,
-              ease: 'power3.inOut'
+              ease: 'power3.inOut',
+              force3D: true
             }, 0.68)
             .to(preloaderSeam, {
               opacity: 0,
               duration: 0.26,
               ease: 'power2.out'
             }, 0.68);
-          return;
         }
-
-        morphStep += 1;
-      }, 42);
+      });
     }
 
     function setupPointerParallax() {
       if (isTouch || prefersReducedMotion || !window.gsap) return;
+      var stageRotY = preloaderStage ? gsap.quickTo(preloaderStage, 'rotationY', { duration: 0.45, ease: 'power2.out' }) : null;
+      var stageRotX = preloaderStage ? gsap.quickTo(preloaderStage, 'rotationX', { duration: 0.45, ease: 'power2.out' }) : null;
+      var spotX = preloaderSpot ? gsap.quickTo(preloaderSpot, 'x', { duration: 0.55, ease: 'power2.out' }) : null;
+      var spotY = preloaderSpot ? gsap.quickTo(preloaderSpot, 'y', { duration: 0.55, ease: 'power2.out' }) : null;
+
       pointerHandler = function (e) {
         if (preloaderCancelled || preloaderDone) return;
         var nx = (e.clientX / (window.innerWidth || 1)) * 2 - 1;
         var ny = (e.clientY / (window.innerHeight || 1)) * 2 - 1;
-        if (preloaderStage) {
-          gsap.to(preloaderStage, {
-            rotationY: nx * 4.5,
-            rotationX: -ny * 3.5,
-            duration: 0.45,
-            ease: 'power2.out',
-            overwrite: 'auto'
-          });
-        }
-        if (preloaderSpot) {
-          gsap.to(preloaderSpot, {
-            x: nx * 95,
-            y: ny * 65,
-            duration: 0.6,
-            ease: 'power2.out',
-            overwrite: 'auto'
-          });
-        }
+        if (stageRotY) stageRotY(nx * 4.5);
+        if (stageRotX) stageRotX(-ny * 3.5);
+        if (spotX) spotX(nx * 95);
+        if (spotY) spotY(ny * 65);
       };
-      preloader.addEventListener('mousemove', pointerHandler);
+      preloader.addEventListener('mousemove', pointerHandler, { passive: true });
+    }
+
+    function waitForPageSettle() {
+      var loadWait = document.readyState === 'complete'
+        ? Promise.resolve()
+        : Promise.race([
+            new Promise(function (resolve) { window.addEventListener('load', resolve, { once: true }); }),
+            new Promise(function (resolve) { setTimeout(resolve, 900); })
+          ]);
+
+      var fontWait = (document.fonts && document.fonts.ready)
+        ? Promise.race([
+            document.fonts.ready,
+            new Promise(function (resolve) { setTimeout(resolve, 450); })
+          ])
+        : Promise.resolve();
+
+      return Promise.all([loadWait, fontWait]).then(function () {
+        return new Promise(function (resolve) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(resolve);
+          });
+        });
+      });
     }
 
     function runKineticIntro() {
@@ -473,6 +564,7 @@
         gsap.set(preloaderGlow, { xPercent: -50, yPercent: -50 });
       }
 
+      initFxPools();
       setupPointerParallax();
 
       var chars = SOURCE_WORD.split('');
@@ -487,19 +579,29 @@
       });
 
       gsap.set(letterEls, { opacity: 0 });
+      setBootProgress(4);
 
-      var fontWait = (document.fonts && document.fonts.ready)
-        ? Promise.race([
-            document.fonts.ready,
-            new Promise(function (resolve) { setTimeout(resolve, 450); })
-          ])
-        : Promise.resolve();
+      // Gentle ambient singularity pulse while browser network/fonts settle
+      gsap.set(preloaderCoreOrb, { width: 16, height: 16, y: 0 });
+      idleOrbTween = gsap.fromTo(preloaderCoreOrb, {
+        scale: 0.72,
+        opacity: 0.45
+      }, {
+        scale: 1.08,
+        opacity: 0.9,
+        duration: 0.55,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        force3D: true
+      });
 
-      fontWait.then(function () {
+      waitForPageSettle().then(function () {
         if (preloaderCancelled || preloaderDone) return;
+        if (idleOrbTween) { idleOrbTween.kill(); idleOrbTween = null; }
 
         animCtx = gsap.context(function () {
-          gsap.set(letterEls, { clearProps: 'transform,filter' });
+          gsap.set(letterEls, { clearProps: 'transform' });
 
           var rootRect = preloaderViRoot.getBoundingClientRect();
           var fontSize = parseFloat(getComputedStyle(preloaderAnimHeading).fontSize) || 16;
@@ -515,7 +617,7 @@
 
           var orbSize = Math.max(14, Math.min(24, fontSize * 0.16));
           var glowSize = fontSize * 2.8;
-          var dropFromY = -(window.innerHeight * 0.55);
+          var dropFromY = -(window.innerHeight * 0.48);
 
           gsap.set(preloaderCoreOrb, { width: orbSize, height: orbSize });
           gsap.set(preloaderGlow, { width: glowSize, height: glowSize });
@@ -523,14 +625,14 @@
           var master = gsap.timeline({
             defaults: { ease: 'power3.out' },
             onUpdate: function () {
-              setBootProgress(master.progress() * 66);
+              setBootProgress(6 + master.progress() * 60);
             },
             onComplete: startMorphAndSplit
           });
 
           master.set(preloaderViRoot, { opacity: 1 });
 
-          // Act 1A: Vertical laser drop + core orb singularity ignition (0.00s -> 0.52s)
+          // Act 1A: Vertical laser drop + core orb singularity ignition
           if (preloaderLaser) {
             master
               .fromTo(preloaderLaser, { xPercent: -50, scaleY: 0, opacity: 0.9 }, {
@@ -538,9 +640,10 @@
                 scaleY: 1,
                 opacity: 1,
                 duration: 0.34,
-                ease: 'power3.in'
+                ease: 'power3.in',
+                force3D: true
               }, 0)
-              .to(preloaderLaser, { scaleY: 0, opacity: 0, transformOrigin: 'bottom center', duration: 0.24, ease: 'power2.out' }, 0.36);
+              .to(preloaderLaser, { scaleY: 0, opacity: 0, transformOrigin: 'bottom center', duration: 0.24, ease: 'power2.out', force3D: true }, 0.36);
           }
 
           master
@@ -549,15 +652,16 @@
               scale: 1.35,
               opacity: 1,
               duration: 0.36,
-              ease: 'power3.in'
+              ease: 'power3.in',
+              force3D: true
             }, 0)
-            .to(preloaderCoreOrb, { scale: 2.9, opacity: 0, duration: 0.26, ease: 'power2.out' }, 0.36)
-            .fromTo(preloaderGlow, { scale: 0.2, opacity: 0 }, { scale: 1.25, opacity: 0.9, duration: 0.14, ease: 'power2.out' }, 0.36)
-            .to(preloaderGlow, { scale: 1.75, opacity: 0, duration: 0.45, ease: 'power2.out' }, 0.5)
+            .to(preloaderCoreOrb, { scale: 2.9, opacity: 0, duration: 0.26, ease: 'power2.out', force3D: true }, 0.36)
+            .fromTo(preloaderGlow, { scale: 0.2, opacity: 0 }, { scale: 1.25, opacity: 0.88, duration: 0.14, ease: 'power2.out', force3D: true }, 0.36)
+            .to(preloaderGlow, { scale: 1.75, opacity: 0, duration: 0.45, ease: 'power2.out', force3D: true }, 0.5)
             .call(function () {
               spawnShockwave(centerPt.x, centerPt.y, fontSize * 0.95, 0.95, 0);
               spawnShockwave(centerPt.x, centerPt.y, fontSize * 0.55, 0.85, 1);
-              spawnSparks(centerPt.x, centerPt.y, 12, fontSize * 0.95, true);
+              spawnSparks(centerPt.x, centerPt.y, 10, fontSize * 0.95, true);
               pulseHorizon(1.0);
             }, null, 0.36);
 
@@ -571,21 +675,23 @@
               scaleX: 1,
               opacity: 0.36,
               duration: 0.52,
-              ease: 'power3.out'
+              ease: 'power3.out',
+              force3D: true
             }, 0.36);
           }
 
           if (preloaderKicker) {
             master.fromTo(preloaderKicker, {
-              y: -12,
-              opacity: 0,
-              letterSpacing: '0.52em'
+              y: -10,
+              scale: 0.96,
+              opacity: 0
             }, {
               y: 0,
+              scale: 1,
               opacity: 1,
-              letterSpacing: '0.32em',
-              duration: 0.5,
-              ease: 'power3.out'
+              duration: 0.48,
+              ease: 'power3.out',
+              force3D: true
             }, 0.34);
           }
 
@@ -593,21 +699,22 @@
           if (preloaderOrbits) {
             var outerRing = preloaderOrbits.querySelector('.preloader-orbit-outer');
             var innerRing = preloaderOrbits.querySelector('.preloader-orbit-inner');
-            master.fromTo(preloaderOrbits, { scale: 0.55, opacity: 0 }, {
+            master.fromTo(preloaderOrbits, { scale: 0.58, opacity: 0 }, {
               scale: 1,
               opacity: 1,
-              duration: 0.65,
-              ease: 'back.out(1.4)'
+              duration: 0.62,
+              ease: 'back.out(1.4)',
+              force3D: true
             }, 0.36);
             if (outerRing) {
-              master.to(outerRing, { rotation: 165, duration: 2.0, ease: 'power1.inOut' }, 0.36);
+              master.to(outerRing, { rotation: 165, duration: 2.0, ease: 'power1.inOut', force3D: true }, 0.36);
             }
             if (innerRing) {
-              master.to(innerRing, { rotation: -210, duration: 2.0, ease: 'power1.inOut' }, 0.36);
+              master.to(innerRing, { rotation: -210, duration: 2.0, ease: 'power1.inOut', force3D: true }, 0.36);
             }
           }
 
-          // Act 1B: 3D Center-Out Vortex Convergence of "ADITYA" (0.44s -> 1.48s)
+          // Act 1B: 3D Center-Out Vortex Convergence of "ADITYA" (pure GPU transform/opacity)
           var centerOrder = chars.map(function (_, i) { return i; }).sort(function (a, b) {
             return Math.abs(a - (chars.length - 1) / 2) - Math.abs(b - (chars.length - 1) / 2);
           });
@@ -617,19 +724,18 @@
             var box = boxes[letterIdx];
             var sign = letterIdx % 2 === 0 ? -1 : 1;
             var offsetFromCenter = letterIdx - (chars.length - 1) / 2;
-            var entryAt = 0.44 + order * 0.085;
+            var entryAt = 0.44 + order * 0.08;
 
             master
               .fromTo(el, {
-                x: offsetFromCenter * fontSize * 0.48,
-                y: sign * fontSize * 0.92,
-                z: -240,
-                rotationX: sign * 72,
-                rotationY: offsetFromCenter * 15,
-                rotationZ: sign * -20,
-                scale: 0.42,
-                opacity: 0,
-                filter: 'blur(9px)'
+                x: offsetFromCenter * fontSize * 0.45,
+                y: sign * fontSize * 0.86,
+                z: -220,
+                rotationX: sign * 68,
+                rotationY: offsetFromCenter * 14,
+                rotationZ: sign * -18,
+                scale: 0.44,
+                opacity: 0
               }, {
                 x: 0,
                 y: 0,
@@ -639,49 +745,52 @@
                 rotationZ: 0,
                 scale: 1,
                 opacity: 1,
-                filter: 'blur(0px)',
-                duration: 0.64,
-                ease: 'back.out(1.5)',
-                clearProps: 'filter'
+                duration: 0.62,
+                ease: 'back.out(1.45)',
+                force3D: true
               }, entryAt)
               .call(function () {
-                spawnShockwave(box.cx, box.bottom, fontSize * 0.56, 0.55, letterIdx);
-                spawnSparks(box.cx, box.bottom, 4, fontSize * 0.42, false);
+                spawnShockwave(box.cx, box.bottom, fontSize * 0.54, 0.52, letterIdx);
+                spawnSparks(box.cx, box.bottom, 3, fontSize * 0.4, false);
                 pulseHorizon(0.68);
-              }, null, entryAt + 0.46);
+              }, null, entryAt + 0.44);
           });
 
-          // Act 1C: Chromatic Wave Ripple sweep left-to-right across locked "ADITYA" (1.42s -> 2.05s)
+          // Act 1C: Chromatic Wave Ripple sweep left-to-right across locked "ADITYA"
           letterEls.forEach(function (el, idx) {
-            var waveAt = 1.42 + idx * 0.055;
+            var waveAt = 1.4 + idx * 0.052;
             master
               .to(el, {
-                y: -fontSize * 0.14,
-                scaleY: 1.14,
+                y: -fontSize * 0.13,
+                scaleY: 1.12,
                 scaleX: 0.94,
                 duration: 0.16,
-                ease: 'power2.out'
+                ease: 'power2.out',
+                force3D: true
               }, waveAt)
               .to(el, {
                 y: 0,
                 scaleY: 1,
                 scaleX: 1,
-                duration: 0.36,
-                ease: 'elastic.out(1, 0.45)'
+                duration: 0.34,
+                ease: 'elastic.out(1, 0.45)',
+                force3D: true
               }, waveAt + 0.16);
           });
 
+          var initW = window.innerWidth;
           var resizeTimer = null;
           resizeHandler = function () {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function () {
               if (preloaderCancelled || preloaderDone) return;
+              if (Math.abs(window.innerWidth - initW) < 60) return;
+              initW = window.innerWidth;
               if (master.progress() < 1) {
                 master.progress(1, true);
-                if (preloaderFxLayer) preloaderFxLayer.innerHTML = '';
                 startMorphAndSplit();
               }
-            }, 150);
+            }, 180);
           };
           window.addEventListener('resize', resizeHandler);
         }, preloaderViRoot);
@@ -1027,14 +1136,14 @@
         cCtx.fillText(sn.sub, nx, ny + 24);
       }
 
-      if (!document.hidden && !prefersReducedMotion) {
+      if (!document.hidden && !prefersReducedMotion && !preloaderActive) {
         requestAnimationFrame(renderConstellation);
       }
     }
-    renderConstellation();
+    runAfterPreloader(renderConstellation);
 
     document.addEventListener('visibilitychange', function () {
-      if (!document.hidden && !prefersReducedMotion) {
+      if (!document.hidden && !prefersReducedMotion && !preloaderActive) {
         requestAnimationFrame(renderConstellation);
       }
     });
@@ -1128,8 +1237,14 @@
       lenis.on('scroll', function () {
         if (window.ScrollTrigger) ScrollTrigger.update();
       });
-      gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
-      gsap.ticker.lagSmoothing(0);
+      gsap.ticker.add(function (time) {
+        if (lenis && !preloaderActive) {
+          lenis.raf(time * 1000);
+        }
+      });
+      if (!preloaderActive) {
+        gsap.ticker.lagSmoothing(0);
+      }
     } else {
       requestAnimationFrame(function raf(time) {
         lenis.raf(time);
@@ -2212,13 +2327,15 @@
     });
   }
 
-  // Initialize Three.js 3D Background
+  // Initialize Three.js 3D Background after preloader curtains clear
   if (!prefersReducedMotion) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initThreeBackground);
-    } else {
-      initThreeBackground();
-    }
+    runAfterPreloader(function () {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initThreeBackground);
+      } else {
+        initThreeBackground();
+      }
+    });
   }
 
   /* ================================ Back to Top Trigger ================================ */
